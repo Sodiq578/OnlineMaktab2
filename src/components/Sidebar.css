@@ -1,0 +1,31 @@
+/* Sidebar uchun umumiy stil */
+.hidden-sm-block {
+    overflow-y: auto;
+    height: 100%;
+  }
+  
+  /* Kichik skrol yaratish */
+  .hidden-sm-block::-webkit-scrollbar {
+    width: 5px;  /* Skrolning kengligini kichiklashtirish */
+  }
+  
+  .hidden-sm-block::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Skrol yo'lining fon rangi */
+    border-radius: 10px;
+  }
+  
+  .hidden-sm-block::-webkit-scrollbar-thumb {
+    background-color: #888; /* Skrol bo'lagining rangi */
+    border-radius: 10px;
+  }
+  
+  .hidden-sm-block::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Hover holatidagi skrol bo'lagi */
+  }
+  
+  /* Bu kod mobil versiyada skrolni kichik qiladi */
+  .sm\\:hidden {
+    overflow-y: auto; /* Skrolni ko'rsatish */
+    height: 100%; /* Sidebarni to'liq bo'shliqni egallash */
+  }
+  

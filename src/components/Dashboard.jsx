@@ -9,7 +9,7 @@ const Dashboard = () => {
       <Sidebar />
       
       {/* Asosiy kontent */}
-      <div className="dashboard-box flex-1 p-6 sm:p-12 bg-gray-100 rounded-lg shadow-md">
+      <div className="dashboard-box flex-1 p-6 sm:p-12 bg-gray-100 rounded-lg shadow-md overflow-y-auto">
         <h1 className="text-4xl font-bold text-gray-800 mb-4">Dashboard</h1>
         <p className="text-lg text-gray-600 mb-6">Sizning asosiy boshqaruv panelingiz. Bu yerda barcha muhim ma'lumotlarni ko'rishingiz mumkin.</p>
 
