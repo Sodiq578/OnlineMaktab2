@@ -1,0 +1,17 @@
+/* Media query to hide the image in mobile view */
+@media (max-width: 767px) {
+    .login-img {
+      display: none;
+    }
+  
+    .form-container {
+      width: 100%;
+      padding: 4rem 1.5rem; /* adjust padding for better mobile view */
+    }
+  
+    .form-inner-container {
+      width: 100%;
+      padding: 2rem; /* adjust padding for better mobile view */
+    }
+  }
+  

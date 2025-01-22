@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
 import LoginImg from "../assets/forLoginPage.avif";
+import "./LoginPage.css";
 
 const LoginPage = () => {
   const [password, setPassword] = useState('');
@@ -9,16 +10,16 @@ const LoginPage = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [smsCode, setSmsCode] = useState(['', '', '', '']); // Updated SMS code handling
-  const [step, setStep] = useState(1); // Step 1: Login, Step 2: SMS Code
-  const [showPassword, setShowPassword] = useState(false); // To toggle password visibility
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // For confirm password visibility
+  const [smsCode, setSmsCode] = useState(['', '', '', '']);
+  const [step, setStep] = useState(1);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = (e) => {
     e.preventDefault();
     if (password === confirmPassword && firstName && lastName && phoneNumber) {
-      setStep(2); // Move to SMS step
+      setStep(2);
     } else {
       alert('Parollar mos kelmayapti yoki boshqa maydonlar to\'ldirilmagan.');
     }
@@ -26,7 +27,6 @@ const LoginPage = () => {
 
   const handleSmsSubmit = (e) => {
     e.preventDefault();
-    // SMS kodni tekshirish
     if (smsCode.join('') === '1234') {
       navigate('/dashboard');
     } else {
@@ -36,10 +36,9 @@ const LoginPage = () => {
 
   const handleChange = (e, index) => {
     const newSmsCode = [...smsCode];
-    newSmsCode[index] = e.target.value.slice(0, 1); // Faqat bitta raqamni qabul qiladi
+    newSmsCode[index] = e.target.value.slice(0, 1);
     setSmsCode(newSmsCode);
 
-    // Agar raqam kiritilsa, keyingi inputga o'tish
     if (e.target.value) {
       const nextInput = index + 1;
       if (nextInput < smsCode.length) {
@@ -49,17 +48,20 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex flex-col md:flex-row h-screen">
       {/* Image Section */}
-      <div className="w-1/2 h-full bg-cover bg-center" style={{ backgroundImage: `url(${LoginImg})` }}></div>
+      <div 
+        className="login-img hidden md:block md:w-1/2 h-1/3 md:h-full bg-cover bg-center"
+        style={{ backgroundImage: `url(${LoginImg})` }}
+      ></div>
 
       {/* Form Section */}
-      <div className="w-1/2 flex items-center justify-center bg-white p-8">
+      <div className="form-container w-full md:w-1/2 flex items-center justify-center bg-white p-4 md:p-8">
         {step === 1 ? (
-          <form onSubmit={handleRegister} className="w-full md:w-3/4 lg:w-1/2 space-y-4">
-            <h1 className="text-3xl font-bold mb-6">Ro'yxatdan o'tish</h1>
+          <form onSubmit={handleRegister} className="w-full md:w-3/4 lg:w-1/2 space-y-4 form-inner-container">
+            <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Ro'yxatdan o'tish</h1>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Ism</label>
                 <input
@@ -142,10 +144,10 @@ const LoginPage = () => {
             </button>
           </form>
         ) : (
-          <form onSubmit={handleSmsSubmit} className="w-full max-w-sm bg-white p-8 shadow-lg rounded-lg">
-            <h1 className="text-3xl font-bold mb-6">SMS Kodni Kiriting</h1>
+          <form onSubmit={handleSmsSubmit} className="w-full max-w-sm bg-white p-6 md:p-8 shadow-lg rounded-lg">
+            <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">SMS Kodni Kiriting</h1>
             
-            <div className="flex space-x-4 mb-4">
+            <div className="flex justify-between space-x-2 mb-4">
               {smsCode.map((code, index) => (
                 <input
                   key={index}

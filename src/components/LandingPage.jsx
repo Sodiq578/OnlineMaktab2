@@ -17,7 +17,7 @@ const LandingPage = () => {
   const [activeAccordion, setActiveAccordion] = useState(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [language, setLanguage] = useState('uzbek'); // 'uzbek', 'russian', 'english'
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Add this line for dropdown state
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const images = [
     {
@@ -87,7 +87,6 @@ const LandingPage = () => {
       servicesDescription: "Наши услуги предлагают лучшие образовательные возможности для учеников.",
       featuresDescription: "Наши курсы интерактивны и оснащены передовыми технологиями.",
       testimonialsDescription: "Наши студенты оставляют положительные отзывы о качестве образования.",
-
       aboutContent: "Наша платформа стремится предоставить студентам самые современные образовательные ресурсы. Наша миссия — предоставить студентам возможность получить глобальные знания с легкостью. Все наши курсы разработаны квалифицированными преподавателями и оснащены новейшими технологиями. Наша система образования направлена на всестороннее развитие студентов.",
       moreAbout: "Узнайте больше о нас...",
     },
@@ -144,82 +143,140 @@ const LandingPage = () => {
   return (
     <div className={isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}>
       {/* Navbar */}
-      <nav className={`p-4 ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'} shadow-md transition-all duration-300`}>
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="cursor-pointer">
-            <img src={Logo} alt="Logo" className="h-12 w-auto object-contain" />
-          </div>
+     {/* Navbar */}
+ <nav className={`p-4 ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'} shadow-md transition-all duration-300`}>
+  <div className="max-w-7xl mx-auto flex justify-between items-center">
+    {/* Logo */}
+    <div className="cursor-pointer">
+      <img src={Logo} alt="Logo" className="h-12 w-auto object-contain" />
+    </div>
 
-          {/* Burger Menu for Mobile */}
-          <button
-            className="md:hidden text-xl"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          >
-            <FaBars />
-          </button>
+    {/* Burger Menu for Mobile */}
+    <button
+      className="md:hidden text-xl"
+      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+    >
+      <FaBars />
+    </button>
 
-          {/* Menu Links */}
-          <div className={`md:flex items-center space-x-8 ${isDropdownOpen ? 'block' : 'hidden'} md:block`}>
-            <a href="#home" className="hover:text-indigo-500 transition">
-              {navTitle.home[language]}
-            </a>
-            <a href="#services" className="hover:text-indigo-500 transition">
-              {navTitle.services[language]}
-            </a>
-            <a href="#about" className="hover:text-indigo-500 transition">
-              {navTitle.about[language]}
-            </a>
-            <a href="#contact" className="hover:text-indigo-500 transition">
-              {navTitle.contact[language]}
-            </a>
+    {/* Menu Links for Desktop */}
+    <div className={`hidden md:flex items-center space-x-8`}>
+      <a href="#home" className="hover:text-indigo-500 transition">
+        {navTitle.home[language]}
+      </a>
+      <a href="#services" className="hover:text-indigo-500 transition">
+        {navTitle.services[language]}
+      </a>
+      <a href="#about" className="hover:text-indigo-500 transition">
+        {navTitle.about[language]}
+      </a>
+      <a href="#contact" className="hover:text-indigo-500 transition">
+        {navTitle.contact[language]}
+      </a>
 
-
-            {/* Language Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center space-x-2 hover:text-indigo-500 transition"
-              >
-                <span>{navTitle.language[language]}</span>
-              </button>
-              {isDropdownOpen && (
-                <div className="absolute mt-2 bg-white shadow-lg rounded-md w-32 z-10">
-                  <button
-                    onClick={() => changeLanguage('uzbek')}
-                    className="dropdown-item block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >
-                    <img src={uzbekFlag} alt="Uzbek Flag" className="w-5 h-5 inline-block mr-2" />
-                    Uzbek
-                  </button>
-                  <button
-                    onClick={() => changeLanguage('russian')}
-                    className="dropdown-item block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >
-                    <img src={russianFlag} alt="Russian Flag" className="w-5 h-5 inline-block mr-2" />
-                    Russian
-                  </button>
-                  <button
-                    onClick={() => changeLanguage('english')}
-                    className="dropdown-item block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  >
-                    <img src={englishFlag} alt="English Flag" className="w-5 h-5 inline-block mr-2" />
-                    English
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Dark Mode Toggle */}
+      {/* Language Dropdown */}
+      <div className="relative">
+        <button
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          className="flex items-center space-x-2 hover:text-indigo-500 transition"
+        >
+          <span>{navTitle.language[language]}</span>
+        </button>
+        {isDropdownOpen && (
+          <div className="absolute mt-2 bg-white shadow-lg rounded-md w-32 z-10">
             <button
-              onClick={toggleDarkMode}
-              className="flex items-center bg-gray-200 text-indigo-600 px-4 py-2 rounded-full font-semibold hover:bg-gray-300 transition"
+              onClick={() => changeLanguage('uzbek')}
+              className="dropdown-item block w-full text-left px-4 py-2 hover:bg-gray-100"
             >
-              {isDarkMode ? <FaSun className="mr-2" /> : <FaMoon className="mr-2" />}
-              {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+              <img src={uzbekFlag} alt="Uzbek Flag" className="w-5 h-5 inline-block mr-2" />
+              Uzbek
+            </button>
+            <button
+              onClick={() => changeLanguage('russian')}
+              className="dropdown-item block w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+              <img src={russianFlag} alt="Russian Flag" className="w-5 h-5 inline-block mr-2" />
+              Russian
+            </button>
+            <button
+              onClick={() => changeLanguage('english')}
+              className="dropdown-item block w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+              <img src={englishFlag} alt="English Flag" className="w-5 h-5 inline-block mr-2" />
+              English
             </button>
           </div>
-        </div>
-      </nav>
+        )}
+      </div>
+
+      {/* Dark Mode Toggle */}
+      <button
+        onClick={toggleDarkMode}
+        className="flex items-center bg-gray-200 text-indigo-600 px-4 py-2 rounded-full font-semibold hover:bg-gray-300 transition"
+      >
+        {isDarkMode ? <FaSun className="mr-2" /> : <FaMoon className="mr-2" />}
+        {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+      </button>
+    </div>
+  </div>
+
+  {/* Burger Menu for Mobile (Dropdown for small screens) */}
+  {isDropdownOpen && (
+    <div className="md:hidden flex flex-col space-y-4 mt-4">
+      <a href="#home" className="hover:text-indigo-500 transition" onClick={() => setIsDropdownOpen(false)}>
+        {navTitle.home[language]}
+      </a>
+      <a href="#services" className="hover:text-indigo-500 transition" onClick={() => setIsDropdownOpen(false)}>
+        {navTitle.services[language]}
+      </a>
+      <a href="#about" className="hover:text-indigo-500 transition" onClick={() => setIsDropdownOpen(false)}>
+        {navTitle.about[language]}
+      </a>
+      <a href="#contact" className="hover:text-indigo-500 transition" onClick={() => setIsDropdownOpen(false)}>
+        {navTitle.contact[language]}
+      </a>
+
+      {/* Language Dropdown for Mobile */}
+      <div className="relative">
+        <button
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          className="flex items-center space-x-2 hover:text-indigo-500 transition"
+        >
+          <span>{navTitle.language[language]}</span>
+        </button>
+        {isDropdownOpen && (
+          <div className="absolute mt-2 bg-white shadow-lg rounded-md w-32 z-10">
+            <button
+              onClick={() => { changeLanguage('uzbek'); setIsDropdownOpen(true); }}
+              className="dropdown-item block w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+              <img src={uzbekFlag} alt="Uzbek Flag" className="w-5 h-5 inline-block mr-2" />
+              Uzbek
+            </button>
+            <button
+              onClick={() => { changeLanguage('russian'); setIsDropdownOpen(true); }}
+              className="dropdown-item block w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+              <img src={russianFlag} alt="Russian Flag" className="w-5 h-5 inline-block mr-2" />
+              Russian
+            </button>
+            <button
+              onClick={() => { changeLanguage('english'); setIsDropdownOpen(true); }}
+              className="dropdown-item block w-full text-left px-4 py-2 hover:bg-gray-100"
+            >
+              <img src={englishFlag} alt="English Flag" className="w-5 h-5 inline-block mr-2" />
+              English
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )}
+</nav>
+
+
+
+
 
       {/* Hero Section */}
       <section className="relative h-screen flex flex-col lg:flex-row items-center justify-center container mx-auto max-w-[1400px] gap-8 px-4">
@@ -227,11 +284,11 @@ const LandingPage = () => {
           <h1 className="text-4xl font-semibold mb-4">{currentLang.title}</h1>
           <p className="text-lg mb-6">{currentLang.description}</p>
           <button
-      onClick={() => navigate('/login')}
-      className="bg-indigo-600 px-6 py-3 lg:px-8 lg:py-3 rounded-full text-white text-sm lg:text-lg font-semibold hover:bg-indigo-700 transition duration-300"
-    >
-      {currentLang.start}
-    </button>
+            onClick={() => navigate('/login')}
+            className="bg-indigo-600 px-6 py-3 lg:px-8 lg:py-3 rounded-full text-white text-sm lg:text-lg font-semibold hover:bg-indigo-700 transition duration-300"
+          >
+            {currentLang.start}
+          </button>
         </div>
         <div className="lg:w-1/2">
           <img src={images[currentImageIndex].img} alt="Hero Image" className="w-full h-auto object-cover rounded-md shadow-lg" />
@@ -239,7 +296,7 @@ const LandingPage = () => {
       </section>
 
       {/* About Section */}
-      <section id="about" className="  py-16">
+      <section id="about" className="py-16">
         <div className="container mx-auto text-center px-4">
           <h2 className="text-3xl font-bold mb-6">{currentLang.about}</h2>
           <p className="text-lg text-gray-600 mb-8">{currentLang.aboutContent}</p>
@@ -248,7 +305,7 @@ const LandingPage = () => {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="  py-16">
+      <section id="services" className="py-16">
         <div className="container mx-auto text-center px-4">
           <h2 className="text-3xl font-bold mb-6">{currentLang.services}</h2>
           <p className="text-lg text-gray-600">{currentLang.servicesDescription}</p>
@@ -256,16 +313,15 @@ const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="  py-16">
+      <section id="features" className="py-16">
         <div className="container mx-auto text-center px-4">
           <h2 className="text-3xl font-bold mb-6">{currentLang.features}</h2>
           <p className="text-lg text-gray-600">{currentLang.featuresDescription}</p>
         </div>
       </section>
 
-
       {/* Testimonials Section */}
-      <section id="testimonials" className="  py-16">
+      <section id="testimonials" className="py-16">
         <div className="container mx-auto text-center px-4">
           <h2 className="text-3xl font-bold mb-6">{currentLang.testimonials}</h2>
           <p className="text-lg text-gray-600">{currentLang.testimonialsDescription}</p>
