@@ -29,3 +29,31 @@
     height: 100%; /* Sidebarni to'liq bo'shliqni egallash */
   }
   
+
+
+
+  @media (max-width: 768px) {
+    .dashboard-box {
+      padding-top: 100px; /* 100px padding-top qo'shish */
+    }
+
+
+  /* sidebar-mobile-title uchun margin qo'shish */
+.sidebar-mobile-title {
+  margin: 50px 0; /* Barcha li elementlariga margin qo'shish */
+}
+
+
+
+/* sidebar-mobile-title uchun margin */
+.sidebar-mobile-title {
+  margin: 50px 0; /* 50px yuqoridan va pastdan */
+  padding: 8px 0;  /* Kerak bo'lsa, har bir elementga padding qo'shing */
+}
+
+/* Kichik ekranlar uchun barcha 'li' elementlar */
+.sidebar-mobile-list li {
+  margin: 50px 0; /* Marginni barcha 'li' elementlarga qo'llash */
+}
+
+  }
