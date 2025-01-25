@@ -35,20 +35,22 @@
   @media (max-width: 768px) {
     .dashboard-box {
       padding-top: 100px; /* 100px padding-top qo'shish */
+      padding-bottom: 100px; /* 100px padding-bottom qo'shish */
     }
 
 
   /* sidebar-mobile-title uchun margin qo'shish */
 .sidebar-mobile-title {
-  margin: 50px 0; /* Barcha li elementlariga margin qo'shish */
+  margin: 10px 0; /* Barcha li elementlariga margin qo'shish */
 }
 
 
 
 /* sidebar-mobile-title uchun margin */
 .sidebar-mobile-title {
-  margin: 50px 0; /* 50px yuqoridan va pastdan */
-  padding: 8px 0;  /* Kerak bo'lsa, har bir elementga padding qo'shing */
+  margin: 10px 0; /* 50px yuqoridan va pastdan */
+  padding: 8px 0; 
+  padding:  20px; /* Kerak bo'lsa, har bir elementga padding qo'shing */
 }
 
 /* Kichik ekranlar uchun barcha 'li' elementlar */
@@ -56,4 +58,5 @@
   margin: 50px 0; /* Marginni barcha 'li' elementlarga qo'llash */
 }
 
-  }
+}
+

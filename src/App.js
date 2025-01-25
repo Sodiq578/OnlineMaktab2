@@ -16,6 +16,7 @@ import Messages from './pages/Messages';
 import Profile from './pages/Profile';
 import LandingPage from './components/LandingPage';
 import LoginPage from './components/LoginPage';
+import VideoSection from './pages/VideoSection'; // Video sahifasi
 
 const App = () => {
   return (
@@ -26,7 +27,7 @@ const App = () => {
 
         {/* Login Page - Landing sahifadan login sahifasiga o'tish */}
         <Route path="/login" element={<LoginPage />} />
-
+        <Route path="/video/:subject" element={<VideoSection />} />
         {/* Dashboard sahifasi va sidebar bilan boshqa bo'limlar */}
         <Route path="/dashboard" element={<Dashboard />}>
           <Route path="home" element={<HomePage />} />

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
+import { AiOutlineArrowLeft } from 'react-icons/ai'; // Importing Chevron Icon
 import LoginImg from "../assets/forLoginPage.avif";
 import "./LoginPage.css";
 
@@ -21,7 +22,7 @@ const LoginPage = () => {
     if (password === confirmPassword && firstName && lastName && phoneNumber) {
       setStep(2);
     } else {
-      alert('Parollar mos kelmayapti yoki boshqa maydonlar to\'ldirilmagan.');
+      alert("Parollar mos kelmayapti yoki boshqa maydonlar to'ldirilmagan.");
     }
   };
 
@@ -51,9 +52,16 @@ const LoginPage = () => {
     <div className="flex flex-col md:flex-row h-screen">
       {/* Image Section */}
       <div 
-        className="login-img hidden md:block md:w-1/2 h-1/3 md:h-full bg-cover bg-center"
+        className="login-img relative hidden md:block md:w-1/2 h-1/3 md:h-full bg-cover bg-center"
         style={{ backgroundImage: `url(${LoginImg})` }}
-      ></div>
+      >
+        <button
+          className="absolute top-4 left-4 bg-white text-gray-700 p-2 rounded-full shadow-md hover:bg-gray-100 transition duration-300"
+          onClick={() => navigate('/landingPage')}
+        >
+          <AiOutlineArrowLeft size={24} />
+        </button>
+      </div>
 
       {/* Form Section */}
       <div className="form-container w-full md:w-1/2 flex items-center justify-center bg-white p-4 md:p-8">
