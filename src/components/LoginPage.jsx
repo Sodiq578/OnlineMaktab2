@@ -29,7 +29,7 @@ const LoginPage = () => {
   const handleSmsSubmit = (e) => {
     e.preventDefault();
     if (smsCode.join('') === '1234') {
-      navigate('/dashboard');
+      navigate('/dashboard/home');
     } else {
       alert('Kod noto‘g‘ri, qayta urinib ko‘ring!');
     }

@@ -17,7 +17,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="relative">
+    <div>
       <div className="sidebar-box sm:hidden flex items-center justify-between p-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white absolute left-0 top-0 rounded-md shadow-lg">
         <h2 className="text-2xl font-semibold hidden">Asosiy Menyu</h2>
         <FaBars onClick={toggleSidebar} className="text-3xl cursor-pointer" />
@@ -89,6 +89,7 @@ const Sidebar = () => {
         </ul>
       </div>
 
+      {/* Desktop Sidebar */}
       <div className="hidden sm:block w-64 bg-gradient-to-r from-blue-500 to-indigo-500 text-white p-6 h-screen overflow-y-auto shadow-lg rounded-md">
         <h2 className="text-2xl font-semibold mb-8 text-center">Asosiy Menyu</h2>
         <ul>

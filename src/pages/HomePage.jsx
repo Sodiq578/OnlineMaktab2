@@ -5,43 +5,40 @@ import './HomePage.css';
 const HomePage = () => {
   const navigate = useNavigate();
 
-  // Fandlar ro'yxati
+  // Fandlar ro'yxati va ularning videolari
   const subjects = [
-    { name: 'Matematika', id: 1 },
-    { name: 'Fizika', id: 2 },
-    { name: 'Kimyo', id: 3 },
-    { name: 'Biologiya', id: 4 },
-    { name: 'Ingliz tili', id: 5 },
-    { name: 'Tarix', id: 6 },
-    { name: 'Geografiya', id: 7 },
-    { name: 'Adabiyot', id: 8 },
-    { name: 'Jismoniy tarbiya', id: 9 },
-    { name: 'Chizmachilik', id: 10 },
-    { name: 'San’at', id: 11 },
-    { name: 'Musiqa', id: 12 },
-    { name: 'Astronomiya', id: 13 },
-    { name: 'Informatika', id: 14 },
-    { name: 'Ekologiya', id: 15 },
-    { name: 'Psixologiya', id: 16 },
-    { name: 'Filosofiya', id: 17 },
-    { name: 'Sosiologiya', id: 18 },
-    { name: 'Ximoya', id: 19 },
-    { name: 'Tarmoqlar va texnologiyalar', id: 20 },
-    { name: 'Lug’at ishlatish', id: 22 },
+    { name: 'Matematika', id: 1, videoId: '1yyOrElDS7o' },
+    { name: 'Fizika', id: 2, videoId: 'rQFMWwl2vOU' },
+    { name: 'Kimyo', id: 3, videoId: 'uVCDKfV69wA' },
+    { name: 'Biologiya', id: 4, videoId: '14ZCLoQqXxk' },
+    { name: 'Ingliz tili', id: 5, videoId: 'MOsTpgKIGT4' },
+    { name: 'Tarix', id: 6, videoId: 'lwd78VfDHBg' },
+    { name: 'Geografiya', id: 7, videoId: 'VUkSauXKz5s' },
+    { name: 'Adabiyot', id: 8, videoId: 'HWjCStB6k4o' },
+    { name: 'Jismoniy tarbiya', id: 9, videoId: 'XKDdvVj9Nsc' },
+    { name: 'Chizmachilik', id: 10, videoId: 'KWLoJM1sOlo' },
+    { name: 'San’at', id: 11, videoId: 'xyewN0gMfD4' },
+    // Qo'shimcha fanlar qo'shishingiz mumkin
   ];
 
   // Karta bosilganda, foydalanuvchini video bo'limiga yo'naltirish
   const handleClick = (subject) => {
-    navigate(`/video/${subject}`); // Fan bo'limiga yo'naltirish
+    navigate(`/video/${subject.name.toLowerCase()}`, {
+      state: { videoId: subject.videoId },
+    }); // Fan bo'limiga yo'naltirish
   };
 
   return (
     <div className="homepage">
       <h1>Barcha fanlar</h1>
       <div className="cards-container">
-        {subjects.map(subject => (
-          <div key={subject.id} className="card" onClick={() => handleClick(subject.name)}>
-            <img src="https://picsum.photos/200/300" alt={subject.name} />
+        {subjects.map((subject) => (
+          <div
+            key={subject.id}
+            className="card"
+            onClick={() => handleClick(subject)}
+          >
+            <img src="https://picsum.photos/300/310" alt={subject.name} />
             <h3>{subject.name}</h3>
           </div>
         ))}

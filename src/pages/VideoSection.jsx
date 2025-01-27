@@ -1,44 +1,61 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa'; // Orqaga qaytish iconi
+import './VideoSection.css'; // CSS faylini import qilish
 
 const VideoSection = () => {
-  const { subject } = useParams();  // URL dan fan nomini olish
+  const { subject } = useParams(); // URL dan fan nomini olish
+  const location = useLocation();
+  const { videoId, fileVideos = [] } = location.state || {}; // Video ID va fayldan keladigan videolarni olish
+  const navigate = useNavigate(); // useNavigate hook
 
-  // YouTube video ID-larining ro'yxati
-  const videoIds = [
-    'https://www.youtube.com/watch?v=1yyOrElDS7o', // Video 1
-    'https://www.youtube.com/watch?v=rQFMWwl2vOU', // Video 2
-    'https://www.youtube.com/watch?v=uVCDKfV69wA', // Video 3
-    'https://www.youtube.com/watch?v=14ZCLoQqXxk', // Video 4
-    'https://www.youtube.com/watch?v=MOsTpgKIGT4', // Video 5
-  ];
+  if (!videoId && fileVideos.length === 0) {
+    return <div>Hech qanday video topilmadi.</div>;
+  }
 
-  // Tasodifiy video ID-ni tanlash
-  const randomVideoId = videoIds[Math.floor(Math.random() * videoIds.length)];
+  const videoUrl = `https://www.youtube.com/embed/${videoId}`; // To'g'ri URL bilan video linkini o'rnatish
 
-  const videoUrl = `https://www.youtube.com/watch?v=MOsTpgKIGT4=${randomVideoId}`;
+  // Orqaga qaytish funksiyasi
+  const goBack = () => {
+    navigate(-1); // Orqaga qaytish uchun
+  };
+
+  // 20 ta karta uchun video ro'yxati
+  const videoCards = new Array(20).fill(videoUrl); // 20 ta video kartasi yaratish
 
   return (
     <div className="video-section">
-      <h2>{subject} bo'limi</h2>
-      <iframe
-        width="560"
-        height="315"
-        src={videoUrl}
-        title="YouTube video player"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      ></iframe>
-      <iframe
-        width="560"
-        height="315"
-        src={videoUrl}
-        title="YouTube video player"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      ></iframe>
+      <button className="back-button" onClick={goBack}>
+        <FaArrowLeft /> Orqaga
+      </button>
+      <h2 className="section-title">{subject} bo'limi</h2>
+
+      <div className="card-container">
+        {fileVideos.map((fileVideo, index) => (
+          <div className="video-card" key={`file-${index}`}>
+            <video width="100%" height="200" controls>
+              <source src={fileVideo} type="video/mp4" />
+              Sizning brauzeringiz videoni qo'llab-quvvatlamaydi.
+            </video>
+            <p>Fayldan video {index + 1}</p>
+          </div>
+        ))}
+
+        {videoCards.map((video, index) => (
+          <div className="video-card" key={`embed-${index}`}>
+            <iframe
+              width="100%"
+              height="200"
+              src={video}
+              title={`YouTube video ${index + 1}`}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+            <p>Video {index + 1}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
