@@ -29,17 +29,21 @@ const HomePage = () => {
   };
 
   return (
-    <div className="homepage">
-      <h1>Barcha fanlar</h1>
-      <div className="cards-container">
+    <div className="homepage p-6">
+      <h1 className="text-3xl font-semibold mb-6">Barcha fanlar</h1>
+      <div className="cards-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
         {subjects.map((subject) => (
           <div
             key={subject.id}
-            className="card"
+            className="card bg-white rounded-lg shadow-lg p-3 hover:scale-105 transform transition duration-300 cursor-pointer"
             onClick={() => handleClick(subject)}
           >
-            <img src="https://picsum.photos/300/310" alt={subject.name} />
-            <h3>{subject.name}</h3>
+            <img
+              src="https://picsum.photos/300/310"
+              alt={subject.name}
+              className="w-full h-48 object-cover rounded-lg mb-4"
+            />
+            <h3 className="text-xl font-semibold mb-2">{subject.name}</h3>
           </div>
         ))}
       </div>

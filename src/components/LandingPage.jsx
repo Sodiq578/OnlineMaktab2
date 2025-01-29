@@ -1,342 +1,638 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './LandingPage.css';
-import BackImg from '../assets/backImg.jpeg';
-import BackImg2 from "../assets/backImg2.jpeg";
-import BackImg3 from "../assets/backImg3.jpg";
-import Logo from "../assets/Logo.png";
-import { FaMoon, FaSun } from 'react-icons/fa'; // For sun and moon icons
-import { FaBars } from 'react-icons/fa'; // For hamburger icon
+import React, { useEffect, useState, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import "aos/dist/aos.css";
+import AOS from "aos";
 
-import uzbekFlag from '../assets/uzbFlag.jpg';
-import russianFlag from '../assets/rusFlag.jpg';
-import englishFlag from '../assets/engFlag.webp';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 
-const LandingPage = () => {
-  const navigate = useNavigate();
-  const [activeAccordion, setActiveAccordion] = useState(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [language, setLanguage] = useState('uzbek'); // 'uzbek', 'russian', 'english'
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+import { FaChalkboardTeacher, FaCheckCircle, FaGraduationCap, FaCalendarAlt, FaCoffee, FaMapMarkerAlt } from "react-icons/fa";
 
-  const images = [
-    {
-      img: BackImg,
-      title: "O'quvchilar uchun eng yaxshi kurslar",
-      text: "Bizning platformamizda har bir darajadagi o'quvchilar uchun mo'ljallangan o'quv kurslarini topishingiz mumkin.",
-    },
-    {
-      img: BackImg2,
-      title: "Mutaxassis bo'lish yo'li",
-      text: "O'zingizga mos keladigan sohani tanlang va muvaffaqiyat sari qadam qo'ying.",
-    },
-    {
-      img: BackImg3,
-      title: "Ixtisoslashgan o'qituvchilar",
-      text: "Bizning kurslarimiz yetuk va tajribali o'qituvchilar tomonidan ishlab chiqilgan.",
-    },
-  ];
+import backImg from "../assets/HeroBack.jpg"; // To'g'ri import
 
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+import { FaRegStar, FaHeart, FaRegCalendar } from 'react-icons/fa';
+
+
+const Navbar = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false); // State to handle menu open/close
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 5000); // Change image every 5 seconds
-    return () => clearInterval(interval);
-  }, [images.length]);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      if (window.innerWidth > 768) {
+        setMenuOpen(false); // Close menu when switching to desktop
+      }
+    };
 
-  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Check on component mount
 
-  const changeLanguage = (language) => {
-    setLanguage(language);
-    setIsDropdownOpen(false); // Close dropdown
-  };
-
-  const translations = {
-    uzbek: {
-      title: "Onlayn maktabga xush kelibsiz",
-      description: "O'qing, o'rganing va rivojlaning — barcha darslar va resurslar bir joyda.",
-      start: "Boshlash",
-      login: "Kirish",
-      moreInfo: "Batafsil Ma'lumot",
-      about: "Biz Haqimizda",
-      services: "Bizning Xizmatlarimiz",
-      features: "Xususiyatlar",
-      testimonials: "Fikrlar",
-      footer: "Sevgi bilan ta'lim olishni targ'ib qilamiz.",
-      legal: "Barcha huquqlar himoyalangan.",
-      servicesDescription: "Xizmatlarimiz o'quvchilarga eng yaxshi ta'lim imkoniyatlarini taqdim etadi.",
-      featuresDescription: "Kurslarimiz interaktiv, ilg'or texnologiyalar bilan ta'minlangan.",
-      testimonialsDescription: "Bizning talabalarimiz ta'lim sifati haqida ijobiy fikrlar bildirishadi.",
-      aboutContent: "Bizning platformamiz o'quvchilarga eng yangi ta'lim resurslarini taqdim etishga intiladi. Bizning missiyamiz — o'quvchilarga global darajadagi bilimlarni osonlik bilan olish imkoniyatini yaratish. Bizning barcha kurslarimiz malakali o'qituvchilar tomonidan ishlab chiqilgan va yangi texnologiyalar bilan jihozlangan. Bizning ta'lim tizimimiz o'quvchilarni har tomonlama rivojlantirishga mo'ljallangan.",
-      moreAbout: "Biz haqimizda yanada ko'proq bilib oling...",
-    },
-    russian: {
-      title: "Добро пожаловать на Платформу Онлайн Классов",
-      description: "Чтение, обучение и развитие — все уроки и ресурсы в одном месте.",
-      start: "Начать",
-      login: "Войти",
-      moreInfo: "Подробнее",
-      about: "О Нас",
-      services: "Наши Услуги",
-      features: "Особенности",
-      testimonials: "Отзывы",
-      footer: "Мы продвигаем образование с любовью.",
-      legal: "Все права защищены.",
-      servicesDescription: "Наши услуги предлагают лучшие образовательные возможности для учеников.",
-      featuresDescription: "Наши курсы интерактивны и оснащены передовыми технологиями.",
-      testimonialsDescription: "Наши студенты оставляют положительные отзывы о качестве образования.",
-      aboutContent: "Наша платформа стремится предоставить студентам самые современные образовательные ресурсы. Наша миссия — предоставить студентам возможность получить глобальные знания с легкостью. Все наши курсы разработаны квалифицированными преподавателями и оснащены новейшими технологиями. Наша система образования направлена на всестороннее развитие студентов.",
-      moreAbout: "Узнайте больше о нас...",
-    },
-    english: {
-      title: "Welcome to the Online Classes Platform",
-      description: "Read, learn, and grow — all lessons and resources in one place.",
-      start: "Get Started",
-      login: "Login",
-      moreInfo: "Learn More",
-      about: "About Us",
-      services: "Our Services",
-      features: "Features",
-      testimonials: "Testimonials",
-      footer: "We promote learning with love.",
-      legal: "All rights reserved.",
-      servicesDescription: "Our services provide the best educational opportunities for students.",
-      featuresDescription: "Our courses are interactive and equipped with advanced technologies.",
-      testimonialsDescription: "Our students leave positive feedback on the quality of education.",
-      aboutContent: "Our platform strives to provide students with the latest educational resources. Our mission is to make global knowledge easily accessible. All our courses are developed by qualified instructors and equipped with the latest technologies. Our educational system is designed to foster all-round development of students.",
-      moreAbout: "Learn more about us...",
-    }
-  };
-
-  const navTitle = {
-    home: {
-      uzbek: "Bosh Sahifa",
-      russian: "Главная",
-      english: "Home",
-    },
-    services: {
-      uzbek: "Xizmatlar",
-      russian: "Услуги",
-      english: "Services",
-    },
-    about: {
-      uzbek: "Haqimizda",
-      russian: "О нас",
-      english: "About",
-    },
-    contact: {
-      uzbek: "Aloqa",
-      russian: "Контакты",
-      english: "Contact",
-    },
-    language: {
-      uzbek: "Til",
-      russian: "Язык",
-      english: "Language",
-    },
-  };
-
-  const currentLang = translations[language];
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
-    <div className={isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}>
-      {/* Navbar */}
-     {/* Navbar */}
- <nav className={`p-4 ${isDarkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'} shadow-md transition-all duration-300`}>
-  <div className="max-w-7xl mx-auto flex justify-between items-center">
-    {/* Logo */}
-    <div className="cursor-pointer">
-      <img src={Logo} alt="Logo" className="h-12 w-auto object-contain" />
-    </div>
-
-    {/* Burger Menu for Mobile */}
-    <button
-      className="md:hidden text-xl"
-      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-    >
-      <FaBars />
-    </button>
-
-    {/* Menu Links for Desktop */}
-    <div className={`hidden md:flex items-center space-x-8`}>
-      <a href="#home" className="hover:text-indigo-500 transition">
-        {navTitle.home[language]}
-      </a>
-      <a href="#services" className="hover:text-indigo-500 transition">
-        {navTitle.services[language]}
-      </a>
-      <a href="#about" className="hover:text-indigo-500 transition">
-        {navTitle.about[language]}
-      </a>
-      <a href="#contact" className="hover:text-indigo-500 transition">
-        {navTitle.contact[language]}
-      </a>
-
-      {/* Language Dropdown */}
-      <div className="relative">
-        <button
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center space-x-2 hover:text-indigo-500 transition"
+    <nav className="fixed top-0 left-0 w-full bg-white z-50 p-4 flex justify-between items-center border-none">
+      <div className="container mx-auto max-w-screen-xl flex justify-between items-center">
+        <h1 className="text-2xl font-bold text-blue-900">Logo</h1>
+        <ul
+          className={`${isMobile
+            ? menuOpen
+              ? "flex flex-col absolute top-16 left-0 w-full bg-white p-6"
+              : "hidden"
+            : "flex gap-6"
+            } text-lg md:flex gap-6`}
         >
-          <span>{navTitle.language[language]}</span>
-        </button>
-        {isDropdownOpen && (
-          <div className="absolute mt-2 bg-white shadow-lg rounded-md w-32 z-10">
-            <button
-              onClick={() => changeLanguage('uzbek')}
-              className="dropdown-item block w-full text-left px-4 py-2 hover:bg-gray-100"
-            >
-              <img src={uzbekFlag} alt="Uzbek Flag" className="w-5 h-5 inline-block mr-2" />
-              Uzbek
-            </button>
-            <button
-              onClick={() => changeLanguage('russian')}
-              className="dropdown-item block w-full text-left px-4 py-2 hover:bg-gray-100"
-            >
-              <img src={russianFlag} alt="Russian Flag" className="w-5 h-5 inline-block mr-2" />
-              Russian
-            </button>
-            <button
-              onClick={() => changeLanguage('english')}
-              className="dropdown-item block w-full text-left px-4 py-2 hover:bg-gray-100"
-            >
-              <img src={englishFlag} alt="English Flag" className="w-5 h-5 inline-block mr-2" />
-              English
-            </button>
-          </div>
+   <li><Link to="#home" className="hover:text-blue-500">Home</Link></li>
+<li><Link to="#darslar" className="hover:text-blue-500">Darslar</Link></li>
+<li><Link to="#narxlar" className="hover:text-blue-500">Narxlar</Link></li>
+<li><Link to="#savollar" className="hover:text-blue-500">Savollar</Link></li>
+<li><Link to="#aloqa" className="hover:text-blue-500">Aloqa Fikrlar</Link></li>
+<li><Link to="#xizmatarimiz" className="hover:text-blue-500">Xizmatarimiz</Link></li>
+
+        </ul>
+        {isMobile && (
+          <button className="text-2xl" onClick={() => setMenuOpen(!menuOpen)}>
+            {menuOpen ? "❌" : "☰"}
+          </button>
         )}
       </div>
+    </nav>
 
-      {/* Dark Mode Toggle */}
-      <button
-        onClick={toggleDarkMode}
-        className="flex items-center bg-gray-200 text-indigo-600 px-4 py-2 rounded-full font-semibold hover:bg-gray-300 transition"
-      >
-        {isDarkMode ? <FaSun className="mr-2" /> : <FaMoon className="mr-2" />}
-        {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-      </button>
-    </div>
-  </div>
+  );
+};
 
-  {/* Burger Menu for Mobile (Dropdown for small screens) */}
-  {isDropdownOpen && (
-    <div className="md:hidden flex flex-col space-y-4 mt-4">
-      <a href="#home" className="hover:text-indigo-500 transition" onClick={() => setIsDropdownOpen(false)}>
-        {navTitle.home[language]}
-      </a>
-      <a href="#services" className="hover:text-indigo-500 transition" onClick={() => setIsDropdownOpen(false)}>
-        {navTitle.services[language]}
-      </a>
-      <a href="#about" className="hover:text-indigo-500 transition" onClick={() => setIsDropdownOpen(false)}>
-        {navTitle.about[language]}
-      </a>
-      <a href="#contact" className="hover:text-indigo-500 transition" onClick={() => setIsDropdownOpen(false)}>
-        {navTitle.contact[language]}
-      </a>
+const HeroSection = () => {
+  const navigate = useNavigate(); // Sahifaga yo‘naltirish funksiyasi
 
-      {/* Language Dropdown for Mobile */}
-      <div className="relative">
-        <button
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center space-x-2 hover:text-indigo-500 transition"
-        >
-          <span>{navTitle.language[language]}</span>
-        </button>
-        {isDropdownOpen && (
-          <div className="absolute mt-2 bg-white shadow-lg rounded-md w-32 z-10">
-            <button
-              onClick={() => { changeLanguage('uzbek'); setIsDropdownOpen(true); }}
-              className="dropdown-item block w-full text-left px-4 py-2 hover:bg-gray-100"
-            >
-              <img src={uzbekFlag} alt="Uzbek Flag" className="w-5 h-5 inline-block mr-2" />
-              Uzbek
-            </button>
-            <button
-              onClick={() => { changeLanguage('russian'); setIsDropdownOpen(true); }}
-              className="dropdown-item block w-full text-left px-4 py-2 hover:bg-gray-100"
-            >
-              <img src={russianFlag} alt="Russian Flag" className="w-5 h-5 inline-block mr-2" />
-              Russian
-            </button>
-            <button
-              onClick={() => { changeLanguage('english'); setIsDropdownOpen(true); }}
-              className="dropdown-item block w-full text-left px-4 py-2 hover:bg-gray-100"
-            >
-              <img src={englishFlag} alt="English Flag" className="w-5 h-5 inline-block mr-2" />
-              English
-            </button>
-          </div>
-        )}
-      </div>
-    </div>
-  )}
-</nav>
+  useEffect(() => {
+    AOS.init({ duration: 1000 });
+  }, []);
 
-
-
-
-
-      {/* Hero Section */}
-      <section className="relative h-screen flex flex-col lg:flex-row items-center justify-center container mx-auto max-w-[1400px] gap-8 px-4">
-        <div className="lg:w-1/2 text-center lg:text-left">
-          <h1 className="text-4xl font-semibold mb-4">{currentLang.title}</h1>
-          <p className="text-lg mb-6">{currentLang.description}</p>
+  return (
+    <div id="home" className="hero-box mt-[50px] relative w-full min-h-screen bg-white flex items-center justify-center">
+      <div className="flex items-center justify-between w-full max-w-7xl p-6">
+        {/* Matn va tugma */}
+        <div className="relative z-10 text-left max-w-md" data-aos="fade-right">
+          <h1 className="text-5xl font-bold text-blue-900 leading-tight" data-aos="fade-up">
+            Biz faqat dars bermaymiz, <br /> biz insonlarning hayotini o'zgartiramiz!
+          </h1>
+          <p className="mt-4 text-gray-700 text-lg" data-aos="fade-up" data-aos-delay="200">
+            9 yil ichida bizning onlayn maktabimiz 50 000 dan ortiq yoshlarning hayotini o'zgartirishga yordam berdi.
+          </p>
+          {/* Ro'yxatdan o'tish tugmasi */}
           <button
             onClick={() => navigate('/login')}
-            className="bg-indigo-600 px-6 py-3 lg:px-8 lg:py-3 rounded-full text-white text-sm lg:text-lg font-semibold hover:bg-indigo-700 transition duration-300"
+            className="mt-6 px-6 py-3 bg-blue-500 text-white text-lg rounded-full shadow-lg hover:bg-blue-600 transition-all"
+            data-aos="fade-up"
+            data-aos-delay="400"
           >
-            {currentLang.start}
+            Birinchi darsga yoziling ✨
           </button>
-        </div>
-        <div className="lg:w-1/2">
-          <img src={images[currentImageIndex].img} alt="Hero Image" className="w-full h-auto object-cover rounded-md shadow-lg" />
-        </div>
-      </section>
 
-      {/* About Section */}
-      <section id="about" className="py-16">
-        <div className="container mx-auto text-center px-4">
-          <h2 className="text-3xl font-bold mb-6">{currentLang.about}</h2>
-          <p className="text-lg text-gray-600 mb-8">{currentLang.aboutContent}</p>
-          <p className="text-lg mb-8">{currentLang.moreAbout}</p>
         </div>
-      </section>
 
-      {/* Services Section */}
-      <section id="services" className="py-16">
-        <div className="container mx-auto text-center px-4">
-          <h2 className="text-3xl font-bold mb-6">{currentLang.services}</h2>
-          <p className="text-lg text-gray-600">{currentLang.servicesDescription}</p>
+        {/* Orqa fon rasmi (faqat katta ekranlarda ko‘rinadi) */}
+        <div className="absolute top-0 right-0 h-full w-[80%] hidden md:block" data-aos="fade-left">
+          <img src={backImg} alt="Onlayn dars" className="hero-back-img object-cover" />
         </div>
-      </section>
-
-      {/* Features Section */}
-      <section id="features" className="py-16">
-        <div className="container mx-auto text-center px-4">
-          <h2 className="text-3xl font-bold mb-6">{currentLang.features}</h2>
-          <p className="text-lg text-gray-600">{currentLang.featuresDescription}</p>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section id="testimonials" className="py-16">
-        <div className="container mx-auto text-center px-4">
-          <h2 className="text-3xl font-bold mb-6">{currentLang.testimonials}</h2>
-          <p className="text-lg text-gray-600">{currentLang.testimonialsDescription}</p>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-6">
-        <div className="container mx-auto text-center">
-          <p>{currentLang.footer}</p>
-          <p className="text-sm mt-4">{currentLang.legal}</p>
-        </div>
-      </footer>
+      </div>
     </div>
   );
 };
 
-export default LandingPage;
+
+const Features = () => {
+  const features = [
+    {
+      title: "Bepul ikkinchi o‘qituvchi",
+      text: "Yordamchi o‘qituvchilar sizga doimo yordam beradi.",
+      icon: <FaChalkboardTeacher />,
+      link: "/teacher",
+      bgColor: "bg-blue-500",
+    },
+    {
+      title: "Test markazi",
+      text: "Cambridge shahrida haqiqiy IELTS imtihonini topshiring.",
+      icon: <FaCheckCircle />,
+      link: "/test-center",
+      bgColor: "bg-green-500",
+    },
+    {
+      title: "Tajribali o‘qituvchilar",
+      text: "O‘qituvchilarimiz IELTS natijalari 9.0 gacha.",
+      icon: <FaGraduationCap />,
+      link: "/teachers",
+      bgColor: "bg-purple-500",
+    },
+    {
+      title: "Bepul tadbirlar",
+      text: "Barcha o‘quvchilar uchun qiziqarli tadbirlar mavjud.",
+      icon: <FaCalendarAlt />,
+      link: "/events",
+      bgColor: "bg-red-500",
+    },
+    {
+      title: "Hamkorlik zonalari",
+      text: "Har bir filialda maxsus hamkorlik zonalari mavjud.",
+      icon: <FaCoffee />,
+      link: "/co-working",
+      bgColor: "bg-yellow-500",
+    },
+  ];
+
+  return (
+    <section className="py-16 px-6">
+      <div className="container mx-auto max-w-screen-xl">
+        <Swiper
+          modules={[Pagination, Autoplay]}
+          pagination={{ clickable: true }}
+          spaceBetween={30}
+          slidesPerView={1}
+          autoplay={{ delay: 3000 }}
+          breakpoints={{
+            640: { slidesPerView: 3 },
+            1024: { slidesPerView: 4 },
+          }}
+        >
+          {features.map((feature, index) => (
+            <SwiperSlide
+              key={index}
+              className="p-8 bg-gray-200 rounded-3xl shadow-xl text-center transition-transform transform hover:scale-105 h-auto min-h-[350px] flex flex-col justify-between"
+            >
+              {/* Ikona - dumaloq fon */}
+              <div
+                className={`w-20 h-20 mx-auto flex items-center justify-center rounded-full text-white ${feature.bgColor} text-4xl shadow-lg`}
+              >
+                {feature.icon}
+              </div>
+              {/* Card content */}
+              <div>
+                <h3 className="text-2xl font-bold mt-6 text-blue-900">{feature.title}</h3>
+                <p className="mt-3 text-gray-700 text-lg">{feature.text}</p>
+              </div>
+              <a
+                href={feature.link}
+                className="mt-5 inline-block text-blue-600 font-semibold hover:text-blue-800 transition-colors"
+              >
+                Batafsil →
+              </a>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
+    </section>
+  );
+};
+
+
+
+const Testimonials = () => {
+  const [visibleTestimonials, setVisibleTestimonials] = useState(3);
+
+
+  const testimonials = [
+    {
+      name: "Jasur Islomov",
+      feedback: "Eng yaxshi o'quv tajribasi!",
+      location: "Toshkent",
+      profileImage: "https://randomuser.me/api/portraits/men/1.jpg"
+    },
+    {
+      name: "Malika Nurmatova",
+      feedback: "Ajoyib o'qituvchilar va ajoyib muhit!",
+      location: "Buxoro",
+      profileImage: "https://randomuser.me/api/portraits/women/1.jpg"
+    },
+    {
+      name: "Dilmurod Karimov",
+      feedback: "Faqat 6 oy ichida ingliz tilimni rivojlantirdim!",
+      location: "Andijon",
+      profileImage: "https://randomuser.me/api/portraits/men/2.jpg"
+    },
+    {
+      name: "Samarxon Tursunov",
+      feedback: "Bu maktabda juda ko'p yangi narsalarni o'rgandim!",
+      location: "Namangan",
+      profileImage: "https://randomuser.me/api/portraits/men/3.jpg"
+    },
+    {
+      name: "Gulnoza Mamatova",
+      feedback: "O'qish usuli juda samarali va qulay!",
+      location: "Farg'ona",
+      profileImage: "https://randomuser.me/api/portraits/women/2.jpg"
+    },
+    {
+      name: "Davronbek Ergashev",
+      feedback: "Darslar juda qiziqarli va foydali!",
+      location: "Qarshi",
+      profileImage: "https://randomuser.me/api/portraits/men/4.jpg"
+    },
+    {
+      name: "Shahlo Rashidova",
+      feedback: "O'qish juda yoqadi, har bir darsda yangi narsa o'rganaman!",
+      location: "Jizzax",
+      profileImage: "https://randomuser.me/api/portraits/women/3.jpg"
+    },
+    {
+      name: "Otabek Tashkentov",
+      feedback: "O'qituvchilar juda malakali va bemalol tushunish mumkin!",
+      location: "Toshkent",
+      profileImage: "https://randomuser.me/api/portraits/men/5.jpg"
+    },
+    {
+      name: "Nilufar Yuldasheva",
+      feedback: "Ingliz tilini tez va oson o'rganish uchun juda yaxshi maktab!",
+      location: "Samarqand",
+      profileImage: "https://randomuser.me/api/portraits/women/4.jpg"
+    },
+    {
+      name: "Zohidbek Sodiqov",
+      feedback: "Ajoyib darslar, tezkor yordam va qo'llab-quvvatlash!",
+      location: "Nukus",
+      profileImage: "https://randomuser.me/api/portraits/men/6.jpg"
+    },
+    {
+      name: "Yulduz Begimova",
+      feedback: "Barcha darslar o'z vaqtida va foydali bo'ladi!",
+      location: "Buxoro",
+      profileImage: "https://randomuser.me/api/portraits/women/5.jpg"
+    },
+    {
+      name: "Farruh Murodov",
+      feedback: "Bu maktabda o'rganish juda qiziqarli va foydali!",
+      location: "Qarshi",
+      profileImage: "https://randomuser.me/api/portraits/men/7.jpg"
+    }
+  ];
+  const handleShowMore = () => {
+    setVisibleTestimonials(prev => prev + 3);
+  };
+
+
+  return (
+    <section className="bg-gray-100 py-16 px-6">
+      <div className="container mx-auto max-w-screen-xl">
+        <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">
+          Talabalarimiz nima deyishadi
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
+          {testimonials.slice(0, visibleTestimonials).map((testimonial, index) => (
+            <div
+              key={index}
+              className="bg-white p-6 rounded-lg shadow-lg text-center"
+              data-aos="fade-up"
+            >
+              <img
+                src={testimonial.profileImage}
+                alt={testimonial.name}
+                className="w-20 h-20 rounded-full mx-auto mb-4"
+              />
+              <p className="text-lg italic">"{testimonial.feedback}"</p>
+              <h3 className="font-bold text-xl mt-4 text-blue-900">
+                {testimonial.name}
+              </h3>
+              <div className="flex justify-center items-center mt-2">
+                <FaMapMarkerAlt className="text-gray-500 mr-2" />
+                <p className="text-gray-700">{testimonial.location}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        {visibleTestimonials < testimonials.length && (
+          <div className="text-center mt-8">
+            <button
+              onClick={handleShowMore}
+              className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-all"
+            >
+              Yana ko'rish
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
+
+
+
+const Gallery = () => {
+  const galleryRef = useRef(null);
+  const [isUserScrolling, setIsUserScrolling] = useState(false);
+
+  const subjects = [
+    "Matematika", "Fizika", "Kimyo", "Biologiya", "Informatika", "Tarix",
+    "Ona tili va adabiyot", "Chet tili (Ingliz, Rus, Nemis)", "Geografiya", "Astronomiya",
+    "Iqtisodiyot", "Huquqshunoslik", "Jismoniy tarbiya", "Chizmachilik", "Texnologiya",
+    "Psixologiya", "Falsafa", "Ekologiya", "Tibbiyot asoslari", "San’at va madaniyat",
+    "Qur’on va hadis ilmi", "Robototexnika", "Dasturlash asoslari", "Sun’iy intellekt",
+    "Mexanika", "Elektronika", "Kiberxavfsizlik", "Nanotexnologiya", "Grafik dizayn",
+    "Web dasturlash"
+  ];
+
+  const lessons = subjects.map((title, index) => ({
+    title,
+    imageUrl: `https://picsum.photos/200/300?random=${index + 1}`,
+  }));
+
+  useEffect(() => {
+    const galleryElement = galleryRef.current;
+    if (!galleryElement) return;
+
+    const cardHeight = 240; // Har bir kartochka balandligi
+    const scrollAmount = cardHeight * 3; // 3 ta kartochka yuqoriga siljiydi
+    let scrollInterval;
+
+    const startAutoScroll = () => {
+      scrollInterval = setInterval(() => {
+        if (!isUserScrolling) {
+          if (galleryElement.scrollTop + galleryElement.clientHeight >= galleryElement.scrollHeight) {
+            galleryElement.scrollTo({ top: 0, behavior: "smooth" }); // Oxiriga yetganda boshidan boshlash
+          } else {
+            galleryElement.scrollBy({ top: scrollAmount, behavior: "smooth" });
+          }
+        }
+      }, 3000);
+    };
+
+    startAutoScroll();
+
+    return () => clearInterval(scrollInterval);
+  }, [isUserScrolling]);
+
+  useEffect(() => {
+    const galleryElement = galleryRef.current;
+    if (!galleryElement) return;
+
+    const handleUserScroll = () => {
+      setIsUserScrolling(true);
+      clearTimeout(window.userScrollTimeout);
+      window.userScrollTimeout = setTimeout(() => {
+        setIsUserScrolling(false);
+      }, 2000);
+    };
+
+    galleryElement.addEventListener("scroll", handleUserScroll);
+
+    return () => galleryElement.removeEventListener("scroll", handleUserScroll);
+  }, []);
+
+  return (
+    <section id="darslar" className="py-16 px-6">
+      <div className="container mx-auto max-w-screen-xl">
+        <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">Bizning Darslar</h2>
+
+
+        <div
+          ref={galleryRef}
+          className="overflow-auto scroll-smooth border border-gray-300 rounded-lg shadow-md"
+          style={{ height: "600px" }}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 p-4">
+            {lessons.map((lesson, index) => (
+              <div
+                key={index}
+                className="bg-gray-300 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+              >
+                <img
+                  src={lesson.imageUrl}
+                  alt={lesson.title}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4 text-center bg-black bg-opacity-10"> {/* Shaffof fon qo'shildi */}
+                  <h3 className="text-lg font-semibold text-blue-900">{lesson.title}</h3>
+                </div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
+};
+
+
+
+const Pricing = () => {
+  const navigate = useNavigate(); // navigate hook
+
+  const pricingPlans = [
+    {
+      plan: "Asosiy",
+      price: "$29/oy",
+      features: [
+        { title: "Barcha kurslarga kirish", description: "Barcha asosiy kurslarga bepul kirish imkoniyati." },
+        { title: "Bepul tadbirlar", description: "Oylik bepul tadbirlar va vebinarlar." },
+        { title: "Elektron pochta yordam", description: "Elektron pochta orqali 24/7 yordam." },
+      ],
+    },
+    {
+      plan: "Premium",
+      price: "$49/oy",
+      features: [
+        { title: "Asosiy xususiyatlar", description: "Asosiy plan xususiyatlariga to'liq kirish." },
+        { title: "Shaxsiy darslar", description: "1:1 shaxsiy darslar va maslahatlar." },
+        { title: "Prioritet yordam", description: "Tezkor javoblar va alohida yordam." },
+      ],
+    },
+    {
+      plan: "Pro",
+      price: "$79/oy",
+      features: [
+        { title: "Premium xususiyatlar", description: "Premium xususiyatlarga to'liq kirish imkoniyati." },
+        { title: "Shaxsiy o'quv reja", description: "O'quv rejangizni shaxsiylashtirish." },
+        { title: "Birinchi o'quvchi bilan darslar", description: "To'g'ridan-to'g'ri ustoz bilan darslar." },
+      ],
+    },
+  ];
+
+  return (
+    <section className="py-16 px-6">
+      <div className="container mx-auto max-w-screen-xl">
+        <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">Narxlarimiz</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
+          {pricingPlans.map((plan, index) => (
+            <div
+              key={index}
+              className="bg-gray-200 p-6 rounded-3xl shadow-lg text-center w-full hover:shadow-2xl transition-shadow duration-300"
+              data-aos="fade-up"
+            >
+              <h3 className="text-2xl font-bold text-blue-900">{plan.plan}</h3>
+              <p className="text-xl font-semibold text-blue-500 mt-4">{plan.price}</p>
+              <ul className="text-left mt-6">
+                {plan.features.map((feature, index) => (
+                  <li key={index} className="text-gray-700 mb-2">
+                    <strong>{feature.title}:</strong> {feature.description}
+                  </li>
+                ))}
+              </ul>
+              <button
+                onClick={() => navigate('/buy')} // Sotib olish sahifasiga yo'naltirish
+                className="mt-6 px-6 py-3 bg-blue-500 text-white text-lg rounded-full hover:bg-blue-600"
+              >
+                Sotib olish
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+
+const FAQ = () => {
+  const [openIndex, setOpenIndex] = useState(null); // FAQ savoliga javobni ko'rsatish
+
+  const faqItems = [
+    {
+      question: "Onlayn maktabda qanday kurslar mavjud?",
+      answer: "Bizda ingliz tili, matematika, dasturlash va boshqa ko'plab fanlar bo'yicha kurslar mavjud.",
+    },
+    {
+      question: "Qanday qilib ro'yxatdan o'tish mumkin?",
+      answer: "Ro'yxatdan o'tish uchun sahifada 'Ro'yxatdan o'tish' tugmasini bosing va kerakli ma'lumotlarni to'ldiring.",
+    },
+    {
+      question: "Onlayn darslar qanday o'tkaziladi?",
+      answer: "Darslar onlayn platformada video darslar, interaktiv mashqlar va o'qituvchi bilan jonli muhokamalar shaklida o'tkaziladi.",
+    },
+    {
+      question: "Shaxsiy darslarni qanday olish mumkin?",
+      answer: "Shaxsiy darslar uchun 'Premium' va 'Pro' rejalari mavjud. Ro'yxatdan o'tganingizdan so'ng, shaxsiy dars jadvalini belgilashingiz mumkin.",
+    },
+    {
+      question: "To'lovlarni qanday amalga oshirish mumkin?",
+      answer: "To'lovlarni onlayn tarzda, bank kartalari yoki boshqa to'lov tizimlari orqali amalga oshirishingiz mumkin.",
+    },
+  ];
+
+  return (
+    <section className="bg-gray-100 py-16 px-6">
+      <div className="container mx-auto max-w-screen-xl">
+        <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">Ko'p beriladigan savollar (FAQ)</h2>
+        <div className="space-y-6">
+          {faqItems.map((item, index) => (
+            <div
+              key={index}
+              className="bg-white p-6 rounded-3xl shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
+              onClick={() => setOpenIndex(openIndex === index ? null : index)} // Savolni bosganda javobni ochish
+            >
+              <h3 className="text-xl font-semibold text-blue-900">{item.question}</h3>
+              {openIndex === index && (
+                <p className="text-gray-700 mt-2">{item.answer}</p> // Javob faqat savol bosilganda ko'rsatiladi
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+
+const Contact = () => {
+  return (
+    <section className="bg-white py-16 px-6">
+      <div className="container mx-auto max-w-screen-xl">
+        <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">Biz bilan bog'laning</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
+            <h3 className="text-2xl font-bold text-blue-900 mb-4">Bizga xabar yuboring</h3>
+            <form>
+              <div className="mb-4">
+                <label htmlFor="name" className="block text-gray-700 mb-2">Ismingiz</label>
+                <input
+                  type="text"
+                  id="name"
+                  placeholder="Ismingizni kiriting"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="email" className="block text-gray-700 mb-2">Elektron pochta</label>
+                <input
+                  type="email"
+                  id="email"
+                  placeholder="Email manzilingiz"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="message" className="block text-gray-700 mb-2">Xabar</label>
+                <textarea
+                  id="message"
+                  rows="4"
+                  placeholder="Xabaringizni kiriting"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full px-6 py-3 bg-blue-500 text-white text-lg rounded-full hover:bg-blue-600 transition-colors duration-300"
+              >
+                Yuborish
+              </button>
+            </form>
+          </div>
+          <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
+            <h3 className="text-2xl font-bold text-blue-900 mb-4">Biz bilan bog'laning</h3>
+            <p className="text-gray-700 mb-4">Onlayn maktabning asosiy manzili:</p>
+            <p className="text-gray-700 font-semibold">Toshkent, O'zbekiston</p>
+            <p className="text-gray-700 mt-4">Telefon: <span className="font-semibold">+998 90 123 45 67</span></p>
+            <p className="text-gray-700 mt-2">Email: <span className="font-semibold">support@onlinemaktab.uz</span></p>
+            <div className="mt-6">
+              <p className="text-gray-700 font-semibold">Telegram orqali bog'laning:</p>
+              <a href="https://t.me/Sadikov001" className="text-blue-500 hover:text-blue-600" target="_blank" rel="noopener noreferrer">
+                @Sadikov001 Telegram
+              </a>
+            </div>
+            <div className="mt-6">
+              <p className="text-gray-700 font-semibold">Bizni ijtimoiy tarmoqlarda kuzating:</p>
+              <div className="flex space-x-4 mt-2">
+                <a href="#" className="text-blue-500 hover:text-blue-600">Facebook</a>
+                <a href="#" className="text-blue-500 hover:text-blue-600">Instagram</a>
+                <a href="#" className="text-blue-500 hover:text-blue-600">Twitter</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+
+
+const Footer = () => {
+  return (
+    <footer className="bg-blue-900 text-white py-8">
+      <div className="container mx-auto text-center">
+        <p>&copy; 2025 Cambridge School. All rights reserved.</p>
+      </div>
+    </footer>
+  );
+};
+
+const HomePage = () => {
+  return (
+    <div>
+      <Navbar />
+      <HeroSection />
+      <Features />
+      <Testimonials />
+      <Gallery />
+      <Pricing />
+      <FAQ />
+      <Contact />
+      <Footer />
+    </div>
+  );
+};
+
+export default HomePage;

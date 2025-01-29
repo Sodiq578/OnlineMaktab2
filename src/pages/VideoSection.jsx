@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { FaArrowLeft } from 'react-icons/fa'; // Orqaga qaytish iconi
+import { FaChevronLeft } from 'react-icons/fa'; // Cjevro iconi
 import './VideoSection.css'; // CSS faylini import qilish
 
 const VideoSection = () => {
@@ -25,9 +25,9 @@ const VideoSection = () => {
 
   return (
     <div className="video-section">
-      <button className="back-button" onClick={goBack}>
-        <FaArrowLeft /> Orqaga
-      </button>
+      <div className="back-icon" onClick={goBack}>
+        <FaChevronLeft /> 
+      </div>
       <h2 className="section-title">{subject} bo'limi</h2>
 
       <div className="card-container">

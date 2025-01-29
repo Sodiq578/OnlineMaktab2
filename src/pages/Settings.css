@@ -1,0 +1,186 @@
+/* General container style */
+.settings-container {
+    font-size: var(--font-size, 16px);
+    color: var(--font-color, #333);
+    padding: 30px;
+    background: linear-gradient(145deg, #f3f4f7, #e3e9f0);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Dark theme styles */
+  .settings-container.dark {
+    background: linear-gradient(145deg, #1e1e2f, #33374d);
+    color: #fff;
+  }
+  
+  /* Header styles */
+  .settings-header h1 {
+    font-size: 2.4rem;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* Button to toggle theme */
+  .btn-theme-toggle {
+    background: #3a8dff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .btn-theme-toggle:hover {
+    background: #296ab1;
+    transform: scale(1.05);
+  }
+  
+  /* Content container */
+  .settings-content {
+    margin-top: 30px;
+  }
+  
+  /* Individual setting section */
+  .setting-section {
+    margin-bottom: 30px;
+  }
+  
+  .setting-section h2 {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 15px;
+  }
+  
+  /* Device list styling */
+  .device-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .device-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .device-item:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Device info styling */
+  .device-info {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    color: #333;
+  }
+  
+  .device-info svg {
+    margin-right: 15px;
+    color: #4a90e2;
+  }
+  
+  .btn-delete {
+    background-color: transparent;
+    border: none;
+    color: #e74c3c;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  
+  .btn-delete:hover {
+    color: #c0392b;
+  }
+  
+  /* Feedback section styles */
+  textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    font-size: 1rem;
+    color: #555;
+    resize: vertical;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: border 0.3s ease;
+  }
+  
+  textarea:focus {
+    border-color: #3a8dff;
+    outline: none;
+  }
+  
+  /* Submit button styling */
+  .btn-submit {
+    background: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    margin-top: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .btn-submit:hover {
+    background: #218838;
+    transform: scale(1.05);
+  }
+  
+  /* Footer section */
+  .settings-footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 1rem;
+    color: #888;
+    padding: 20px 0;
+  }
+  
+  .settings-footer p {
+    margin: 0;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .settings-container {
+      padding: 20px;
+    }
+  
+    .settings-header h1 {
+      font-size: 2rem;
+    }
+  
+    .btn-theme-toggle {
+      font-size: 1rem;
+      padding: 10px 15px;
+    }
+  
+    .device-item {
+      padding: 12px;
+    }
+  
+    .btn-submit, .btn-theme-toggle {
+      font-size: 1rem;
+      padding: 10px 15px;
+    }
+  }
+  

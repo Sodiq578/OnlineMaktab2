@@ -17,17 +17,17 @@ const MyCourses = () => {
   return (
     <div className="my-courses-container p-6">
       <h1 className="text-3xl font-semibold mb-6">Mening Kurslarim</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
         {courses.map((course) => (
           <div key={course.id} className="course-card bg-white rounded-lg shadow-lg p-4 hover:scale-105 transform transition duration-300">
-            {/* Use random image source starting from ID 100 */}
+            {/* Tasvirlar va nomlar orasida bo'shliqni yaxshilash */}
             <img 
-              src={`https://picsum.photos/200/300?random=${course.id}`} 
+              src={`https://picsum.photos/500/300?random=${course.id}`}  // O'lchamlarni kattaroq qilish
               alt={course.title} 
               className="w-full h-48 object-cover rounded-lg mb-4"
             />
             <h3 className="text-xl font-semibold mb-2">{course.title}</h3>
-            <p className="text-gray-600">{course.description}</p>
+            <p className="text-gray-600 text-base">{course.description}</p>
           </div>
         ))}
       </div>

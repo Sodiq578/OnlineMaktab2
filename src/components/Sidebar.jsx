@@ -50,16 +50,11 @@ const Sidebar = () => {
               <span>To'lovlar</span>
             </li>
           </Link>
-          <Link to="/dashboard/devices" onClick={handleLinkClick}>
-            <li className="sidebar-mobile-title hover:bg-blue-400 hover:text-white flex items-center space-x-4 p-3 rounded-md transition duration-200">
-              <FaDesktop />
-              <span>Qurilmalar</span>
-            </li>
-          </Link>
+         
           <Link to="/dashboard/events" onClick={handleLinkClick}>
             <li className="sidebar-mobile-title hover:bg-blue-400 hover:text-white flex items-center space-x-4 p-3 rounded-md transition duration-200">
               <FaCalendarAlt />
-              <span>Tadbirlar</span>
+              <span>Ta'lim yangiliklari</span>
             </li>
           </Link>
           <Link to="/dashboard/settings" onClick={handleLinkClick}>
@@ -117,16 +112,11 @@ const Sidebar = () => {
               <span>To'lovlar</span>
             </li>
           </Link>
-          <Link to="/dashboard/devices">
-            <li className="sidebar-mobile-title mb-6 hover:bg-blue-400 hover:text-white flex items-center space-x-4 p-3 rounded-md transition duration-200">
-              <FaDesktop />
-              <span>Qurilmalar</span>
-            </li>
-          </Link>
+       
           <Link to="/dashboard/events">
             <li className="sidebar-mobile-title mb-6 hover:bg-blue-400 hover:text-white flex items-center space-x-4 p-3 rounded-md transition duration-200">
               <FaCalendarAlt />
-              <span>Tadbirlar</span>
+              <span>Ta'lim yangiliklari</span>
             </li>
           </Link>
           <Link to="/dashboard/settings">

@@ -2,7 +2,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Payments from './pages/Payments'; // Payments sahifasini import qilish
-import Devices from './pages/Devices'; 
+  
 import Sidebar from './components/Sidebar';
 import Events from './pages/Events'; // Import qilingan
 import Dashboard from './components/Dashboard';
@@ -17,6 +17,7 @@ import Profile from './pages/Profile';
 import LandingPage from './components/LandingPage';
 import LoginPage from './components/LoginPage';
 import VideoSection from './pages/VideoSection'; // Video sahifasi
+
 
 const App = () => {
   return (
@@ -36,7 +37,7 @@ const App = () => {
           <Route path="certificates" element={<Certificates />} />
           <Route path="certificates" element={<Certificates />} />
           <Route path="payments" element={<Payments />} /> {/* To'lovlar sahifasi */}
-          <Route path="devices" element={<Devices />} /> {/* Qurilmalar sahifasi */}
+     
           <Route path="events" element={<Events />} /> 
           <Route path="settings" element={<Settings />} />
           <Route path="messages" element={<Messages />} />

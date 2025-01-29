@@ -1,41 +1,75 @@
+/* HomePage.css */
 .homepage {
-  text-align: center;
-  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  background-color: #f7fafc;
+  min-height: 100vh;
+  padding: 0 1.5rem;
 }
 
-h1 {
+.homepage h1 {
+  text-align: center;
+  color: #2d3748;
   font-size: 2rem;
-  margin-bottom: 20px;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
 }
 
 .cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
 }
 
 .card {
-  background: #f9f9f9;
+  background-color: white;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
 }
 
 .card img {
   width: 100%;
-  height: auto;
-  display: block;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 1rem;
 }
 
 .card h3 {
-  margin: 10px 0;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+}
+
+.card p {
+  font-size: 1rem;
+  color: #718096;
+  line-height: 1.5;
+}
+
+/* Responsive design for mobile and tablet screens */
+@media (min-width: 640px) {
+  .cards-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 768px) {
+  .cards-container {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cards-container {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
