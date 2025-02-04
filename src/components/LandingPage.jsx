@@ -524,7 +524,7 @@ const FAQ = () => {
     },
   ];
 
-  const itemsToShow = showMore ? faqItems : faqItems.slice(0, 3);
+  const itemsToShow = showMore ? faqItems : faqItems.slice(0, 4);
 
   return (
     <section className="bg-gray-100 py-16 px-6">
