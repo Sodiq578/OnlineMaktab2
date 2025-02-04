@@ -118,7 +118,7 @@ const Features = () => {
     },
     {
       title: "Test markazi",
-      text: "Cambridge shahrida haqiqiy IELTS imtihonini topshiring.",
+      text: "Tosheknt shahrida haqiqiy IELTS imtihonini topshiring.",
       icon: <FaCheckCircle />,
       link: "/test-center",
       bgColor: "bg-green-500",
@@ -653,7 +653,7 @@ const Footer = () => {
   return (
     <footer className="bg-blue-900 text-white py-8">
       <div className="container mx-auto text-center">
-        <p>&copy; 2025 Cambridge School. All rights reserved.</p>
+        <p>&copy; 2025 Online School. All rights reserved.</p>
       </div>
     </footer>
   );
