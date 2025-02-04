@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+import { FaPlus, FaMinus } from "react-icons/fa";
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "aos/dist/aos.css";
@@ -189,92 +191,89 @@ const Features = () => {
 };
 
 
-
 const Testimonials = () => {
   const [visibleTestimonials, setVisibleTestimonials] = useState(3);
-
 
   const testimonials = [
     {
       name: "Jasur Islomov",
       feedback: "Eng yaxshi o'quv tajribasi!",
       location: "Toshkent",
-      profileImage: "https://randomuser.me/api/portraits/men/1.jpg"
+      profileImage: "https://randomuser.me/api/portraits/men/1.jpg",
     },
     {
       name: "Malika Nurmatova",
       feedback: "Ajoyib o'qituvchilar va ajoyib muhit!",
       location: "Buxoro",
-      profileImage: "https://randomuser.me/api/portraits/women/1.jpg"
+      profileImage: "https://randomuser.me/api/portraits/women/1.jpg",
     },
     {
       name: "Dilmurod Karimov",
       feedback: "Faqat 6 oy ichida ingliz tilimni rivojlantirdim!",
       location: "Andijon",
-      profileImage: "https://randomuser.me/api/portraits/men/2.jpg"
-    },
-    {
-      name: "Samarxon Tursunov",
-      feedback: "Bu maktabda juda ko'p yangi narsalarni o'rgandim!",
-      location: "Namangan",
-      profileImage: "https://randomuser.me/api/portraits/men/3.jpg"
-    },
-    {
-      name: "Gulnoza Mamatova",
-      feedback: "O'qish usuli juda samarali va qulay!",
-      location: "Farg'ona",
-      profileImage: "https://randomuser.me/api/portraits/women/2.jpg"
-    },
-    {
-      name: "Davronbek Ergashev",
-      feedback: "Darslar juda qiziqarli va foydali!",
-      location: "Qarshi",
-      profileImage: "https://randomuser.me/api/portraits/men/4.jpg"
+      profileImage: "https://randomuser.me/api/portraits/men/2.jpg",
     },
     {
       name: "Shahlo Rashidova",
-      feedback: "O'qish juda yoqadi, har bir darsda yangi narsa o'rganaman!",
+      feedback: "Har bir darsda yangi narsa o'rganaman!",
       location: "Jizzax",
-      profileImage: "https://randomuser.me/api/portraits/women/3.jpg"
+      profileImage: "https://randomuser.me/api/portraits/women/3.jpg",
     },
     {
-      name: "Otabek Tashkentov",
-      feedback: "O'qituvchilar juda malakali va bemalol tushunish mumkin!",
-      location: "Toshkent",
-      profileImage: "https://randomuser.me/api/portraits/men/5.jpg"
+      name: "Olimjon Davronov",
+      feedback: "Ta'lim sifati va yordam juda zo'r!",
+      location: "Navoiy",
+      profileImage: "https://randomuser.me/api/portraits/men/3.jpg",
     },
     {
-      name: "Nilufar Yuldasheva",
-      feedback: "Ingliz tilini tez va oson o'rganish uchun juda yaxshi maktab!",
+      name: "Gulnoza Rahimova",
+      feedback: "Haqiqatan ham qiziqarli va foydali darslar!",
       location: "Samarqand",
-      profileImage: "https://randomuser.me/api/portraits/women/4.jpg"
+      profileImage: "https://randomuser.me/api/portraits/women/4.jpg",
     },
     {
-      name: "Zohidbek Sodiqov",
-      feedback: "Ajoyib darslar, tezkor yordam va qo'llab-quvvatlash!",
-      location: "Nukus",
-      profileImage: "https://randomuser.me/api/portraits/men/6.jpg"
+      name: "Bobur Anvarov",
+      feedback: "Men uchun eng yaxshi tanlov bo'ldi!",
+      location: "Farg'ona",
+      profileImage: "https://randomuser.me/api/portraits/men/4.jpg",
     },
     {
-      name: "Yulduz Begimova",
-      feedback: "Barcha darslar o'z vaqtida va foydali bo'ladi!",
-      location: "Buxoro",
-      profileImage: "https://randomuser.me/api/portraits/women/5.jpg"
+      name: "Nilufar Saidova",
+      feedback: "Barcha savollarimga batafsil javob berishdi.",
+      location: "Namangan",
+      profileImage: "https://randomuser.me/api/portraits/women/5.jpg",
     },
     {
-      name: "Farruh Murodov",
-      feedback: "Bu maktabda o'rganish juda qiziqarli va foydali!",
-      location: "Qarshi",
-      profileImage: "https://randomuser.me/api/portraits/men/7.jpg"
-    }
+      name: "Sanjar Eshmurodov",
+      feedback: "Innovatsion yondashuv menga juda yoqdi.",
+      location: "Xorazm",
+      profileImage: "https://randomuser.me/api/portraits/men/5.jpg",
+    },
+    {
+      name: "Zilola Kamolova",
+      feedback: "Darslar o'z vaqtida va qiziqarli o'tdi!",
+      location: "Qashqadaryo",
+      profileImage: "https://randomuser.me/api/portraits/women/6.jpg",
+    },
+    {
+      name: "Murod Mirzayev",
+      feedback: "Endi o'z sohamda bemalol muloqot qila olaman!",
+      location: "Surxondaryo",
+      profileImage: "https://randomuser.me/api/portraits/men/6.jpg",
+    },
   ];
+  
+
   const handleShowMore = () => {
-    setVisibleTestimonials(prev => prev + 3);
+    setVisibleTestimonials((prev) => prev + 3);
   };
 
+  const handleShowLess = () => {
+    setVisibleTestimonials(3); // Faqat oxirgi 3 ta malumotni qoldirish
+  };
 
   return (
-    <section className="bg-gray-100 py-16 px-6">
+    <section className="bg-gradient-to-b from-blue-50 via-white to-blue-50 py-16 px-6">
       <div className="container mx-auto max-w-screen-xl">
         <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">
           Talabalarimiz nima deyishadi
@@ -283,7 +282,7 @@ const Testimonials = () => {
           {testimonials.slice(0, visibleTestimonials).map((testimonial, index) => (
             <div
               key={index}
-              className="bg-white p-6 rounded-lg shadow-lg text-center"
+              className="bg-white p-6 rounded-lg shadow-lg text-center hover:shadow-2xl transition-shadow duration-300"
               data-aos="fade-up"
             >
               <img
@@ -302,22 +301,30 @@ const Testimonials = () => {
             </div>
           ))}
         </div>
-        {visibleTestimonials < testimonials.length && (
-          <div className="text-center mt-8">
+
+        <div className="text-center mt-8 space-x-4">
+          {visibleTestimonials < testimonials.length && (
             <button
               onClick={handleShowMore}
               className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-all"
             >
               Yana ko'rish
             </button>
-          </div>
-        )}
+          )}
+
+          {visibleTestimonials > 3 && (
+            <button
+              onClick={handleShowLess}
+              className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-all"
+            >
+              Yopish
+            </button>
+          )}
+        </div>
       </div>
     </section>
   );
 };
-
-
 
 
 const Gallery = () => {
@@ -343,15 +350,15 @@ const Gallery = () => {
     const galleryElement = galleryRef.current;
     if (!galleryElement) return;
 
-    const cardHeight = 240; // Har bir kartochka balandligi
-    const scrollAmount = cardHeight * 3; // 3 ta kartochka yuqoriga siljiydi
+    const cardHeight = 240;
+    const scrollAmount = cardHeight * 3;
     let scrollInterval;
 
     const startAutoScroll = () => {
       scrollInterval = setInterval(() => {
         if (!isUserScrolling) {
           if (galleryElement.scrollTop + galleryElement.clientHeight >= galleryElement.scrollHeight) {
-            galleryElement.scrollTo({ top: 0, behavior: "smooth" }); // Oxiriga yetganda boshidan boshlash
+            galleryElement.scrollTo({ top: 0, behavior: "smooth" });
           } else {
             galleryElement.scrollBy({ top: scrollAmount, behavior: "smooth" });
           }
@@ -382,37 +389,37 @@ const Gallery = () => {
   }, []);
 
   return (
-    <section id="darslar" className="py-16 px-6">
-      <div className="container mx-auto max-w-screen-xl">
-        <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">Bizning Darslar</h2>
+  <section id="darslar" className="py-16 px-6">
+  <div className="container mx-auto max-w-screen-xl">
+    <h2 className="text-4xl font-extrabold text-center text-blue-900 mb-10">Bizning Darslar</h2>
 
-
-        <div
-          ref={galleryRef}
-          className="overflow-auto scroll-smooth border border-gray-300 rounded-lg shadow-md"
-          style={{ height: "600px" }}
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 p-4">
-            {lessons.map((lesson, index) => (
-              <div
-                key={index}
-                className="bg-gray-300 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
-              >
-                <img
-                  src={lesson.imageUrl}
-                  alt={lesson.title}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-4 text-center bg-black bg-opacity-10"> {/* Shaffof fon qo'shildi */}
-                  <h3 className="text-lg font-semibold text-blue-900">{lesson.title}</h3>
-                </div>
-              </div>
-            ))}
+    <div
+      ref={galleryRef}
+      className="overflow-auto rounded-2xl  duration-300"
+      style={{ height: "600px" }}
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 p-6">
+        {lessons.map((lesson, index) => (
+          <div
+            key={index}
+            className="bg-gradient-to-r from-blue-100 to-white rounded-3xl overflow-hidden   transition-all duration-300"
+          >
+            <img
+              src={lesson.imageUrl}
+              alt={lesson.title}
+              className="w-full h-80 object-cover rounded-t-3xl transform transition-transform duration-300 hover:scale-110"
+            />
+            <div className="p-6 text-center">
+              <h3 className="text-xl font-bold text-blue-800">{lesson.title}</h3>
+              <p className="text-gray-600 text-sm mt-2">{lesson.description}</p>
+            </div>
           </div>
-
-        </div>
+        ))}
       </div>
-    </section>
+    </div>
+  </div>
+</section>
+
   );
 };
 
@@ -487,7 +494,8 @@ const Pricing = () => {
 
 
 const FAQ = () => {
-  const [openIndex, setOpenIndex] = useState(null); // FAQ savoliga javobni ko'rsatish
+  const [openIndex, setOpenIndex] = useState(null);
+  const [showMore, setShowMore] = useState(false);
 
   const faqItems = [
     {
@@ -510,31 +518,63 @@ const FAQ = () => {
       question: "To'lovlarni qanday amalga oshirish mumkin?",
       answer: "To'lovlarni onlayn tarzda, bank kartalari yoki boshqa to'lov tizimlari orqali amalga oshirishingiz mumkin.",
     },
+    {
+      question: "Kurslar uchun qanday sertifikatlar beriladi?",
+      answer: "Har bir tamomlagan kurs uchun biz sertifikatlar taqdim etamiz, ular sizning muvaffaqiyatli o'qishni tamomlaganingizni tasdiqlaydi.",
+    },
   ];
+
+  const itemsToShow = showMore ? faqItems : faqItems.slice(0, 3);
 
   return (
     <section className="bg-gray-100 py-16 px-6">
       <div className="container mx-auto max-w-screen-xl">
-        <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">Ko'p beriladigan savollar (FAQ)</h2>
-        <div className="space-y-6">
-          {faqItems.map((item, index) => (
+        <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">
+          Ko'p beriladigan savollar (FAQ)
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {itemsToShow.map((item, index) => (
             <div
               key={index}
-              className="bg-white p-6 rounded-3xl shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
-              onClick={() => setOpenIndex(openIndex === index ? null : index)} // Savolni bosganda javobni ochish
+              className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+              onClick={() => setOpenIndex(openIndex === index ? null : index)}
             >
-              <h3 className="text-xl font-semibold text-blue-900">{item.question}</h3>
-              {openIndex === index && (
-                <p className="text-gray-700 mt-2">{item.answer}</p> // Javob faqat savol bosilganda ko'rsatiladi
-              )}
+              <h3 className="text-xl font-semibold text-blue-900 flex justify-between items-center">
+                {item.question}
+                <span
+                  className={`transform transition-transform duration-300 ${openIndex === index ? "rotate-180" : "rotate-0"}`}
+                >
+                  {openIndex === index ? <FaMinus /> : <FaPlus />}
+                </span>
+              </h3>
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{
+                  height: openIndex === index ? "auto" : 0,
+                  opacity: openIndex === index ? 1 : 0,
+                }}
+                className="overflow-hidden mt-2 text-gray-700"
+              >
+                {openIndex === index && <p>{item.answer}</p>}
+              </motion.div>
             </div>
           ))}
         </div>
+
+        {faqItems.length > 3 && (
+          <div className="text-center mt-6">
+            <button
+              onClick={() => setShowMore(!showMore)}
+              className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-colors duration-300"
+            >
+              {showMore ? "Kamroq ko'rsatish" : "Barchasini ko'rsatish"}
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
 };
-
 
 const Contact = () => {
   return (
