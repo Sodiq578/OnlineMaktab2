@@ -1,10 +1,8 @@
-// App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Payments from './pages/Payments'; // Payments sahifasini import qilish
-  
+import Payments from './pages/Payments';
 import Sidebar from './components/Sidebar';
-import Events from './pages/Events'; // Import qilingan
+import Events from './pages/Events';
 import Dashboard from './components/Dashboard';
 import HomePage from './pages/HomePage';
 import MyCourses from './pages/MyCourses';
@@ -16,29 +14,25 @@ import Messages from './pages/Messages';
 import Profile from './pages/Profile';
 import LandingPage from './components/LandingPage';
 import LoginPage from './components/LoginPage';
-import VideoSection from './pages/VideoSection'; // Video sahifasi
-
+import VideoListPage from './pages/VideoListPage'; // Replace VideoSection with VideoListPage
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        {/* Landing Page - Saytni ochganingizda ko'rsatiladi */}
+        {/* Public routes */}
         <Route path="/" element={<LandingPage />} />
-
-        {/* Login Page - Landing sahifadan login sahifasiga o'tish */}
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/video/:subject" element={<VideoSection />} />
-        {/* Dashboard sahifasi va sidebar bilan boshqa bo'limlar */}
+        <Route path="/videos/:subject" element={<VideoListPage />} /> {/* Updated to VideoListPage */}
+
+        {/* Dashboard routes (protected, nested under /dashboard) */}
         <Route path="/dashboard" element={<Dashboard />}>
           <Route path="home" element={<HomePage />} />
           <Route path="my-courses" element={<MyCourses />} />
           <Route path="all-courses" element={<AllCourses />} />
-          <Route path="certificates" element={<Certificates />} />
-          <Route path="certificates" element={<Certificates />} />
-          <Route path="payments" element={<Payments />} /> {/* To'lovlar sahifasi */}
-     
-          <Route path="events" element={<Events />} /> 
+          <Route path="certificates" element={<Certificates />} /> {/* Note: Duplicate route removed */}
+          <Route path="payments" element={<Payments />} />
+          <Route path="events" element={<Events />} />
           <Route path="settings" element={<Settings />} />
           <Route path="messages" element={<Messages />} />
           <Route path="profile" element={<Profile />} />
@@ -50,3 +44,5 @@ const App = () => {
 };
 
 export default App;
+
+

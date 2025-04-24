@@ -1,0 +1,31 @@
+.video-list-page {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .video-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+  
+  .video-card {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s;
+  }
+  
+  .video-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .video-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  
+  iframe,
+  video {
+    border-radius: 8px;
+  }

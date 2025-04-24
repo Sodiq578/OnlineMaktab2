@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { FaPlus, FaMinus } from "react-icons/fa";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "aos/dist/aos.css";
 import AOS from "aos";
@@ -11,64 +11,133 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 import { FaChalkboardTeacher, FaCheckCircle, FaGraduationCap, FaCalendarAlt, FaCoffee, FaMapMarkerAlt } from "react-icons/fa";
+import { FaBars, FaTimes } from "react-icons/fa"; // Added icons for hamburger menu
 
-import backImg from "../assets/HeroBack.jpg"; // To'g'ri import
-
+import backImg from "../assets/HeroBack.jpg";
 
 import { FaRegStar, FaHeart, FaRegCalendar } from 'react-icons/fa';
 
-
 const Navbar = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false); // State to handle menu open/close
+  const [menuOpen, setMenuOpen] = useState(false);
 
+  // Handle window resize to toggle mobile/desktop view
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
       if (window.innerWidth > 768) {
-        setMenuOpen(false); // Close menu when switching to desktop
+        setMenuOpen(false); // Close menu on desktop
       }
     };
 
     window.addEventListener("resize", handleResize);
-    handleResize(); // Check on component mount
+    handleResize(); // Initial check
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return (
-    <nav className="fixed top-0 left-0 w-full bg-white z-50 p-4 flex justify-between items-center border-none">
-      <div className="container mx-auto max-w-screen-xl flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-blue-900">Logo</h1>
-        <ul
-          className={`${isMobile
-            ? menuOpen
-              ? "flex flex-col absolute top-16 left-0 w-full bg-white p-6"
-              : "hidden"
-            : "flex gap-6"
-            } text-lg md:flex gap-6`}
-        >
-   <li><Link to="#home" className="hover:text-blue-500">Home</Link></li>
-<li><Link to="#darslar" className="hover:text-blue-500">Darslar</Link></li>
-<li><Link to="#narxlar" className="hover:text-blue-500">Narxlar</Link></li>
-<li><Link to="#savollar" className="hover:text-blue-500">Savollar</Link></li>
-<li><Link to="#aloqa" className="hover:text-blue-500">Aloqa Fikrlar</Link></li>
-<li><Link to="#xizmatarimiz" className="hover:text-blue-500">Xizmatarimiz</Link></li>
+  // Smooth scroll to section
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId.replace('#', ''));
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setMenuOpen(false); // Close menu after clicking a link on mobile
+  };
 
-        </ul>
+  return (
+    <nav className="fixed top-0 left-0 w-full bg-white z-50 p-4 flex justify-between items-center shadow-md">
+      <div className="container mx-auto max-w-screen-xl flex justify-between items-center">
+        {/* Logo */}
+        <h1 className="text-2xl font-bold text-blue-900">Logo</h1>
+
+        {/* Navigation Links */}
+        <motion.ul
+          initial={{ height: 0, opacity: 0 }}
+          animate={{
+            height: isMobile && menuOpen ? "auto" : isMobile ? 0 : "auto",
+            opacity: isMobile && menuOpen ? 1 : isMobile ? 0 : 1,
+          }}
+          transition={{ duration: 0.3 }}
+          className={`${
+            isMobile
+              ? menuOpen
+                ? "flex flex-col absolute top-16 left-0 w-full bg-white p-6 shadow-lg"
+                : "hidden"
+              : "flex gap-6 items-center"
+          } text-lg font-medium text-gray-700`}
+        >
+          <li>
+            <button onClick={() => scrollToSection('#home')} className="hover:text-blue-500 transition-colors">
+              Home
+            </button>
+          </li>
+          <li>
+            <button onClick={() => scrollToSection('#darslar')} className="hover:text-blue-500 transition-colors">
+              Darslar
+            </button>
+          </li>
+          <li>
+            <button onClick={() => scrollToSection('#narxlar')} className="hover:text-blue-500 transition-colors">
+              Narxlar
+            </button>
+          </li>
+          <li>
+            <button onClick={() => scrollToSection('#savollar')} className="hover:text-blue-500 transition-colors">
+              Savollar
+            </button>
+          </li>
+          <li>
+            <button onClick={() => scrollToSection('#aloqa')} className="hover:text-blue-500 transition-colors">
+              Aloqa Fikrlar
+            </button>
+          </li>
+          <li>
+            <button onClick={() => scrollToSection('#xizmatarimiz')} className="hover:text-blue-500 transition-colors">
+              Xizmatarimiz
+            </button>
+          </li>
+
+          {/* Example Dropdown (Uncomment to use) */}
+          {/*
+          <li className="relative group">
+            <button className="hover:text-blue-500 transition-colors flex items-center">
+              More <FaChevronDown className="ml-1" />
+            </button>
+            <ul className="absolute hidden group-hover:block bg-white shadow-lg p-4 rounded-md mt-2 w-48">
+              <li>
+                <button onClick={() => scrollToSection('#extra1')} className="block py-2 hover:text-blue-500">
+                  Extra 1
+                </button>
+              </li>
+              <li>
+                <button onClick={() => scrollToSection('#extra2')} className="block py-2 hover:text-blue-500">
+                  Extra 2
+                </button>
+              </li>
+            </ul>
+          </li>
+          */}
+        </motion.ul>
+
+        {/* Mobile Menu Toggle Button */}
         {isMobile && (
-          <button className="text-2xl" onClick={() => setMenuOpen(!menuOpen)}>
-            {menuOpen ? "❌" : "☰"}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-2xl text-blue-900 focus:outline-none"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+          >
+            {menuOpen ? <FaTimes /> : <FaBars />}
           </button>
         )}
       </div>
     </nav>
-
   );
 };
 
+// HeroSection (unchanged)
 const HeroSection = () => {
-  const navigate = useNavigate(); // Sahifaga yo‘naltirish funksiyasi
+  const navigate = useNavigate();
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
@@ -77,7 +146,6 @@ const HeroSection = () => {
   return (
     <div id="home" className="hero-box mt-[50px] relative w-full min-h-screen bg-white flex items-center justify-center">
       <div className="flex items-center justify-between w-full max-w-7xl p-6">
-        {/* Matn va tugma */}
         <div className="relative z-10 text-left max-w-md" data-aos="fade-right">
           <h1 className="text-5xl font-bold text-blue-900 leading-tight" data-aos="fade-up">
             Biz faqat dars bermaymiz, <br /> biz insonlarning hayotini o'zgartiramiz!
@@ -85,7 +153,6 @@ const HeroSection = () => {
           <p className="mt-4 text-gray-700 text-lg" data-aos="fade-up" data-aos-delay="200">
             9 yil ichida bizning onlayn maktabimiz 50 000 dan ortiq yoshlarning hayotini o'zgartirishga yordam berdi.
           </p>
-          {/* Ro'yxatdan o'tish tugmasi */}
           <button
             onClick={() => navigate('/login')}
             className="mt-6 px-6 py-3 bg-blue-500 text-white text-lg rounded-full shadow-lg hover:bg-blue-600 transition-all"
@@ -94,10 +161,7 @@ const HeroSection = () => {
           >
             Birinchi darsga yoziling ✨
           </button>
-
         </div>
-
-        {/* Orqa fon rasmi (faqat katta ekranlarda ko‘rinadi) */}
         <div className="absolute top-0 right-0 h-full w-[80%] hidden md:block" data-aos="fade-left">
           <img src={backImg} alt="Onlayn dars" className="hero-back-img object-cover" />
         </div>
@@ -106,7 +170,7 @@ const HeroSection = () => {
   );
 };
 
-
+// Features (unchanged)
 const Features = () => {
   const features = [
     {
@@ -165,13 +229,11 @@ const Features = () => {
               key={index}
               className="p-8 bg-gray-200 rounded-3xl shadow-xl text-center transition-transform transform hover:scale-105 h-auto min-h-[350px] flex flex-col justify-between"
             >
-              {/* Ikona - dumaloq fon */}
               <div
                 className={`w-20 h-20 mx-auto flex items-center justify-center rounded-full text-white ${feature.bgColor} text-4xl shadow-lg`}
               >
                 {feature.icon}
               </div>
-              {/* Card content */}
               <div>
                 <h3 className="text-2xl font-bold mt-6 text-blue-900">{feature.title}</h3>
                 <p className="mt-3 text-gray-700 text-lg">{feature.text}</p>
@@ -190,7 +252,7 @@ const Features = () => {
   );
 };
 
-
+// Testimonials (unchanged)
 const Testimonials = () => {
   const [visibleTestimonials, setVisibleTestimonials] = useState(3);
 
@@ -262,78 +324,78 @@ const Testimonials = () => {
       profileImage: "https://randomuser.me/api/portraits/men/6.jpg",
     },
   ];
-  
 
   const handleShowMore = () => {
     setVisibleTestimonials((prev) => prev + 3);
   };
 
   const handleShowLess = () => {
-    setVisibleTestimonials(3); // Faqat oxirgi 3 ta malumotni qoldirish
+    setVisibleTestimonials(3);
   };
 
   return (
     <section className="bg-gradient-to-b from-blue-50 via-white to-blue-50 py-16 px-6">
-      <div className="container mx-auto max-w-screen-xl">
-        <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">
-          Talabalarimiz nima deyishadi
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
-          {testimonials.slice(0, visibleTestimonials).map((testimonial, index) => (
-            <div
-              key={index}
-              className="bg-white p-6 rounded-lg shadow-lg text-center hover:shadow-2xl transition-shadow duration-300"
-              data-aos="fade-up"
-            >
-              <img
-                src={testimonial.profileImage}
-                alt={testimonial.name}
-                className="w-20 h-20 rounded-full mx-auto mb-4"
-              />
-              <p className="text-lg italic">"{testimonial.feedback}"</p>
-              <h3 className="font-bold text-xl mt-4 text-blue-900">
-                {testimonial.name}
-              </h3>
-              <div className="flex justify-center items-center mt-2">
-                <FaMapMarkerAlt className="text-gray-500 mr-2" />
-                <p className="text-gray-700">{testimonial.location}</p>
-              </div>
+    <div className="container mx-auto max-w-screen-xl">
+      <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">
+        Talabalarimiz兜 nima deyishadi
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
+        {testimonials.slice(0, visibleTestimonials).map((testimonial, index) => (
+          <div
+            key={index}
+            className="bg-white p-6 rounded-3xl shadow-lg text-center hover:shadow-2xl transition-shadow duration-300"
+            data-aos="fade-up"
+          >
+            <img
+              src={testimonial.profileImage}
+              alt={testimonial.name}
+              className="w-20 h-20 rounded-full mx-auto mb-4"
+            />
+            <p className="text-lg italic">"{testimonial.feedback}"</p>
+            <h3 className="font-bold text-xl mt-4 text-blue-900">
+              {testimonial.name}
+            </h3>
+            <div className="flex justify-center items-center mt-2">
+              <FaMapMarkerAlt className="text-gray-500 mr-2" />
+              <p className="text-gray-700">{testimonial.location}</p>
             </div>
-          ))}
-        </div>
-
-        <div className="text-center mt-8 space-x-4">
-          {visibleTestimonials < testimonials.length && (
-            <button
-              onClick={handleShowMore}
-              className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-all"
-            >
-              Yana ko'rish
-            </button>
-          )}
-
-          {visibleTestimonials > 3 && (
-            <button
-              onClick={handleShowLess}
-              className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-all"
-            >
-              Yopish
-            </button>
-          )}
-        </div>
+          </div>
+        ))}
       </div>
-    </section>
+  
+      <div className="button-container text-center mt-8">
+        {visibleTestimonials < testimonials.length && (
+          <button
+            onClick={handleShowMore}
+            className="custom-button bg-blue-500 text-white py-2 px-4 rounded-lg"
+          >
+            Yana ko'rish
+          </button>
+        )}
+  
+        {visibleTestimonials > 3 && (
+          <button
+            onClick={handleShowLess}
+            className="custom-button bg-red-500 text-white py-2 px-4 rounded-lg"
+          >
+            Yopish
+          </button>
+        )}
+      </div>
+    </div>
+  </section>
   );
 };
 
-
+// Gallery (unchanged)
 const Gallery = () => {
-  const galleryRef = useRef(null);
+  const galleryRef = React.useRef(null);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   const subjects = [
     "Matematika", "Fizika", "Kimyo", "Biologiya", "Informatika", "Tarix",
-    "Ona tili va adabiyot", "Chet tili (Ingliz, Rus, Nemis)", "Geografiya", "Astronomiya",
+    "Ona tili va adabiyot", "Chet села (Ingliz, Rus, Nemis)", "Geografiya", "Astronomiya",
     "Iqtisodiyot", "Huquqshunoslik", "Jismoniy tarbiya", "Chizmachilik", "Texnologiya",
     "Psixologiya", "Falsafa", "Ekologiya", "Tibbiyot asoslari", "San’at va madaniyat",
     "Qur’on va hadis ilmi", "Robototexnika", "Dasturlash asoslari", "Sun’iy intellekt",
@@ -344,7 +406,12 @@ const Gallery = () => {
   const lessons = subjects.map((title, index) => ({
     title,
     imageUrl: `https://picsum.photos/200/300?random=${index + 1}`,
+    category: title,
   }));
+
+  const filteredLessons = selectedCategory === "All"
+    ? lessons
+    : lessons.filter((lesson) => lesson.category === selectedCategory);
 
   useEffect(() => {
     const galleryElement = galleryRef.current;
@@ -389,44 +456,56 @@ const Gallery = () => {
   }, []);
 
   return (
-  <section id="darslar" className="py-16 px-6">
-  <div className="container mx-auto max-w-screen-xl">
-    <h2 className="text-4xl font-extrabold text-center text-blue-900 mb-10">Bizning Darslar</h2>
-
-    <div
-      ref={galleryRef}
-      className="overflow-auto rounded-2xl  duration-300"
-      style={{ height: "600px" }}
-    >
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 p-6">
-        {lessons.map((lesson, index) => (
-          <div
-            key={index}
-            className="bg-gradient-to-r from-blue-100 to-white rounded-3xl overflow-hidden   transition-all duration-300"
+    <section id="darslar" className="py-16 px-6 bg-gray-50">
+      <div className="container mx-auto max-w-screen-xl">
+        <h2 className="text-4xl font-extrabold text-center text-blue-900 mb-10">
+          Bizning Darslar
+        </h2>
+        <div className="mb-6 text-center">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="bg-white border border-blue-400 rounded-md px-4 py-2 shadow-lg transition-colors duration-300 hover:bg-blue-50"
           >
-            <img
-              src={lesson.imageUrl}
-              alt={lesson.title}
-              className="w-full h-80 object-cover rounded-t-3xl transform transition-transform duration-300 hover:scale-110"
-            />
-            <div className="p-6 text-center">
-              <h3 className="text-xl font-bold text-blue-800">{lesson.title}</h3>
-              <p className="text-gray-600 text-sm mt-2">{lesson.description}</p>
-            </div>
+            <option value="All">Barchasi</option>
+            {subjects.map((subject, index) => (
+              <option key={index} value={subject}>
+                {subject}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div
+          ref={galleryRef}
+          className="overflow-auto rounded-2xl bg-white shadow-lg duration-300"
+          style={{ height: "600px" }}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
+            {filteredLessons.map((lesson, index) => (
+              <div
+                key={index}
+                className="bg-gradient-to-r from-blue-100 to-white rounded-3xl overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
+              >
+                <img
+                  src={lesson.imageUrl}
+                  alt={lesson.title}
+                  className="w-full h-64 object-cover rounded-t-3xl transition-transform duration-300 transform hover:scale-110"
+                />
+                <div className="p-6 text-center">
+                  <h3 className="text-xl font-semibold text-blue-800">{lesson.title}</h3>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
-    </div>
-  </div>
-</section>
-
+    </section>
   );
 };
 
-
-
+// Pricing (unchanged)
 const Pricing = () => {
-  const navigate = useNavigate(); // navigate hook
+  const navigate = useNavigate();
 
   const pricingPlans = [
     {
@@ -459,7 +538,7 @@ const Pricing = () => {
   ];
 
   return (
-    <section className="py-16 px-6">
+    <section id="narxlar" className="py-16 px-6">
       <div className="container mx-auto max-w-screen-xl">
         <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">Narxlarimiz</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
@@ -479,7 +558,7 @@ const Pricing = () => {
                 ))}
               </ul>
               <button
-                onClick={() => navigate('/buy')} // Sotib olish sahifasiga yo'naltirish
+                onClick={() => navigate('/buy')}
                 className="mt-6 px-6 py-3 bg-blue-500 text-white text-lg rounded-full hover:bg-blue-600"
               >
                 Sotib olish
@@ -492,7 +571,7 @@ const Pricing = () => {
   );
 };
 
-
+// FAQ (unchanged)
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(null);
   const [showMore, setShowMore] = useState(false);
@@ -527,7 +606,7 @@ const FAQ = () => {
   const itemsToShow = showMore ? faqItems : faqItems.slice(0, 4);
 
   return (
-    <section className="bg-gray-100 py-16 px-6">
+    <section id="savollar" className="bg-gray-100 py-16 px-6">
       <div className="container mx-auto max-w-screen-xl">
         <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">
           Ko'p beriladigan savollar (FAQ)
@@ -576,9 +655,10 @@ const FAQ = () => {
   );
 };
 
+// Contact (unchanged)
 const Contact = () => {
   return (
-    <section className="bg-white py-16 px-6">
+    <section id="aloqa" className="bg-white py-16 px-6">
       <div className="container mx-auto max-w-screen-xl">
         <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">Biz bilan bog'laning</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
@@ -647,18 +727,18 @@ const Contact = () => {
   );
 };
 
-
-
+// Footer (unchanged)
 const Footer = () => {
   return (
     <footer className="bg-blue-900 text-white py-8">
       <div className="container mx-auto text-center">
-        <p>&copy; 2025 Online School. All rights reserved.</p>
+        <p>© 2025 Online School. All rights reserved.</p>
       </div>
     </footer>
   );
 };
 
+// HomePage (unchanged except for section IDs)
 const HomePage = () => {
   return (
     <div>
