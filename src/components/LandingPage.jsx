@@ -46,92 +46,61 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white z-50 p-4 flex justify-between items-center shadow-md">
-      <div className="container mx-auto max-w-screen-xl flex justify-between items-center">
-        {/* Logo */}
-        <h1 className="text-2xl font-bold text-blue-900">Logo</h1>
+    <nav className="fixed top-0 left-0 w-full bg-gradient-to-r from-blue-50 to-white z-50 py-4 px-6 flex justify-between items-center shadow-lg shadow-blue-100/50 transition-shadow duration-300">
+    <div className="container mx-auto max-w-screen-xl flex justify-between items-center">
+      {/* Logo */}
+      <h1 className="text-3xl font-extrabold text-blue-800 tracking-tight cursor-pointer hover:text-blue-600 transition-colors duration-200">
+        Logo
+      </h1>
 
-        {/* Navigation Links */}
-        <motion.ul
-          initial={{ height: 0, opacity: 0 }}
-          animate={{
-            height: isMobile && menuOpen ? "auto" : isMobile ? 0 : "auto",
-            opacity: isMobile && menuOpen ? 1 : isMobile ? 0 : 1,
-          }}
-          transition={{ duration: 0.3 }}
-          className={`${
-            isMobile
-              ? menuOpen
-                ? "flex flex-col absolute top-16 left-0 w-full bg-white p-6 shadow-lg"
-                : "hidden"
-              : "flex gap-6 items-center"
-          } text-lg font-medium text-gray-700`}
+      {/* Navigation Links */}
+      <motion.ul
+        initial={{ height: 0, opacity: 0 }}
+        animate={{
+          height: isMobile && menuOpen ? "auto" : isMobile ? 0 : "auto",
+          opacity: isMobile && menuOpen ? 1 : isMobile ? 0 : 1,
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className={`${
+          isMobile
+            ? menuOpen
+              ? "flex flex-col absolute top-16 left-0 w-full bg-white/95 backdrop-blur-md p-6 rounded-b-xl shadow-xl shadow-blue-200/30"
+              : "hidden"
+            : "flex gap-8 items-center"
+        } text-lg font-semibold text-gray-600`}
+      >
+        {[
+          { name: "Home", section: "#home" },
+          { name: "Darslar", section: "#darslar" },
+          { name: "Narxlar", section: "#narxlar" },
+          { name: "Savollar", section: "#savollar" },
+          { name: "Aloqa Fikrlar", section: "#aloqa" },
+          { name: "Xizmatarimiz", section: "#xizmatarimiz" },
+        ].map((item) => (
+          <li key={item.section}>
+            <button
+              onClick={() => scrollToSection(item.section)}
+              className="relative py-2 px-3 rounded-lg hover:text-blue-600 hover:bg-blue-50 transition-all duration-300 group"
+            >
+              {item.name}
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300" />
+            </button>
+          </li>
+        ))}
+      </motion.ul>
+
+      {/* Mobile Menu Toggle Button */}
+      {isMobile && (
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="text-2xl text-blue-800 hover:text-blue-600 focus:outline-none transition-colors duration-200"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
         >
-          <li>
-            <button onClick={() => scrollToSection('#home')} className="hover:text-blue-500 transition-colors">
-              Home
-            </button>
-          </li>
-          <li>
-            <button onClick={() => scrollToSection('#darslar')} className="hover:text-blue-500 transition-colors">
-              Darslar
-            </button>
-          </li>
-          <li>
-            <button onClick={() => scrollToSection('#narxlar')} className="hover:text-blue-500 transition-colors">
-              Narxlar
-            </button>
-          </li>
-          <li>
-            <button onClick={() => scrollToSection('#savollar')} className="hover:text-blue-500 transition-colors">
-              Savollar
-            </button>
-          </li>
-          <li>
-            <button onClick={() => scrollToSection('#aloqa')} className="hover:text-blue-500 transition-colors">
-              Aloqa Fikrlar
-            </button>
-          </li>
-          <li>
-            <button onClick={() => scrollToSection('#xizmatarimiz')} className="hover:text-blue-500 transition-colors">
-              Xizmatarimiz
-            </button>
-          </li>
-
-          {/* Example Dropdown (Uncomment to use) */}
-          {/*
-          <li className="relative group">
-            <button className="hover:text-blue-500 transition-colors flex items-center">
-              More <FaChevronDown className="ml-1" />
-            </button>
-            <ul className="absolute hidden group-hover:block bg-white shadow-lg p-4 rounded-md mt-2 w-48">
-              <li>
-                <button onClick={() => scrollToSection('#extra1')} className="block py-2 hover:text-blue-500">
-                  Extra 1
-                </button>
-              </li>
-              <li>
-                <button onClick={() => scrollToSection('#extra2')} className="block py-2 hover:text-blue-500">
-                  Extra 2
-                </button>
-              </li>
-            </ul>
-          </li>
-          */}
-        </motion.ul>
-
-        {/* Mobile Menu Toggle Button */}
-        {isMobile && (
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="text-2xl text-blue-900 focus:outline-none"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-          >
-            {menuOpen ? <FaTimes /> : <FaBars />}
-          </button>
-        )}
-      </div>
-    </nav>
+          {menuOpen ? <FaTimes /> : <FaBars />}
+        </button>
+      )}
+    </div>
+  </nav>
   );
 };
 

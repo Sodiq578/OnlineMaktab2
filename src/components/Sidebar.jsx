@@ -24,7 +24,7 @@ const Sidebar = () => {
       </div>
 
       <div className={`fixed inset-0 bg-gray-900 bg-opacity-50 ${isOpen ? 'block' : 'hidden'} sm:hidden`} onClick={toggleSidebar}></div>
-      <div className={`fixed top-0 left-0 bg-gradient-to-r from-blue-500 to-indigo-500 text-white w-64 p-6 sm:hidden transition-all duration-300 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} shadow-lg rounded-md`}>
+      <div className={`menu-box fixed top-0 left-0 bg-gradient-to-r from-blue-500 to-indigo-500 text-white w-64 p-6 sm:hidden transition-all duration-300 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} shadow-lg rounded-md z-99`}>
         <ul className="space-y-6">
           <Link to="/dashboard/home" onClick={handleLinkClick}>
             <li className="sidebar-mobile-title hover:bg-blue-400 hover:text-white flex items-center space-x-4 p-3 rounded-md transition duration-200">
