@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import videoData from '../data/videos';
 import './VideoListPage.css';
 import Confetti from 'react-confetti';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 const VideoListPage = () => {
   const { subject } = useParams();
@@ -16,24 +18,21 @@ const VideoListPage = () => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
+  const [darkMode, setDarkMode] = useState(false);
+  const [bookmarkedVideos, setBookmarkedVideos] = useState([]);
+  const [exerciseAnswers, setExerciseAnswers] = useState({});
+  const [filterWatched, setFilterWatched] = useState('all');
+  const [videoNotes, setVideoNotes] = useState({});
 
-  const formattedSubject = subject
-    .replace(/-/g, ' ')
-    .toLowerCase()
-    .trim();
-
+  const formattedSubject = subject.replace(/-/g, ' ').toLowerCase().trim();
   const section = videoData.find(
     (sec) => sec.sectionName.toLowerCase() === formattedSubject
   );
 
   useEffect(() => {
     const handleResize = () => {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     };
-
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -47,13 +46,18 @@ const VideoListPage = () => {
       const watchedCount = storedWatched.length;
       const percentage = totalVideos > 0 ? Math.round((watchedCount / totalVideos) * 100) : 0;
       setCompletionPercentage(percentage);
-
-      // Show celebration if all videos are watched
       if (watchedCount === totalVideos && totalVideos > 0) {
         setShowCelebration(true);
       }
     }
   }, [subject, section]);
+
+  useEffect(() => {
+    const storedBookmarks = JSON.parse(localStorage.getItem(`${subject}_bookmarked_videos`)) || [];
+    const storedNotes = JSON.parse(localStorage.getItem(`${subject}_video_notes`)) || {};
+    setBookmarkedVideos(storedBookmarks);
+    setVideoNotes(storedNotes);
+  }, [subject]);
 
   const markVideoAsWatched = (videoId) => {
     if (!watchedVideos.includes(videoId)) {
@@ -64,8 +68,6 @@ const VideoListPage = () => {
       const totalVideos = section.videos.length;
       const percentage = totalVideos > 0 ? Math.round((updatedWatched.length / totalVideos) * 100) : 0;
       setCompletionPercentage(percentage);
-
-      // Check if all videos are now watched
       if (updatedWatched.length === totalVideos && totalVideos > 0) {
         setTimeout(() => setShowCelebration(true), 1000);
       }
@@ -81,9 +83,36 @@ const VideoListPage = () => {
     }
   };
 
-  const filteredVideos = section?.videos.filter((video) =>
-    video.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const toggleBookmark = (videoId) => {
+    const updatedBookmarks = bookmarkedVideos.includes(videoId)
+      ? bookmarkedVideos.filter((id) => id !== videoId)
+      : [...bookmarkedVideos, videoId];
+    setBookmarkedVideos(updatedBookmarks);
+    localStorage.setItem(`${subject}_bookmarked_videos`, JSON.stringify(updatedBookmarks));
+  };
+
+  const handleNoteChange = (videoId, note) => {
+    const updatedNotes = { ...videoNotes, [videoId]: note };
+    setVideoNotes(updatedNotes);
+    localStorage.setItem(`${subject}_video_notes`, JSON.stringify(updatedNotes));
+  };
+
+  const handleExerciseSubmit = (videoId, answer) => {
+    const isCorrect = answer.toLowerCase() === 'correct';
+    setExerciseAnswers((prev) => ({
+      ...prev,
+      [videoId]: { answer, isCorrect, submitted: true },
+    }));
+  };
+
+  const filteredVideos = section?.videos.filter((video) => {
+    const matchesSearch = video.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter =
+      filterWatched === 'all' ||
+      (filterWatched === 'watched' && watchedVideos.includes(video.id)) ||
+      (filterWatched === 'unwatched' && !watchedVideos.includes(video.id));
+    return matchesSearch && matchesFilter;
+  });
 
   if (!section) {
     return (
@@ -100,7 +129,7 @@ const VideoListPage = () => {
   }
 
   return (
-    <div className="video-list-page p-6 animate-fade-in relative min-h-screen">
+    <div className={`video-list-page p-6 animate-fade-in relative min-h-screen ${darkMode ? 'dark' : ''}`}>
       {showCelebration && (
         <>
           <Confetti
@@ -111,12 +140,12 @@ const VideoListPage = () => {
             gravity={0.2}
           />
           <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 animate-fade-in">
-            <div className="bg-white p-8 rounded-xl max-w-md w-full mx-4 text-center transform animate-bounce-in">
+            <div className="bg-white dark:bg-gray-800 p-8 rounded-xl max-w-md w-full mx-4 text-center transform animate-bounce-in">
               <div className="text-6xl mb-4">🎉</div>
               <h2 className="text-3xl font-bold text-gradient bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
                 Tabriklaymiz!
               </h2>
-              <p className="text-lg mb-6">
+              <p className="text-lg mb-6 dark:text-gray-300">
                 Siz "{section.sectionName}" bo'limidagi barcha videolarni muvaffaqiyatli ko'rib chiqdingiz!
               </p>
               <button
@@ -134,7 +163,7 @@ const VideoListPage = () => {
         <div className="flex justify-between items-center mb-8 animate-slide-down">
           <button
             onClick={() => navigate('/dashboard/home')}
-            className="flex items-center text-blue-600 hover:text-blue-800 transition-colors duration-300"
+            className="flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-300"
           >
             <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
@@ -144,41 +173,57 @@ const VideoListPage = () => {
           <h1 className="text-4xl font-bold text-center text-gradient bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent animate-pulse">
             {section.sectionName}
           </h1>
-          <div className="w-10"></div> {/* Spacer for alignment */}
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
         </div>
 
-        {/* Progress Section */}
-        <div className="mb-8 p-6 bg-white rounded-xl shadow-lg animate-slide-up">
-          <div className="flex justify-between items-center mb-3">
-            <span className="text-lg font-medium text-gray-700">
-              Kurs progressi: {completionPercentage}%
-            </span>
-            {completionPercentage === 100 && (
-              <span className="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full animate-pulse">
-                Yakunlandi!
+        <div className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg animate-slide-up flex flex-col sm:flex-row items-center justify-between">
+          <div className="w-24 h-24 mb-4 sm:mb-0">
+            <CircularProgressbar
+              value={completionPercentage}
+              text={`${completionPercentage}%`}
+              styles={buildStyles({
+                pathColor: '#3b82f6',
+                textColor: darkMode ? '#fff' : '#1f2937',
+                trailColor: darkMode ? '#4b5563' : '#e5e7eb',
+              })}
+            />
+          </div>
+          <div className="flex-1 sm:ml-6">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                Kurs progressi: {completionPercentage}%
               </span>
-            )}
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-4">
-            <div
-              className="bg-gradient-to-r from-blue-500 to-indigo-600 h-4 rounded-full transition-all duration-1000 ease-out"
-              style={{ width: `${completionPercentage}%` }}
-            ></div>
+              {completionPercentage === 100 && (
+                <span className="bg-green-100 text-green-800 text-sm font-semibold px-3 py-1 rounded-full animate-pulse">
+                  Yakunlandi!
+                </span>
+              )}
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4">
+              <div
+                className="bg-gradient-to-r from-blue-500 to-indigo-600 h-4 rounded-full transition-all duration-1000 ease-out"
+                style={{ width: `${completionPercentage}%` }}
+              ></div>
+            </div>
           </div>
         </div>
 
-        {/* Search Section */}
-        <div className="mb-8 animate-slide-up">
-          <div className="relative">
+        <div className="mb-8 animate-slide-up flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1">
             <input
               type="text"
               placeholder="Videolarni qidirish..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full p-4 pl-12 rounded-xl border-0 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow-lg transition-all duration-300"
+              className="w-full p-4 pl-12 rounded-xl border-0 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:focus:ring-blue-400 transition-all duration-300"
             />
             <svg
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-300"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -189,23 +234,43 @@ const VideoListPage = () => {
               />
             </svg>
           </div>
+          <select
+            value={filterWatched}
+            onChange={(e) => setFilterWatched(e.target.value)}
+            className="p-4 rounded-xl border-0 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:focus:ring-blue-400"
+          >
+            <option value="all">Barchasi</option>
+            <option value="watched">Ko'rilgan</option>
+            <option value="unwatched">Ko'rilmagan</option>
+          </select>
         </div>
 
-        {/* Videos Grid */}
         {filteredVideos?.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredVideos.map((video, index) => (
               <div
                 key={video.id}
-                className={`bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl animate-fade-in-up ${watchedVideos.includes(video.id) ? 'border-l-4 border-green-500' : ''}`}
+                className={`bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl animate-fade-in-up ${
+                  watchedVideos.includes(video.id) ? 'border-l-4 border-green-500' : ''
+                } ${bookmarkedVideos.includes(video.id) ? 'border-r-4 border-yellow-500' : ''}`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="p-5">
-                  <h3 className="text-xl font-semibold mb-3 text-gray-800">{video.title}</h3>
-                  
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">{video.title}</h3>
+                    <button
+                      onClick={() => toggleBookmark(video.id)}
+                      className="text-yellow-500 hover:text-yellow-600 dark:text-yellow-400 dark:hover:text-yellow-300"
+                    >
+                      {bookmarkedVideos.includes(video.id) ? '★' : '☆'}
+                    </button>
+                  </div>
+
                   <button
                     onClick={() => togglePlay(video.id)}
-                    className={`w-full flex items-center justify-center px-4 py-3 rounded-lg mb-4 text-white font-medium transition-all duration-300 transform hover:scale-105 ${playingVideo === video.id ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`}
+                    className={`w-full flex items-center justify-center px-4 py-3 rounded-lg mb-4 text-white font-medium transition-all duration-300 transform hover:scale-105 ${
+                      playingVideo === video.id ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
+                    }`}
                   >
                     {playingVideo === video.id ? (
                       <>
@@ -249,7 +314,7 @@ const VideoListPage = () => {
                           Brauzeringiz video elementini qo'llab-quvvatlamaydi.
                         </video>
                       ) : (
-                        <div className="bg-red-100 text-red-800 p-4 rounded-lg">
+                        <div className="bg-red-100 text-red-800 p-4 rounded-lg dark:bg-red-900 dark:text-red-200">
                           Video manbasi topilmadi
                         </div>
                       )}
@@ -284,15 +349,60 @@ const VideoListPage = () => {
                           Brauzeringiz video elementini qo'llab-quvvatlamaydi.
                         </video>
                       ) : (
-                        <div className="bg-red-100 text-red-800 p-4 rounded-lg">
+                        <div className="bg-red-100 text-red-800 p-4 rounded-lg dark:bg-red-900 dark:text-red-200">
                           Video manbasi topilmadi
                         </div>
                       )}
                     </div>
                   )}
 
+                  {/* Notes Section */}
+                  <div className="mt-4">
+                    <details className="notes-details cursor-pointer">
+                      <summary className="text-lg font-medium text-blue-800 dark:text-blue-300 mb-2 flex items-center transition-colors duration-300 hover:text-blue-600 dark:hover:text-blue-400">
+                        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M17 3H3v14h14V3zm-2 2v10H5V5h10z" />
+                        </svg>
+                        Video uchun eslatmalar
+                      </summary>
+                      <div className="notes-content p-4 bg-gray-50 dark:bg-gray-700 rounded-lg animate-slide-in">
+                        <textarea
+                          placeholder="Eslatmalaringizni bu yerga yozing..."
+                          value={videoNotes[video.id] || ''}
+                          onChange={(e) => handleNoteChange(video.id, e.target.value)}
+                          className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 resize-none transition-all duration-300"
+                          rows="4"
+                        />
+                      </div>
+                    </details>
+                  </div>
+
+                  {/* Exercise Section */}
+                  {video.exercise && (
+                    <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg animate-fade-in">
+                      <details className="cursor-pointer">
+                        <summary className="text-lg font-medium text-blue-800 dark:text-blue-300 mb-2">
+                          Amaliy Mashq
+                        </summary>
+                        <p className="text-gray-700 dark:text-gray-300 mb-4">{video.exercise}</p>
+                        <input
+                          type="text"
+                          placeholder="Javobingizni kiriting..."
+                          onChange={(e) => handleExerciseSubmit(video.id, e.target.value)}
+                          className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          disabled={exerciseAnswers[video.id]?.submitted}
+                        />
+                        {exerciseAnswers[video.id]?.submitted && (
+                          <p className={`mt-2 ${exerciseAnswers[video.id].isCorrect ? 'text-green-600' : 'text-red-600'}`}>
+                            {exerciseAnswers[video.id].isCorrect ? 'To\'g\'ri!' : 'Noto\'g\'ri, qayta urinib ko\'ring.'}
+                          </p>
+                        )}
+                      </details>
+                    </div>
+                  )}
+
                   {watchedVideos.includes(video.id) && (
-                    <div className="flex items-center text-green-600">
+                    <div className="flex items-center text-green-600 dark:text-green-400 mt-4">
                       <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                       </svg>
@@ -306,7 +416,7 @@ const VideoListPage = () => {
         ) : (
           <div className="text-center py-12 animate-fade-in">
             <svg
-              className="mx-auto h-12 w-12 text-gray-400"
+              className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -318,8 +428,8 @@ const VideoListPage = () => {
                 d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <h3 className="mt-2 text-lg font-medium text-gray-900">Hech narsa topilmadi</h3>
-            <p className="mt-1 text-gray-500">
+            <h3 className="mt-2 text-lg font-medium text-gray-900 dark:text-gray-200">Hech narsa topilmadi</h3>
+            <p className="mt-1 text-gray-500 dark:text-gray-400">
               "{searchQuery}" so'rovi bo'yicha videolar topilmadi.
             </p>
             <button
