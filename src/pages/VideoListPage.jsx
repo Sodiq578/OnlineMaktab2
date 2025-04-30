@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import videoData from '../data/videos';
 import './VideoListPage.css';
@@ -23,6 +23,7 @@ const VideoListPage = () => {
   const [exerciseAnswers, setExerciseAnswers] = useState({});
   const [filterWatched, setFilterWatched] = useState('all');
   const [videoNotes, setVideoNotes] = useState({});
+  const videoRefs = useRef({}); // Store references to video elements
 
   const formattedSubject = subject.replace(/-/g, ' ').toLowerCase().trim();
   const section = videoData.find(
@@ -105,6 +106,19 @@ const VideoListPage = () => {
     }));
   };
 
+  const toggleFullScreen = (videoId) => {
+    const videoElement = videoRefs.current[videoId];
+    if (videoElement) {
+      if (!document.fullscreenElement) {
+        videoElement.requestFullscreen().catch((err) => {
+          console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+  };
+
   const filteredVideos = section?.videos.filter((video) => {
     const matchesSearch = video.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter =
@@ -136,7 +150,7 @@ const VideoListPage = () => {
             width={windowSize.width}
             height={windowSize.height}
             recycle={false}
-            numberOfPieces={500}
+            numberOfPieces={window.innerWidth < 768 ? 200 : 500}
             gravity={0.2}
           />
           <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 animate-fade-in">
@@ -195,7 +209,7 @@ const VideoListPage = () => {
           </div>
           <div className="flex-1 sm:ml-6">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-lg font-medium text-gray-700 dark:text-gray-300">
+              <span className="text-lg font-medium text-gray-700 dark:text-codedark:text-gray-300">
                 Kurs progressi: {completionPercentage}%
               </span>
               {completionPercentage === 100 && (
@@ -246,13 +260,13 @@ const VideoListPage = () => {
         </div>
 
         {filteredVideos?.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="video-grid">
             {filteredVideos.map((video, index) => (
               <div
                 key={video.id}
-                className={`bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-all duration-500 hover:shadow-xl animate-fade-in-up ${
-                  watchedVideos.includes(video.id) ? 'border-l-4 border-green-500' : ''
-                } ${bookmarkedVideos.includes(video.id) ? 'border-r-4 border-yellow-500' : ''}`}
+                className={`video-card ${watchedVideos.includes(video.id) ? 'border-l-4 border-green-500' : ''} ${
+                  bookmarkedVideos.includes(video.id) ? 'border-r-4 border-yellow-500' : ''
+                }`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="p-5">
@@ -266,50 +280,68 @@ const VideoListPage = () => {
                     </button>
                   </div>
 
-                  <button
-                    onClick={() => togglePlay(video.id)}
-                    className={`w-full flex items-center justify-center px-4 py-3 rounded-lg mb-4 text-white font-medium transition-all duration-300 transform hover:scale-105 ${
-                      playingVideo === video.id ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
-                    }`}
-                  >
-                    {playingVideo === video.id ? (
-                      <>
+                  <div className="flex gap-2 mb-4">
+                    <button
+                      onClick={() => togglePlay(video.id)}
+                      className={`flex-1 flex items-center justify-center px-4 py-3 rounded-lg text-white font-medium transition-all duration-300 transform hover:scale-105 ${
+                        playingVideo === video.id ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
+                      }`}
+                    >
+                      {playingVideo === video.id ? (
+                        <>
+                          <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                          </svg>
+                          To'xtatish
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7L8 5z" />
+                          </svg>
+                          Videoni ko'rish
+                        </>
+                      )}
+                    </button>
+                    {playingVideo === video.id && (
+                      <button
+                        onClick={() => toggleFullScreen(video.id)}
+                        className="flex items-center justify-center px-4 py-3 rounded-lg bg-blue-500 text-white font-medium transition-all duration-300 transform hover:scale-105 hover:bg-blue-600"
+                        aria-label="To'liq ekran"
+                      >
                         <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+                          <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
                         </svg>
-                        To'xtatish
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M8 5v14l11-7L8 5z" />
-                        </svg>
-                        Videoni ko'rish
-                      </>
+                        To'liq ekran
+                      </button>
                     )}
-                  </button>
+                  </div>
 
                   {playingVideo === video.id ? (
                     <div className="mb-4 rounded-lg overflow-hidden animate-zoom-in">
                       {video.type === 'youtube' && video.src ? (
                         <iframe
+                          ref={(el) => (videoRefs.current[video.id] = el)}
                           width="100%"
-                          height="200"
+                          height="auto"
                           src={`https://www.youtube.com/embed/${video.src}?autoplay=1`}
                           title={video.title}
                           frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                           allowFullScreen
                           className="w-full aspect-video"
+                          loading="lazy"
                         ></iframe>
                       ) : video.type === 'local' && video.src ? (
                         <video
+                          ref={(el) => (videoRefs.current[video.id] = el)}
                           width="100%"
-                          height="200"
+                          height="auto"
                           controls
                           autoPlay
                           src={video.src}
                           className="w-full aspect-video"
+                          loading="lazy"
                         >
                           Brauzeringiz video elementini qo'llab-quvvatlamaydi.
                         </video>
@@ -327,6 +359,7 @@ const VideoListPage = () => {
                             src={`https://img.youtube.com/vi/${video.src}/mqdefault.jpg`}
                             alt={video.title}
                             className="w-full aspect-video object-cover"
+                            loading="lazy"
                           />
                           <div className="absolute inset-0 flex items-center justify-center">
                             <div className="bg-black bg-opacity-50 rounded-full p-3">
@@ -339,12 +372,13 @@ const VideoListPage = () => {
                       ) : video.type === 'local' && video.src ? (
                         <video
                           width="100%"
-                          height="200"
+                          height="auto"
                           src={video.src}
                           className="w-full aspect-video"
                           muted
                           loop
                           playsInline
+                          loading="lazy"
                         >
                           Brauzeringiz video elementini qo'llab-quvvatlamaydi.
                         </video>
@@ -394,7 +428,7 @@ const VideoListPage = () => {
                         />
                         {exerciseAnswers[video.id]?.submitted && (
                           <p className={`mt-2 ${exerciseAnswers[video.id].isCorrect ? 'text-green-600' : 'text-red-600'}`}>
-                            {exerciseAnswers[video.id].isCorrect ? 'To\'g\'ri!' : 'Noto\'g\'ri, qayta urinib ko\'ring.'}
+                            {exerciseAnswers[video.id].isCorrect ? "To'g'ri!" : "Noto'g'ri, qayta urinib ko'ring."}
                           </p>
                         )}
                       </details>
@@ -404,7 +438,11 @@ const VideoListPage = () => {
                   {watchedVideos.includes(video.id) && (
                     <div className="flex items-center text-green-600 dark:text-green-400 mt-4">
                       <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                       <span className="font-medium">Ko'rilgan</span>
                     </div>
@@ -428,7 +466,9 @@ const VideoListPage = () => {
                 d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <h3 className="mt-2 text-lg font-medium text-gray-900 dark:text-gray-200">Hech narsa topilmadi</h3>
+            <h3 className="mt-2 text-lg font-medium text-gray-900 dark:text-gray-200">
+              Hech narsa topilmadi
+            </h3>
             <p className="mt-1 text-gray-500 dark:text-gray-400">
               "{searchQuery}" so'rovi bo'yicha videolar topilmadi.
             </p>
@@ -446,8 +486,16 @@ const VideoListPage = () => {
             onClick={() => navigate('/dashboard/home')}
             className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
-            <svg className="-ml-1 mr-3 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+            <svg
+              className="-ml-1 mr-3 h-5 w-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+                clipRule="evenodd"
+              />
             </svg>
             Bosh sahifaga qaytish
           </button>
