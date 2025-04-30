@@ -12,6 +12,7 @@ const VideoListPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [completionPercentage, setCompletionPercentage] = useState(0);
   const [playingVideo, setPlayingVideo] = useState(null);
+  const [enlargedVideo, setEnlargedVideo] = useState(null); // Track enlarged video
   const [watchedVideos, setWatchedVideos] = useState([]);
   const [showCelebration, setShowCelebration] = useState(false);
   const [windowSize, setWindowSize] = useState({
@@ -23,7 +24,8 @@ const VideoListPage = () => {
   const [exerciseAnswers, setExerciseAnswers] = useState({});
   const [filterWatched, setFilterWatched] = useState('all');
   const [videoNotes, setVideoNotes] = useState({});
-  const videoRefs = useRef({}); // Store references to video elements
+  const [isFullScreen, setIsFullScreen] = useState({});
+  const videoRefs = useRef({});
 
   const formattedSubject = subject.replace(/-/g, ' ').toLowerCase().trim();
   const section = videoData.find(
@@ -60,6 +62,16 @@ const VideoListPage = () => {
     setVideoNotes(storedNotes);
   }, [subject]);
 
+  useEffect(() => {
+    const handleFullScreenChange = () => {
+      if (!document.fullscreenElement) {
+        setIsFullScreen({});
+      }
+    };
+    document.addEventListener('fullscreenchange', handleFullScreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
+  }, []);
+
   const markVideoAsWatched = (videoId) => {
     if (!watchedVideos.includes(videoId)) {
       const updatedWatched = [...watchedVideos, videoId];
@@ -78,9 +90,11 @@ const VideoListPage = () => {
   const togglePlay = (videoId) => {
     if (playingVideo !== videoId) {
       setPlayingVideo(videoId);
+      setEnlargedVideo(videoId); // Enlarge video on play
       markVideoAsWatched(videoId);
     } else {
       setPlayingVideo(null);
+      setEnlargedVideo(null); // Reset enlargement on stop
     }
   };
 
@@ -110,11 +124,22 @@ const VideoListPage = () => {
     const videoElement = videoRefs.current[videoId];
     if (videoElement) {
       if (!document.fullscreenElement) {
-        videoElement.requestFullscreen().catch((err) => {
-          console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+        videoElement.requestFullscreen().then(() => {
+          setIsFullScreen((prev) => ({ ...prev, [videoId]: true }));
+        }).catch((err) => {
+          console.error(`Error enabling full-screen: ${err.message}`);
+          // Fallback for mobile: open YouTube video in browser
+          if (videoElement.tagName === 'IFRAME' && /Mobi|Android/i.test(navigator.userAgent)) {
+            const video = section.videos.find((v) => v.id === videoId);
+            if (video?.type === 'youtube' && video.src) {
+              window.open(`https://www.youtube.com/watch?v=${video.src}`, '_blank');
+            }
+          }
         });
       } else {
-        document.exitFullscreen();
+        document.exitFullscreen().then(() => {
+          setIsFullScreen((prev) => ({ ...prev, [videoId]: false }));
+        });
       }
     }
   };
@@ -150,7 +175,7 @@ const VideoListPage = () => {
             width={windowSize.width}
             height={windowSize.height}
             recycle={false}
-            numberOfPieces={window.innerWidth < 768 ? 200 : 500}
+            numberOfPieces={window.innerWidth < 768 ? 150 : 300}
             gravity={0.2}
           />
           <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 animate-fade-in">
@@ -189,7 +214,7 @@ const VideoListPage = () => {
           </h1>
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+            className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 transition-all duration-300 hover:bg-gray-300 dark:hover:bg-gray-600"
           >
             {darkMode ? '☀️' : '🌙'}
           </button>
@@ -209,7 +234,7 @@ const VideoListPage = () => {
           </div>
           <div className="flex-1 sm:ml-6">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-lg font-medium text-gray-700 dark:text-codedark:text-gray-300">
+              <span className="text-lg font-medium text-gray-700 dark:text-gray-300">
                 Kurs progressi: {completionPercentage}%
               </span>
               {completionPercentage === 100 && (
@@ -266,7 +291,7 @@ const VideoListPage = () => {
                 key={video.id}
                 className={`video-card ${watchedVideos.includes(video.id) ? 'border-l-4 border-green-500' : ''} ${
                   bookmarkedVideos.includes(video.id) ? 'border-r-4 border-yellow-500' : ''
-                }`}
+                } ${enlargedVideo === video.id ? 'enlarged' : ''}`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="p-5">
@@ -274,18 +299,21 @@ const VideoListPage = () => {
                     <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">{video.title}</h3>
                     <button
                       onClick={() => toggleBookmark(video.id)}
-                      className="text-yellow-500 hover:text-yellow-600 dark:text-yellow-400 dark:hover:text-yellow-300"
+                      className="text-yellow-500 hover:text-yellow-600 dark:text-yellow-400 dark:hover:text-yellow-300 transition-all duration-300"
+                      aria-label={bookmarkedVideos.includes(video.id) ? "Xatcho'pdan olib tashlash" : "Xatcho'p qilish"}
                     >
                       {bookmarkedVideos.includes(video.id) ? '★' : '☆'}
                     </button>
                   </div>
 
-                  <div className="flex gap-2 mb-4">
+                  <div className="flex gap-2 mb-4 flex-wrap">
                     <button
                       onClick={() => togglePlay(video.id)}
-                      className={`flex-1 flex items-center justify-center px-4 py-3 rounded-lg text-white font-medium transition-all duration-300 transform hover:scale-105 ${
-                        playingVideo === video.id ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'
+                      onKeyDown={(e) => e.key === 'Enter' && togglePlay(video.id)}
+                      className={`flex-1 flex items-center justify-center px-4 py-3 rounded-lg text-white font-medium transition-all duration-300 transform hover:scale-105 shadow-md ${
+                        playingVideo === video.id ? 'bg-red-600 hover:bg-red-700' : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
                       }`}
+                      aria-label={playingVideo === video.id ? "Videoni to'xtatish" : "Videoni ko'rish"}
                     >
                       {playingVideo === video.id ? (
                         <>
@@ -306,19 +334,20 @@ const VideoListPage = () => {
                     {playingVideo === video.id && (
                       <button
                         onClick={() => toggleFullScreen(video.id)}
-                        className="flex items-center justify-center px-4 py-3 rounded-lg bg-blue-500 text-white font-medium transition-all duration-300 transform hover:scale-105 hover:bg-blue-600"
-                        aria-label="To'liq ekran"
+                        onKeyDown={(e) => e.key === 'Enter' && toggleFullScreen(video.id)}
+                        className="flex items-center justify-center px-4 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium transition-all duration-300 transform hover:scale-105 hover:from-blue-600 hover:to-blue-700 shadow-md"
+                        aria-label={isFullScreen[video.id] ? "Ekrandan chiqish" : "To'liq ekran"}
                       >
                         <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
+                          <path d={isFullScreen[video.id] ? "M5 16h3v3H5v-3zm3-8H5v3h3V8zm11 8h-3v3h3v-3zm-3-8h3v3h-3V8z" : "M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"} />
                         </svg>
-                        To'liq ekran
+                        {isFullScreen[video.id] ? "Ekrandan chiqish" : "To'liq ekran"}
                       </button>
                     )}
                   </div>
 
                   {playingVideo === video.id ? (
-                    <div className="mb-4 rounded-lg overflow-hidden animate-zoom-in">
+                    <div className="mb-4 rounded-lg overflow-hidden animate-zoom-in relative">
                       {video.type === 'youtube' && video.src ? (
                         <iframe
                           ref={(el) => (videoRefs.current[video.id] = el)}
@@ -329,7 +358,7 @@ const VideoListPage = () => {
                           frameBorder="0"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                           allowFullScreen
-                          className="w-full aspect-video"
+                          className="w-full aspect-video video-player"
                           loading="lazy"
                         ></iframe>
                       ) : video.type === 'local' && video.src ? (
@@ -340,7 +369,7 @@ const VideoListPage = () => {
                           controls
                           autoPlay
                           src={video.src}
-                          className="w-full aspect-video"
+                          className="w-full aspect-video video-player"
                           loading="lazy"
                         >
                           Brauzeringiz video elementini qo'llab-quvvatlamaydi.
@@ -352,7 +381,7 @@ const VideoListPage = () => {
                       )}
                     </div>
                   ) : (
-                    <div className="mb-4 rounded-lg overflow-hidden transition-opacity duration-300 hover:opacity-90">
+                    <div className="mb-4 rounded-lg overflow-hidden transition-opacity duration-300 hover:opacity-90 relative">
                       {video.type === 'youtube' && video.src ? (
                         <div className="relative">
                           <img
@@ -362,8 +391,8 @@ const VideoListPage = () => {
                             loading="lazy"
                           />
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="bg-black bg-opacity-50 rounded-full p-3">
-                              <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <div className="bg-black bg-opacity-50 rounded-full p-4 transform transition-transform duration-300 hover:scale-110">
+                              <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7L8 5z" />
                               </svg>
                             </div>
@@ -474,7 +503,7 @@ const VideoListPage = () => {
             </p>
             <button
               onClick={() => setSearchQuery('')}
-              className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300"
             >
               Barcha videolarni ko'rish
             </button>
