@@ -1254,77 +1254,717 @@ const videoData = [
     ]
   },
   {
-    sectionId: 5,
-    sectionName: "Kimyo",
-    videos: [
-      { id: "uVCDKfV69wA", title: "Periodic Table", type: "youtube", src: "uVCDKfV69wA" },
-      { id: "yHwmIq3Cwi8", title: "Chemical Reactions", type: "youtube", src: "yHwmIq3Cwi8" },
-    ],
+    "sectionId": 5,
+    "sectionName": "Excel",
+    "videos": [
+      {
+        "id": "ujj_zLZfvYo",
+        "title": "1. Excel bilan tanishuv",
+        "type": "youtube",
+        "src": "ujj_zLZfvYo",
+        "exercise": "Excel dasturini oching va yangi ish varag'i yarating. Asosiy menyular (Home, Insert, Data) bilan tanishing va har birining asosiy funksiyalarini ko'rib chiqing."
+      },
+      {
+        "id": "NbBeJdWRPZk",
+        "title": "2. Ish boshlash va saqlash",
+        "type": "youtube",
+        "src": "NbBeJdWRPZk",
+        "exercise": "Yangi fayl yarating, unga 'Test' deb nom bering va .xlsx formatida saqlang. Keyin faylni ochib, bir nechta kataklarga matn kiriting va qayta saqlang."
+      },
+      {
+        "id": "oNFHqO9dPiE",
+        "title": "3. Ma'lumot kiritish",
+        "type": "youtube",
+        "src": "oNFHqO9dPiE",
+        "exercise": "Jadval yarating: 5 qator va 3 ustunga ism, yosh va shahar ma'lumotlarini kiriting. Ma'lumotlarni to'g'ri tartibda joylashtiring."
+      },
+      {
+        "id": "aV4ZAxJDUvs",
+        "title": "4. Katak chegaralarini moslashtirish",
+        "type": "youtube",
+        "src": "aV4ZAxJDUvs",
+        "exercise": "3x3 o'lchamdagi jadval yarating. Har bir katak uchun turli chegara uslublarini (qalin, nozik, chiziqli) qo'llang."
+      },
+      {
+        "id": "5VSqIwIWUbQ",
+        "title": "5. Sonlar bilan ishlash",
+        "type": "youtube",
+        "src": "5VSqIwIWUbQ",
+        "exercise": "5 ta mahsulot narxini jadvalga kiriting. Narxlarni raqam formatida sozlang va ularni alohida ustunda 10% chegirma bilan hisoblang."
+      },
+      {
+        "id": "xK0AATprTCw",
+        "title": "6. Arifmetik amallar",
+        "type": "youtube",
+        "src": "xK0AATprTCw",
+        "exercise": "Jadvalda 4 ta sonni kiriting va ularni qo'shish, ayirish, ko'paytirish va bo'lish amallarini formula yordamida hisoblang."
+      },
+      {
+        "id": "eo1twPKhZ7g",
+        "title": "7. Valyutalar bilan ishlash",
+        "type": "youtube",
+        "src": "eo1twPKhZ7g",
+        "exercise": "5 ta mahsulot narxini AQSh dollari ($) formatida kiriting. Umumiy narxni hisoblang va valyuta formatini o'zgartiring (masalan, € yoki ₽)."
+      },
+      {
+        "id": "qVNT7agK9EU",
+        "title": "8. Foizlar bilan ishlash",
+        "type": "youtube",
+        "src": "qVNT7agK9EU",
+        "exercise": "Jadvalda 5 ta mahsulot narxi va ularga qo'llaniladigan 15% soliqni hisoblang. Umumiy narxni foiz formati yordamida chiqaring."
+      },
+      {
+        "id": "ykxSoXIb-Yg",
+        "title": "9. Sana bilan ishlash",
+        "type": "youtube",
+        "src": "ykxSoXIb-Yg",
+        "exercise": "Jadvalga 5 ta tug'ilgan sana kiriting. Har bir shaxs uchun yoshni hozirgi sana asosida hisoblang (DATEDIF funksiyasidan foydalaning)."
+      },
+      {
+        "id": "H11k9RrRFY8",
+        "title": "10. Boshlang'ich funksiyalar",
+        "type": "youtube",
+        "src": "H11k9RrRFY8",
+        "exercise": "Jadvalda 10 ta son kiriting. Ularni yig'indisini (SUM), eng katta (MAX) va eng kichik (MIN) qiymatlarini funksiyalar yordamida toping."
+      },
+      {
+        "id": "h2SGFMtPO0U",
+        "title": "11. SUM funksiyasi",
+        "type": "youtube",
+        "src": "h2SGFMtPO0U",
+        "exercise": "Oylik xarajatlarni (masalan, oziq-ovqat, transport) jadvalga kiriting va SUM funksiyasi yordamida umumiy xarajatlarni hisoblang."
+      },
+      {
+        "id": "cxskyD--36Q",
+        "title": "12. Arifmetik o'rtacha",
+        "type": "youtube",
+        "src": "cxskyD--36Q",
+        "exercise": "5 nafar talabaning imtihon ballarini kiriting va AVERAGE funksiyasi yordamida o'rtacha ballni hisoblang."
+      },
+      {
+        "id": "19sbBA3rJ8o",
+        "title": "13. MAX funksiyasi",
+        "type": "youtube",
+        "src": "19sbBA3rJ8o",
+        "exercise": "Bir haftalik harorat ma'lumotlarini (7 kun) kiriting va MAX funksiyasi yordamida eng yuqori haroratni toping."
+      },
+      {
+        "id": "QZaoeiBjCwU",
+        "title": "14. MIN funksiyasi",
+        "type": "youtube",
+        "src": "QZaoeiBjCwU",
+        "exercise": "Bir haftalik harorat ma'lumotlarini kiriting va MIN funksiyasi yordamida eng past haroratni toping."
+      },
+      {
+        "id": "aRGtmrwsyZ8",
+        "title": "15. Xatolar bilan ishlash",
+        "type": "youtube",
+        "src": "aRGtmrwsyZ8",
+        "exercise": "Jadvalda noto'g'ri formulalar yordamida xato (#DIV/0!, #VALUE!) hosil qiling va IFERROR funksiyasi bilan xatolarni matn bilan almashtiring."
+      },
+      {
+        "id": "cplgjZqCktQ",
+        "title": "16. Absolyut va nisbiy kataklar",
+        "type": "youtube",
+        "src": "cplgjZqCktQ",
+        "exercise": "Jadvalda mahsulot narxini va soliq stavkasini kiriting. Absolyut ($A$1) va nisbiy (A1) kataklarga ishora qilib soliqni hisoblang."
+      },
+      {
+        "id": "-R_5s2_sE-c",
+        "title": "17. Formatlash",
+        "type": "youtube",
+        "src": "-R_5s2_sE-c",
+        "exercise": "Jadval yarating va matnni qalin (Bold), rangli va turli shriftlar bilan formatlang."
+      },
+      {
+        "id": "Z--U1BH49aQ",
+        "title": "18. Ranglar bilan ishlash",
+        "type": "youtube",
+        "src": "Z--U1BH49aQ",
+        "exercise": "Jadvalda 5 ta mahsulot ro'yxatini yarating va har bir qatorni turli ranglar bilan bo'yang."
+      },
+      {
+        "id": "zgyg93NKX98",
+        "title": "19. Katak chegaralari",
+        "type": "youtube",
+        "src": "zgyg93NKX98",
+        "exercise": "5x5 jadval yarating va har bir qator uchun turli chegara uslublarini qo'llang (masalan, ikki chiziqli, nuqtali)."
+      },
+      {
+        "id": "9QNj3FNooTM",
+        "title": "20. Formatlash tayoqchasi",
+        "type": "youtube",
+        "src": "9QNj3FNooTM",
+        "exercise": "Jadvalda ma'lumotlarni formatlang va Format Painter yordamida bir xil formatni boshqa kataklarga nusxalang."
+      },
+      {
+        "id": "Vc3B9DJbDFA",
+        "title": "21. Markazlashtirish va matn yo'nalishi",
+        "type": "youtube",
+        "src": "Vc3B9DJbDFA",
+        "exercise": "Jadval sarlavhasini markazlashtiring, matnni 45 gradusga burang va bir nechta kataklarni birlashtiring."
+      },
+      {
+        "id": "g9IKp5W1kqk",
+        "title": "22. Avtomatik ketma-ketlik",
+        "type": "youtube",
+        "src": "g9IKp5W1kqk",
+        "exercise": "1 dan 100 gacha raqamlarni va oylarning ro'yxatini avtomatik ketma-ketlik yordamida to'ldiring."
+      },
+      {
+        "id": "C8A7SR1K8fA",
+        "title": "23. Nusxa olish va ko'chirish",
+        "type": "youtube",
+        "src": "C8A7SR1K8fA",
+        "exercise": "Jadvaldagi ma'lumotlarni nusxa oling va boshqa ish varag'iga ko'chiring. Formatni saqlab ko'chiring."
+      },
+      {
+        "id": "jjhqYFWeAvk",
+        "title": "24. Saralash",
+        "type": "youtube",
+        "src": "jjhqYFWeAvk",
+        "exercise": "10 nafar talabaning ismlari va ballarini kiriting. Ballarni kamayish tartibida saralang."
+      },
+      {
+        "id": "ocjULM-gt7A",
+        "title": "25. Filtrlash",
+        "type": "youtube",
+        "src": "ocjULM-gt7A",
+        "exercise": "Mahsulotlar ro'yxatini yarating va faqat narxi 100 dan yuqori bo'lganlarni filtrlang."
+      },
+      {
+        "id": "WGEUQbUWJQg",
+        "title": "26. Rasmlar joylashtirish",
+        "type": "youtube",
+        "src": "WGEUQbUWJQg",
+        "exercise": "Jadvalga kompaniya logotipini joylashtiring va uning o'lchamini moslashtiring."
+      },
+      {
+        "id": "ORlOFsAK5Ig",
+        "title": "27. Chizma va shakllar",
+        "type": "youtube",
+        "src": "ORlOFsAK5Ig",
+        "exercise": "Jadvalda o'q shaklini chizing va uni rangli va matnli qilib sozlang."
+      },
+      {
+        "id": "lAf6K-5vs1Q",
+        "title": "28. Grafik va diagrammalar",
+        "type": "youtube",
+        "src": "lAf6K-5vs1Q",
+        "exercise": "Oylik savdo ma'lumotlarini kiriting va ustunli diagramma yarating."
+      },
+      {
+        "id": "gsGxvVPwIww",
+        "title": "29. Diagrammalarni sozlash (2-qism)",
+        "type": "youtube",
+        "src": "gsGxvVPwIww",
+        "exercise": "Yaratilgan diagrammaga sarlavha, o'q yorliqlari qo'shing va ranglarini o'zgartiring."
+      },
+      {
+        "id": "CKx3_qqdrF4",
+        "title": "30. Diagrammalarni formatlash (3-qism)",
+        "type": "youtube",
+        "src": "CKx3_qqdrF4",
+        "exercise": "Diagrammada ma'lumot yorliqlarini qo'shing va uning fon rangini o'zgartiring."
+      },
+      {
+        "id": "tiJGPYZRv4A",
+        "title": "31. Chop etish (1-qism)",
+        "type": "youtube",
+        "src": "tiJGPYZRv4A",
+        "exercise": "Jadvalni chop etish uchun tayyorlang va Print Preview'da ko'rib chiqing."
+      },
+      {
+        "id": "KbmdliU0_nE",
+        "title": "32. Chop etish sozlamalari (albom shakl)",
+        "type": "youtube",
+        "src": "KbmdliU0_nE",
+        "exercise": "Jadvalni albom shaklida chop etish uchun sozlang va chegaralarni aniq belgilang."
+      },
+      {
+        "id": "hD6xKFzqPgs",
+        "title": "33. Varaq sozlamalari",
+        "type": "youtube",
+        "src": "hD6xKFzqPgs",
+        "exercise": "Jadvalda varaq chegaralarini sozlang va sarlavhalarni har sahifada ko'rsating."
+      },
+      {
+        "id": "39r0icEs-SA",
+        "title": "34. Belgilangan joyni chop etish",
+        "type": "youtube",
+        "src": "39r0icEs-SA",
+        "exercise": "Jadvalning faqat ma'lum bir qismini (masalan, 5x5 katak) chop etish uchun belgilang."
+      },
+      {
+        "id": "nPW7wUNoVAk",
+        "title": "35. Qator va ustunlarni qotirish",
+        "type": "youtube",
+        "src": "nPW7wUNoVAk",
+        "exercise": "Katta jadvalda birinchi qator va ustunni qotiring va ma'lumotlarni aylantiring."
+      },
+      {
+        "id": "yhiIeHuc-iE",
+        "title": "36. Parol bilan himoyalash",
+        "type": "youtube",
+        "src": "yhiIeHuc-iE",
+        "exercise": "Jadvalni parol bilan himoyalang va faqat o'zingiz tahrirlay olishingizni tekshiring."
+      },
+      {
+        "id": "N1k0aUaHyeo",
+        "title": "37. Boshlang'ich daraja tabrik so'zi",
+        "type": "youtube",
+        "src": "N1k0aUaHyeo",
+        "exercise": "O'zingizning oylik byudjetingizni Excel'da tuzing: xarajatlarni kiriting, yig'indisini hisoblang va diagramma yarating."
+      }
+    ]
   },
   {
-    sectionId: 6,
-    sectionName: "Biologiya",
-    videos: [
-      { id: "14ZCLoQqXxk", title: "Cell Structure", type: "youtube", src: "14ZCLoQqXxk" },
-      { id: "R8hM_74c3EA", title: "Genetics Basics", type: "youtube", src: "R8hM_74c3EA" },
-    ],
-  },
-  {
-    sectionId: 7,
-    sectionName: "Ingliz tili",
-    videos: [
-      { id: "MOsTpgKIGT4", title: "Grammar Essentials", type: "youtube", src: "MOsTpgKIGT4" },
-      { id: "f0b5T1m8zM", title: "Vocabulary Building", type: "youtube", src: "f0b5T1m8zM" }, // TODO: Verify if 'f0b5T1m8zM' is a valid YouTube video ID
-    ],
-  },
-  {
-    sectionId: 8,
-    sectionName: "Tarix",
-    videos: [
-      { id: "lwd78VfDHBg", title: "World War I", type: "youtube", src: "lwd78VfDHBg" },
-      { id: "Z6p8jZTRzXI", title: "Ancient Civilizations", type: "youtube", src: "Z6p8jZTRzXI" },
-    ],
-  },
-  {
-    sectionId: 9,
-    sectionName: "Geografiya",
-    videos: [
-      { id: "VUkSauXKz5s", title: "Physical Geography", type: "youtube", src: "VUkSauXKz5s" },
-      { id: "mPzKOdQ5rEg", title: "Human Geography", type: "youtube", src: "mPzKOdQ5rEg" },
-    ],
-  },
-  {
-    sectionId: 10,
-    sectionName: "Adabiyot",
-    videos: [
-      { id: "HWjCStB6k4o", title: "Poetry Analysis", type: "youtube", src: "HWjCStB6k4o" },
-      { id: "0f8z3Z8xkH4", title: "Literary Genres", type: "youtube", src: "0f8z3Z8xkH4" },
-    ],
-  },
-  {
-    sectionId: 11,
-    sectionName: "Jismoniy tarbiya",
-    videos: [
-      { id: "XKDdvVj9Nsc", title: "Fitness Basics", type: "youtube", src: "XKDdvVj9Nsc" },
-      { id: "Qz3a7z5z9z", title: "Sports Techniques", type: "youtube", src: "Qz3a7z5z9z" }, // TODO: Verify if 'Qz3a7z5z9z' is a valid YouTube video ID
-    ],
-  },
-  {
-    sectionId: 12,
-    sectionName: "Chizmachilik",
-    videos: [
-      { id: "KWLoJM1sOlo", title: "Technical Drawing", type: "youtube", src: "KWLoJM1sOlo" },
-      { id: "2X9z3k5k8z", title: "Perspective Drawing", type: "youtube", src: "2X9z3k5k8z" }, // TODO: Verify if '2X9z3k5k8z' is a valid YouTube video ID
-    ],
-  },
-  {
-    sectionId: 13,
-    sectionName: "San’at",
-    videos: [
-      { id: "xyewN0gMfD4", title: "Art History", type: "youtube", src: "xyewN0gMfD4" },
-      { id: "8z3k5k8z9z", title: "Painting Techniques", type: "youtube", src: "8z3k5k8z9z" }, // TODO: Verify if '8z3k5k8z9z' is a valid YouTube video ID
-    ],
-  },
+    "sectionId": 6,
+    "sectionName": "CSS",
+    "videos": [
+      {
+        "id": "KPPhQ0F-SDY",
+        "title": "CSS | 1. Kirish",
+        "type": "youtube",
+        "src": "KPPhQ0F-SDY",
+        "exercise": "Oddiy HTML sahifa yarating va tashqi CSS faylni ulab, sahifaning fon rangi va matn rangini o'zgartiring."
+      },
+      {
+        "id": "U7Mq0paFXlA",
+        "title": "CSS | 2. CSS haqida. Kurs loyihasi",
+        "type": "youtube",
+        "src": "U7Mq0paFXlA",
+        "exercise": "Loyiha papkasini tashkil qiling, HTML va CSS fayllarini yarating. Sarlavha va paragrafga asosiy stillar (masalan, shrift o'lchami, rang) qo'llang."
+      },
+      {
+        "id": "0nz5wXX_ppw",
+        "title": "CSS | 3. HTML hujjat va CSS. Loyiha strukturasi",
+        "type": "youtube",
+        "src": "0nz5wXX_ppw",
+        "exercise": "Header, asosiy kontent va footer bilan HTML tuzilma yarating. CSS faylni ulab, har bir bo'limga turli fon ranglari qo'llang."
+      },
+      {
+        "id": "0UsPKt4gU9I",
+        "title": "CSS | 4. Selectors (Tanlab oluvchilar)",
+        "type": "youtube",
+        "src": "0UsPKt4gU9I",
+        "exercise": "Element, class va ID selektorlari yordamida HTML sahifaning turli qismlarini stillashtiring (masalan, class uchun matn rangi, ID uchun fon)."
+      },
+      {
+        "id": "qxQhz9RW3YE",
+        "title": "CSS | 5. Comments (Izohlar)",
+        "type": "youtube",
+        "src": "qxQhz9RW3YE",
+        "exercise": "CSS faylida kamida beshta turli stil qoidasining maqsadini tushuntiruvchi izohlar qo'shing."
+      },
+      {
+        "id": "7k4QXZ0fbc0",
+        "title": "CSS | 6. Specificity (O'ziga xoslik)",
+        "type": "youtube",
+        "src": "7k4QXZ0fbc0",
+        "exercise": "Class va ID bilan ziddiyatli CSS qoidalar yozing va specificity qanday ishlayotganini ko'rsatish uchun stillarni sozlang."
+      },
+      {
+        "id": "Q2hfLLQhjsc",
+        "title": "CSS | 7. Inheritance (Meros olish)",
+        "type": "youtube",
+        "src": "Q2hfLLQhjsc",
+        "exercise": "Ota elementga stil (masalan, shrift oilasi) qo'llang va bola elementlarning meros olishini kuzating. Bitta bola elementda merosni o'zgartiring."
+      },
+      {
+        "id": "p_IuBg43k6k",
+        "title": "CSS | 8. Combinators (Kombinatorlar)",
+        "type": "youtube",
+        "src": "p_IuBg43k6k",
+        "exercise": "Ichki, bola, qo'shni va umumiy qardosh kombinatorlari yordamida ichki HTML tuzilmadagi elementlarni stillashtiring."
+      },
+      {
+        "id": "uvefHirWsG4",
+        "title": "CSS | 9. 'Class'lar va qo'shma (combined) selektorlar",
+        "type": "youtube",
+        "src": "uvefHirWsG4",
+        "exercise": "HTML elementlariga bir nechta class qo'llang va qo'shma selektorlar (masalan, .class1.class2) yordamida maxsus stillar qo'llang."
+      },
+      {
+        "id": "OymOhpWz0hU",
+        "title": "CSS | 10. Class yoki ID. '!important' haqida",
+        "type": "youtube",
+        "src": "OymOhpWz0hU",
+        "exercise": "Class va ID bilan ziddiyatli stillar yarating. !important yordamida bitta stilni bekor qiling va izohlarda ta'sirini tushuntiring."
+      },
+      {
+        "id": "3CymgP8fUUY",
+        "title": "CSS | 11. CSS asoslari yordamida loyihani yaxshilash",
+        "type": "youtube",
+        "src": "3CymgP8fUUY",
+        "exercise": "Oddiy veb-sahifani selektorlar, ranglar va shriftlar yordamida ko'rinishini yaxshilang."
+      },
+      {
+        "id": "WKUqpFVQnj8",
+        "title": "CSS | 12. Box model (Quti modeli). Margin, Padding, Border",
+        "type": "youtube",
+        "src": "WKUqpFVQnj8",
+        "exercise": "Quti modelini ko'rsatish uchun margin, padding va border qiymatlari bilan karta komponenti yarating."
+      },
+      {
+        "id": "u2yKLRL3chY",
+        "title": "CSS | 13. Margin collapsing. Shorthands (Qisqartmalar)",
+        "type": "youtube",
+        "src": "u2yKLRL3chY",
+        "exercise": "Margin collapsingni ko'rsatish uchun ikkita yonma-yon div yarating. Padding va margin uchun qisqartma xossalarni qo'llang."
+      },
+      {
+        "id": "1j2jyuzpvGs",
+        "title": "CSS | 14. Height (balandlik), Width (kenglik). Max / Min - height / width",
+        "type": "youtube",
+        "src": "1j2jyuzpvGs",
+        "exercise": "Belgilangan balandlik/kenglikdagi konteyner va max/min-balandlik/kenglikdagi boshqa konteyner yarating, kontent o'zgarishini kuzating."
+      },
+      {
+        "id": "M-0OR6E51pM",
+        "title": "CSS | 15. 'Display' xossasi",
+        "type": "youtube",
+        "src": "M-0OR6E51pM",
+        "exercise": "Display: block, inline va inline-block xossalarini turli elementlarga qo'llab, joylashuv o'zgarishlarini sinab ko'ring."
+      },
+      {
+        "id": "69VWgCVJ7Bo",
+        "title": "CSS | 16. Text align, Vertical align va Float",
+        "type": "youtube",
+        "src": "69VWgCVJ7Bo",
+        "exercise": "Markazlashtirilgan matn, vertikal hizalan gan rasmlar va float yordamida ikki ustunli dizayn yarating."
+      },
+      {
+        "id": "fEjwgMUvW1E",
+        "title": "CSS | 17. Text decoration. Pseudo classes va qoidalarni guruhlash",
+        "type": "youtube",
+        "src": "fEjwgMUvW1E",
+        "exercise": "Havolalarga hover effekti qo'shing, sarlavhalarga text-decoration qo'llang va o'xshash stillarni guruhlang."
+      },
+      {
+        "id": "WnoCk0YI36k",
+        "title": "CSS | 18. Asosiy xossalar yordamida loyihani yaxshilash (1-qism)",
+        "type": "youtube",
+        "src": "WnoCk0YI36k",
+        "exercise": "Veb-sahifani matn hizolash, float va asosiy stillar yordamida yaxshilang."
+      },
+      {
+        "id": "mJq81TLdH9E",
+        "title": "CSS | 19. Asosiy xossalar yordamida loyihani yaxshilash (2-qism)",
+        "type": "youtube",
+        "src": "mJq81TLdH9E",
+        "exercise": "Xuddi shu sahifani chegara va padding stillari bilan yanada yaxshilang."
+      },
+      {
+        "id": "2vnZeG8Cwcg",
+        "title": "CSS | 20. Asosiy xossalar yordamida loyihani yaxshilash (3-qism)",
+        "type": "youtube",
+        "src": "2vnZeG8Cwcg",
+        "exercise": "Sahifani margin va display xossalarini sozlash orqali yakuniy ko'rinishga keltiring."
+      },
+      {
+        "id": "fU44BYrxk98",
+        "title": "CSS | 21. Joylashish va 'static' qiymati",
+        "type": "youtube",
+        "src": "fU44BYrxk98",
+        "exercise": "Position: static yordamida elementlar bilan joylashuvni yarating va hujjat oqimidagi default xatti-harakatini kuzating."
+      },
+      {
+        "id": "HQnSWvz-R0w",
+        "title": "CSS | 22. Relative va Fixed",
+        "type": "youtube",
+        "src": "HQnSWvz-R0w",
+        "exercise": "Relative va fixed pozitsiyalardan foydalanib, yopishqoq navigatsiya paneli yarating."
+      },
+      {
+        "id": "AL9Iuzust7I",
+        "title": "CSS | 23. Absolute va Sticky",
+        "type": "youtube",
+        "src": "AL9Iuzust7I",
+        "exercise": "Position: absolute bilan tooltip va position: sticky bilan aylantiriladigan yon panel yarating."
+      },
+      {
+        "id": "tNxglenCca4",
+        "title": "CSS | 24. Z-index va Overflow",
+        "type": "youtube",
+        "src": "tNxglenCca4",
+        "exercise": "Turli z-index qiymatlari bilan bir-biriga yopishgan elementlar va ortiqcha kontentni boshqarish uchun overflow: auto qo'llang."
+      },
+      {
+        "id": "9xtKs3eqSuM",
+        "title": "CSS | 25. Positioning yordamida loyihani yaxshilash",
+        "type": "youtube",
+        "src": "9xtKs3eqSuM",
+        "exercise": "Relative, absolute va fixed pozitsiyalardan foydalanib, veb-sahifada dinamik joylashuv yarating."
+      },
+      {
+        "id": "lJgrsg7frnQ",
+        "title": "CSS | 26. Background",
+        "type": "youtube",
+        "src": "lJgrsg7frnQ",
+        "exercise": "Bo'limga fon rasmi va rang qo'llang, background-size va position ni sozlang."
+      },
+      {
+        "id": "Cyzt81nvVcM",
+        "title": "CSS | 27. Styling images",
+        "type": "youtube",
+        "src": "Cyzt81nvVcM",
+        "exercise": "Rasmga border-radius, box-shadow va object-fit qo'llab, uning ko'rinishini yaxshilang."
+      },
+      {
+        "id": "l42-781rgOE",
+        "title": "CSS | 28. Gradient va Filterlar",
+        "type": "youtube",
+        "src": "l42-781rgOE",
+        "exercise": "Linear gradient fonli tugma yarating va rasmga filter (masalan, blur) qo'llang."
+      },
+      {
+        "id": "OSzIs4NdWEo",
+        "title": "CSS | 29. Rasmlar (images) yordamida loyihani yaxshilash",
+        "type": "youtube",
+        "src": "OSzIs4NdWEo",
+        "exercise": "Gradient va filterlar bilan stillashtirilgan rasmlar qo'shib, veb-sahifani yaxshilang."
+      },
+      {
+        "id": "toSPnMu9PVQ",
+        "title": "CSS | 30. Formalarga style berish (1-qism)",
+        "type": "youtube",
+        "src": "toSPnMu9PVQ",
+        "exercise": "Kiritish maydonlari, yorliqlar va yuborish tugmasi bilan oddiy formaga padding va chegara stillarini qo'llang."
+      },
+      {
+        "id": "_NJY7VbF8Kw",
+        "title": "CSS | 31. Formalarga style berish (2-qism)",
+        "type": "youtube",
+        "src": "_NJY7VbF8Kw",
+        "exercise": "Forma elementlariga hover va focus holatlari qo'shib, foydalanuvchi tajribasini yaxshilang."
+      },
+      {
+        "id": "uyY6JoILzS4",
+        "title": "CSS | 32. Formalar yordamida loyihani yaxshilash",
+        "type": "youtube",
+        "src": "uyY6JoILzS4",
+        "exercise": "Stillashtirilgan formani veb-sahifaga qo'shing va umumiy dizayn bilan mosligini ta'minlang."
+      },
+      {
+        "id": "gJdlxBua_F8",
+        "title": "CSS | 33. O'lchov birliklari (Units)",
+        "type": "youtube",
+        "src": "gJdlxBua_F8",
+        "exercise": "Px, % va vw birliklaridan foydalanib, elementlar o'lchamlarini taqqoslash uchun joylashuv yarating."
+      },
+      {
+        "id": "1MUBPJ7sKz0",
+        "title": "CSS | 34. Foiz (%) o'lchov birligi",
+        "type": "youtube",
+        "src": "1MUBPJ7sKz0",
+        "exercise": "Kenglik va margin foizlarda belgilangan moslashuvchan konteyner dizayn qiling."
+      },
+      {
+        "id": "lZVj3LTNm-A",
+        "title": "CSS | 35. 'em' o'lchov birligi",
+        "type": "youtube",
+        "src": "lZVj3LTNm-A",
+        "exercise": "Matn va paddingni em birliklarida stillashtiring, ota elementning shrift o'lchamini o'zgartirib ta'sirni sinang."
+      },
+      {
+        "id": "BvQc3E80cww",
+        "title": "CSS | 36. rem o'lchov birligi",
+        "type": "youtube",
+        "src": "BvQc3E80cww",
+        "exercise": "Shrift o'lchamlari va marginlarni rem birliklarida sozlang, ildiz shrift o'lchamini sinab ko'ring."
+      },
+      {
+        "id": "0CGkww2SJB4",
+        "title": "CSS | 37. Viewport o'lchov birligi",
+        "type": "youtube",
+        "src": "0CGkww2SJB4",
+        "exercise": "Balandlik va shrift o'lchami vw va vh birliklarida bo'lgan hero bo'limi yarating."
+      },
+      {
+        "id": "Zts7IrRfe-c",
+        "title": "CSS | 38. Units yordamida loyihani yaxshilab olish",
+        "type": "youtube",
+        "src": "Zts7IrRfe-c",
+        "exercise": "Rem, vw va % birliklarini aralashtirib, moslashuvchan veb-sahifa joylashuvini yaxshilang."
+      },
+      {
+        "id": "OaJqZX3YGv4",
+        "title": "CSS | 39. Responsive Web Design (RWD)",
+        "type": "youtube",
+        "src": "OaJqZX3YGv4",
+        "exercise": "Mobil va ish stoli ekranlari uchun moslashadigan oddiy veb-sahifa dizayn qiling."
+      },
+      {
+        "id": "GrXdH78-QrM",
+        "title": "CSS | 40. Media queries",
+        "type": "youtube",
+        "src": "GrXdH78-QrM",
+        "exercise": "768px dan kichik ekranlar uchun shrift o'lchamlari va joylashuvni o'zgartiradigan media so'rovlar qo'shing."
+      },
+      {
+        "id": "FpwgBDx6Uos",
+        "title": "CSS | 41. Breakpoints",
+        "type": "youtube",
+        "src": "FpwgBDx6Uos",
+        "exercise": "600px, 900px va 1200px da stillarni o'zgartiradigan maxsus breakpoints aniqlang."
+      },
+      {
+        "id": "ihua653WqEg",
+        "title": "CSS | 42. RWD yordamida loyihani yaxshilash (1-qism)",
+        "type": "youtube",
+        "src": "ihua653WqEg",
+        "exercise": "Mobil-birinchi dizayn uchun media so'rovlar qo'shib, veb-sahifani moslashuvchan qiling."
+      },
+      {
+        "id": "_Rhv5VdZTSo",
+        "title": "CSS | 43. RWD yordamida loyihani yaxshilash (2-qism)",
+        "type": "youtube",
+        "src": "_Rhv5VdZTSo",
+        "exercise": "Qo'shimcha breakpoints va moslashuvchan rasmlar bilan sahifani yanada yaxshilang."
+      },
+      {
+        "id": "3vQNuan5670",
+        "title": "CSS | 44. Fonts",
+        "type": "youtube",
+        "src": "3vQNuan5670",
+        "exercise": "Google Font ni veb-sahifaga qo'llang va font-weight va font-style ni sozlang."
+      },
+      {
+        "id": "ca0XQOicBOc",
+        "title": "CSS | 45. Yangi font qo'shish",
+        "type": "youtube",
+        "src": "ca0XQOicBOc",
+        "exercise": "Google Fonts dan maxsus font import qiling va uni sarlavhalar va paragraflarga qo'llang."
+      },
+      {
+        "id": "MrS3rePyXmY",
+        "title": "CSS | 46. Local font qo'shish",
+        "type": "youtube",
+        "src": "MrS3rePyXmY",
+        "exercise": "@font-face yordamida mahalliy font faylini qo'shing va uni matn elementlariga qo'llang."
+      },
+      {
+        "id": "8tZy85j43jw",
+        "title": "CSS | 47. Font xossalari",
+        "type": "youtube",
+        "src": "8tZy85j43jw",
+        "exercise": "Font-size, line-height va letter-spacing xossalarini paragrafga qo'llab sinab ko'ring."
+      },
+      {
+        "id": "XZ2mOhJygJY",
+        "title": "CSS | 48. Fonts yordamida loyihani yaxshilab olish",
+        "type": "youtube",
+        "src": "XZ2mOhJygJY",
+        "exercise": "Maxsus fontlar va font xossalarini sozlash orqali veb-sahifani yaxshilang."
+      },
+      {
+        "id": "KM5qHfPsDqU",
+        "title": "CSS | 49. 2D transforms",
+        "type": "youtube",
+        "src": "KM5qHfPsDqU",
+        "exercise": "Hoverda elementga rotate, scale va translate transformatsiyalarini qo'llang."
+      },
+      {
+        "id": "IL_7vzcmkJs",
+        "title": "CSS | 50. 3D transforms",
+        "type": "youtube",
+        "src": "IL_7vzcmkJs",
+        "exercise": "RotateX va perspective yordamida 3D aylantiriladigan karta effekti yarating."
+      },
+      {
+        "id": "js-Te68zyu8",
+        "title": "CSS | 51. Transitions",
+        "type": "youtube",
+        "src": "js-Te68zyu8",
+        "exercise": "Tugmaning fon rangi va o'lchamiga hoverda silliq o'tish effekti qo'shing."
+      },
+      {
+        "id": "2R3ynMxBGc0",
+        "title": "CSS | 52. Animations (1-qism)",
+        "type": "youtube",
+        "src": "2R3ynMxBGc0",
+        "exercise": "2 soniya davomida elementni fade-in qiladigan keyframe animatsiyasi yarating."
+      },
+      {
+        "id": "3SxxV_WRJIY",
+        "title": "CSS | 53. Animations (2-qism)",
+        "type": "youtube",
+        "src": "3SxxV_WRJIY",
+        "exercise": "Elementni ekran bo'ylab harakatlantiradigan takrorlanadigan animatsiya yarating."
+      },
+      {
+        "id": "j06i3epVpsI",
+        "title": "CSS | 54. CSS Advanced yordamida loyihani yaxshilash",
+        "type": "youtube",
+        "src": "j06i3epVpsI",
+        "exercise": "Interaktiv elementlar uchun o'tishlar va animatsiyalar qo'shib, veb-sahifani yaxshilang."
+      },
+      {
+        "id": "1Jt-JFYtKmo",
+        "title": "CSS | 55. Flexbox: asoslari va terminlari",
+        "type": "youtube",
+        "src": "1Jt-JFYtKmo",
+        "exercise": "Uchta teng kenglikdagi ustunli flexbox joylashuvini yarating."
+      },
+      {
+        "id": "HQsWXyz0kuo",
+        "title": "CSS | 56. Flexbox: flex-direction, flex-wrap, flex-flow va justify-content",
+        "type": "youtube",
+        "src": "HQsWXyz0kuo",
+        "exercise": "Flex-wrap va justify-content: space-between yordamida moslashuvchan flexbox joylashuvi yarating."
+      },
+      {
+        "id": "FIMkl5WTsY8",
+        "title": "CSS | 57. Flexbox: align-items va align-content",
+        "type": "youtube",
+        "src": "FIMkl5WTsY8",
+        "exercise": "Align-items va align-content yordamida markazlashtirilgan elementlar bilan flexbox joylashuvi yarating."
+      },
+      {
+        "id": "BhBCut4sP70",
+        "title": "CSS | 58. Flexbox: order, flex-grow va flex-shrink",
+        "type": "youtube",
+        "src": "BhBCut4sP70",
+        "exercise": "Flex elementlarini qayta tartiblang va ularning o'sishi/kichrayish xatti-harakatini sozlang."
+      },
+      {
+        "id": "8ObQlXKIUCc",
+        "title": "CSS | 59. Flexbox: flex-basis, flex va align-self",
+        "type": "youtube",
+        "src": "8ObQlXKIUCc",
+        "exercise": "Flex-basis va align-self yordamida bir flex elementini boshqalardan ajratib stillashtiring."
+      },
+      {
+        "id": "tc_W8ZGiVv4",
+        "title": "CSS | 60. Flexbox yordamida loyihani yaxshilash",
+        "type": "youtube",
+        "src": "tc_W8ZGiVv4",
+        "exercise": "Veb-sahifa joylashuvini yaxshiroq hizolash va moslashuvchanlik uchun flexbox ga aylantiring."
+      },
+      {
+        "id": "BE4MO4QP4BI",
+        "title": "CSS | 61. CSS Grid",
+        "type": "youtube",
+        "src": "BE4MO4QP4BI",
+        "exercise": "Teng o'lchamdagi hujayralar bilan 3x3 CSS Grid joylashuvini yarating."
+      },
+      {
+        "id": "lf1B94_gRkY",
+        "title": "CSS | 62. Best practices",
+        "type": "youtube",
+        "src": "lf1B94_gRkY",
+        "exercise": "Veb-sahifaning CSS kodini aniq nomlash va minimal takrorlanish bilan eng yaxshi amaliyotlarga muvofiq qayta tuzing."
+      },
+      {
+        "id": "",
+        "title": "CSS | 63. Loyihani yakunlash. Kurs yakuni",
+        "type": "youtube",
+        "src": "",
+        "exercise": "Flexbox, grid va moslashuvchan dizayn printsiplarini qo'llagan holda to'liq veb-sahifa loyihasini yakunlang."
+      }
+    ]
+  } 
 ];
 
 export default videoData;

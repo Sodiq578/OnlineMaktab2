@@ -143,6 +143,14 @@ const VideoListPage = () => {
     }
   };
 
+  const toggleEnlargeVideo = (videoId) => {
+    if (enlargedVideo === videoId) {
+      setEnlargedVideo(null);
+    } else {
+      setEnlargedVideo(videoId);
+    }
+  };
+
   const filteredVideos = section?.videos.filter((video) => {
     const matchesSearch = video.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter =
@@ -307,21 +315,24 @@ const VideoListPage = () => {
                 <div className="p-5">
                   <div className="flex justify-between items-center mb-3">
                     <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">{video.title}</h3>
-                    <button
-                      onClick={() => toggleBookmark(video.id)}
-                      className="text-yellow-500 hover:text-yellow-600 dark:text-yellow-400 dark:hover:text-yellow-300 transition-all duration-300"
-                      aria-label={bookmarkedVideos.includes(video.id) ? "Xatcho'pdan olib tashlash" : "Xatcho'p qilish"}
-                    >
-                      {bookmarkedVideos.includes(video.id) ? (
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
-                        </svg>
-                      ) : (
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                        </svg>
-                      )}
-                    </button>
+                    <div className="flex items-center space-x-2">
+                 
+                      <button
+                        onClick={() => toggleBookmark(video.id)}
+                        className="text-yellow-500 hover:text-yellow-600 dark:text-yellow-400 dark:hover:text-yellow-300 transition-all duration-300"
+                        aria-label={bookmarkedVideos.includes(video.id) ? "Xatcho'pdan olib tashlash" : "Xatcho'p qilish"}
+                      >
+                        {bookmarkedVideos.includes(video.id) ? (
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
                   </div>
 
                   <div className="flex gap-2 mb-4 flex-wrap">
