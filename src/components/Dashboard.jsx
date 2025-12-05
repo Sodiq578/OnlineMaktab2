@@ -9,7 +9,8 @@ const Dashboard = () => {
       <Sidebar />
 
       {/* Asosiy kontent */}
-      <div className="flex-1 p-6 sm:p-12 bg-gray-100 rounded-lg shadow-md flex flex-col overflow-hidden  max-h-[99vh]">
+   <div className="flex-1 p-2 sm:p-4 bg-gray-100 rounded-lg shadow-md flex flex-col overflow-hidden max-h-[99vh]">
+
 
 
         {/* Outlet joylashuvi */}

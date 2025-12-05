@@ -1,110 +1,140 @@
-import { motion } from "framer-motion";
-import { FaPlus, FaMinus } from "react-icons/fa";
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaPlus, FaMinus, FaChevronDown, FaChevronUp, FaArrowRight, FaStar, FaQuoteLeft } from "react-icons/fa";
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import "aos/dist/aos.css";
 import AOS from "aos";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Autoplay } from "swiper/modules";
+import { Pagination, Autoplay, EffectCoverflow } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import "swiper/css/effect-coverflow";
 
-import { FaChalkboardTeacher, FaCheckCircle, FaGraduationCap, FaCalendarAlt, FaCoffee, FaMapMarkerAlt } from "react-icons/fa";
-import { FaBars, FaTimes } from "react-icons/fa"; // Added icons for hamburger menu
+import { FaChalkboardTeacher, FaCheckCircle, FaGraduationCap, FaCalendarAlt, FaCoffee, FaMapMarkerAlt, FaPhone, FaEnvelope, FaTelegram, FaInstagram, FaFacebook, FaTwitter } from "react-icons/fa";
+import { FaBars, FaTimes } from "react-icons/fa";
 
 import backImg from "../assets/HeroBack.jpg";
-
-import { FaRegStar, FaHeart, FaRegCalendar } from 'react-icons/fa';
 
 const Navbar = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  // Handle window resize to toggle mobile/desktop view
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
       if (window.innerWidth > 768) {
-        setMenuOpen(false); // Close menu on desktop
+        setMenuOpen(false);
       }
     };
 
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Initial check
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
 
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("scroll", handleScroll);
+    handleResize();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
-  // Smooth scroll to section
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId.replace('#', ''));
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
-    setMenuOpen(false); // Close menu after clicking a link on mobile
+    setMenuOpen(false);
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-gradient-to-r from-blue-50 to-white z-50 py-4 px-6 flex justify-between items-center shadow-lg shadow-blue-100/50 transition-shadow duration-300">
-    <div className="container mx-auto max-w-screen-xl flex justify-between items-center">
-      {/* Logo */}
-      <h1 className="text-3xl font-extrabold text-blue-800 tracking-tight cursor-pointer hover:text-blue-600 transition-colors duration-200">
-        Logo
-      </h1>
+    <motion.nav 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5 }}
+      className={`fixed top-0 left-0 w-full z-50 py-4 px-6 transition-all duration-300 ${
+        scrolled 
+          ? "bg-white/90 backdrop-blur-lg shadow-2xl shadow-blue-200/30" 
+          : "bg-gradient-to-r from-blue-500/10 via-white/80 to-purple-500/10 backdrop-blur-sm"
+      }`}
+    >
+      <div className="container mx-auto max-w-screen-xl flex justify-between items-center">
+        <motion.h1 
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent cursor-pointer"
+        >
+          Edu<span className="text-blue-600">Hub</span>
+        </motion.h1>
 
-      {/* Navigation Links */}
-      <motion.ul
-        initial={{ height: 0, opacity: 0 }}
-        animate={{
-          height: isMobile && menuOpen ? "auto" : isMobile ? 0 : "auto",
-          opacity: isMobile && menuOpen ? 1 : isMobile ? 0 : 1,
-        }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-        className={`${
-          isMobile
-            ? menuOpen
-              ? "flex flex-col absolute top-16 left-0 w-full bg-white/95 backdrop-blur-md p-6 rounded-b-xl shadow-xl shadow-blue-200/30"
-              : "hidden"
-            : "flex gap-8 items-center"
-        } text-lg font-semibold text-gray-600`}
-      >
-        {[
-          { name: "Home", section: "#home" },
-          { name: "Darslar", section: "#darslar" },
-          { name: "Narxlar", section: "#narxlar" },
-          { name: "Savollar", section: "#savollar" },
-          { name: "Aloqa Fikrlar", section: "#aloqa" },
-          { name: "Xizmatarimiz", section: "#xizmatarimiz" },
-        ].map((item) => (
-          <li key={item.section}>
-            <button
-              onClick={() => scrollToSection(item.section)}
-              className="relative py-2 px-3 rounded-lg hover:text-blue-600 hover:bg-blue-50 transition-all duration-300 group"
+        <motion.ul
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ 
+            opacity: isMobile && menuOpen ? 1 : isMobile ? 0 : 1,
+            y: isMobile && menuOpen ? 0 : isMobile ? -20 : 0,
+            height: isMobile && menuOpen ? "auto" : isMobile ? 0 : "auto"
+          }}
+          transition={{ duration: 0.3 }}
+          className={`${
+            isMobile
+              ? menuOpen
+                ? "flex flex-col absolute top-16 left-0 w-full bg-white/95 backdrop-blur-xl p-8 rounded-2xl shadow-2xl shadow-blue-300/30 border border-blue-100"
+                : "hidden"
+              : "flex gap-8 items-center"
+          }`}
+        >
+          {[
+            { name: "Bosh Sahifa", section: "#home" },
+            { name: "Darslar", section: "#darslar" },
+            { name: "Narxlar", section: "#narxlar" },
+            { name: "Savollar", section: "#savollar" },
+            { name: "Aloqa", section: "#aloqa" },
+            { name: "Xizmatlar", section: "#xizmatlar" },
+          ].map((item, index) => (
+            <motion.li 
+              key={item.section}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
             >
-              {item.name}
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-500 group-hover:w-full transition-all duration-300" />
-            </button>
-          </li>
-        ))}
-      </motion.ul>
+              <button
+                onClick={() => scrollToSection(item.section)}
+                className="relative py-2 px-4 text-gray-700 hover:text-blue-600 font-medium group transition-all duration-300"
+              >
+                {item.name}
+                <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 group-hover:w-full transition-all duration-300" />
+              </button>
+            </motion.li>
+          ))}
+        </motion.ul>
 
-      {/* Mobile Menu Toggle Button */}
-      {isMobile && (
-        <button
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
           onClick={() => setMenuOpen(!menuOpen)}
-          className="text-2xl text-blue-800 hover:text-blue-600 focus:outline-none transition-colors duration-200"
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          className={`text-2xl ${
+            scrolled ? "text-blue-600" : "text-white"
+          } hover:text-blue-500 focus:outline-none lg:hidden`}
         >
           {menuOpen ? <FaTimes /> : <FaBars />}
-        </button>
-      )}
-    </div>
-  </nav>
+        </motion.button>
+
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="hidden lg:block px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300"
+        >
+          Ro'yxatdan o'tish
+        </motion.button>
+      </div>
+    </motion.nav>
   );
 };
 
-// HeroSection (unchanged)
 const HeroSection = () => {
   const navigate = useNavigate();
 
@@ -113,106 +143,368 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div id="home" className="hero-box mt-[50px] relative w-full min-h-screen bg-white flex items-center justify-center">
-      <div className="flex items-center justify-between w-full max-w-7xl p-6">
-        <div className="relative z-10 text-left max-w-md" data-aos="fade-right">
-          <h1 className="text-5xl font-bold text-blue-900 leading-tight" data-aos="fade-up">
-            Biz faqat dars bermaymiz, <br /> biz insonlarning hayotini o'zgartiramiz!
-          </h1>
-          <p className="mt-4 text-gray-700 text-lg" data-aos="fade-up" data-aos-delay="200">
-            9 yil ichida bizning onlayn maktabimiz 50 000 dan ortiq yoshlarning hayotini o'zgartirishga yordam berdi.
-          </p>
-          <button
-            onClick={() => navigate('/login')}
-            className="mt-6 px-6 py-3 bg-blue-500 text-white text-lg rounded-full shadow-lg hover:bg-blue-600 transition-all"
-            data-aos="fade-up"
-            data-aos-delay="400"
+    <div id="home" className="relative w-full min-h-screen overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-white/50 to-purple-500/20" />
+    <div 
+  className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width=%2260%22%20height=%2260%22%20viewBox=%220%200%2060%2060%22%20xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg%20fill=%22none%22%20fill-rule=%22evenodd%22%3E%3Cg%20fill=%22%239C92AC%22%20fill-opacity=%220.05%22%3E%3Cpath%20d=%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]" 
+/>
+      <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between w-full max-w-7xl mx-auto px-6 py-20 lg:py-32">
+        <motion.div 
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-left max-w-2xl"
+        >
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-5xl lg:text-7xl font-bold leading-tight mb-6"
           >
-            Birinchi darsga yoziling ✨
-          </button>
-        </div>
-        <div className="absolute top-0 right-0 h-full w-[80%] hidden md:block" data-aos="fade-left">
-          <img src={backImg} alt="Onlayn dars" className="hero-back-img object-cover" />
-        </div>
+            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Ta'lim bilan <br />
+            </span>
+            <span className="text-gray-800">Kelajakni quring</span>
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="text-lg lg:text-xl text-gray-600 mb-8 leading-relaxed"
+          >
+            9 yillik tajriba bilan biz 50,000+ talabaning hayotini o'zgartirdik. 
+            Endi sizning navbatingiz!
+          </motion.p>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="flex flex-col sm:flex-row gap-4"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/login')}
+              className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-semibold rounded-2xl shadow-xl hover:shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 group"
+            >
+              Birinchi darsni boshlash
+              <FaArrowRight className="inline ml-2 group-hover:translate-x-1 transition-transform" />
+            </motion.button>
+            
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/courses')}
+              className="px-8 py-4 bg-white/80 backdrop-blur-sm text-blue-600 text-lg font-semibold rounded-2xl border-2 border-blue-200 hover:border-blue-400 hover:bg-white transition-all duration-300"
+            >
+              Kurslarni ko'rish
+            </motion.button>
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="mt-12 flex flex-wrap gap-8"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center text-white">
+                <FaGraduationCap className="text-2xl" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-800">50K+</p>
+                <p className="text-gray-600">Talaba</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center text-white">
+                <FaChalkboardTeacher className="text-2xl" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-800">200+</p>
+                <p className="text-gray-600">O'qituvchi</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl flex items-center justify-center text-white">
+                <FaCheckCircle className="text-2xl" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold text-gray-800">98%</p>
+                <p className="text-gray-600">Muvaffaqiyat</p>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+        
+        <motion.div 
+          initial={{ opacity: 0, x: 50, rotateY: 20 }}
+          animate={{ opacity: 1, x: 0, rotateY: 0 }}
+          transition={{ duration: 1 }}
+          className="relative mt-12 lg:mt-0"
+        >
+          <div className="relative w-full max-w-lg">
+            <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl blur-xl opacity-20" />
+            <img 
+              src={backImg} 
+              alt="Online Education" 
+              className="relative rounded-2xl shadow-2xl w-full h-auto"
+            />
+            
+            <motion.div 
+              animate={{ y: [0, -10, 0] }}
+              transition={{ repeat: Infinity, duration: 3 }}
+              className="absolute -top-6 -right-6 bg-white p-4 rounded-2xl shadow-2xl"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center">
+                  <FaStar className="text-white text-xl" />
+                </div>
+                <div>
+                  <p className="font-bold text-gray-800">Eng yaxshi kurs</p>
+                  <p className="text-sm text-gray-600">2024-yil</p>
+                </div>
+              </div>
+            </motion.div>
+            
+            <motion.div 
+              animate={{ y: [0, 10, 0] }}
+              transition={{ repeat: Infinity, duration: 4, delay: 0.5 }}
+              className="absolute -bottom-6 -left-6 bg-gradient-to-r from-blue-500 to-purple-500 p-4 rounded-2xl shadow-2xl text-white"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                  <FaCalendarAlt className="text-xl" />
+                </div>
+                <div>
+                  <p className="font-bold">24/7</p>
+                  <p className="text-sm opacity-90">Qo'llab-quvvatlash</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
       </div>
+      
+      <motion.div 
+        animate={{ y: [0, 10, 0] }}
+        transition={{ repeat: Infinity, duration: 2 }}
+        className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
+      >
+        <button 
+          onClick={() => document.getElementById('xizmatlar').scrollIntoView({ behavior: 'smooth' })}
+          className="text-gray-600 hover:text-blue-600 transition-colors"
+        >
+          <FaChevronDown className="text-2xl" />
+        </button>
+      </motion.div>
     </div>
   );
 };
 
-// Features (unchanged)
 const Features = () => {
   const features = [
     {
-      title: "Bepul ikkinchi o‘qituvchi",
-      text: "Yordamchi o‘qituvchilar sizga doimo yordam beradi.",
+      title: "Bepul ikkinchi o'qituvchi",
+      text: "Har bir talaba uchun yordamchi o'qituvchi",
       icon: <FaChalkboardTeacher />,
-      link: "/teacher",
-      bgColor: "bg-blue-500",
+      color: "from-blue-500 to-cyan-500",
+      delay: 0
     },
     {
       title: "Test markazi",
-      text: "Tosheknt shahrida haqiqiy IELTS imtihonini topshiring.",
+      text: "Haqiqiy IELTS imtihonlari",
       icon: <FaCheckCircle />,
-      link: "/test-center",
-      bgColor: "bg-green-500",
+      color: "from-green-500 to-emerald-500",
+      delay: 100
     },
     {
-      title: "Tajribali o‘qituvchilar",
-      text: "O‘qituvchilarimiz IELTS natijalari 9.0 gacha.",
+      title: "Tajribali ustozlar",
+      text: "IELTS 9.0 natijali mutaxassislar",
       icon: <FaGraduationCap />,
-      link: "/teachers",
-      bgColor: "bg-purple-500",
+      color: "from-purple-500 to-pink-500",
+      delay: 200
     },
     {
       title: "Bepul tadbirlar",
-      text: "Barcha o‘quvchilar uchun qiziqarli tadbirlar mavjud.",
+      text: "Muntazam seminarlar va vebinarlar",
       icon: <FaCalendarAlt />,
-      link: "/events",
-      bgColor: "bg-red-500",
+      color: "from-orange-500 to-red-500",
+      delay: 300
     },
     {
       title: "Hamkorlik zonalari",
-      text: "Har bir filialda maxsus hamkorlik zonalari mavjud.",
+      text: "Zamonaviy o'quv maydonlari",
       icon: <FaCoffee />,
-      link: "/co-working",
-      bgColor: "bg-yellow-500",
+      color: "from-yellow-500 to-amber-500",
+      delay: 400
     },
+    {
+      title: "Shaxsiy dastur",
+      text: "Individual o'quv reja",
+      icon: <FaStar />,
+      color: "from-indigo-500 to-blue-500",
+      delay: 500
+    }
   ];
 
   return (
-    <section className="py-16 px-6">
+    <section id="xizmatlar" className="py-20 px-6 bg-gradient-to-b from-white to-blue-50/50">
       <div className="container mx-auto max-w-screen-xl">
-        <Swiper
-          modules={[Pagination, Autoplay]}
-          pagination={{ clickable: true }}
-          spaceBetween={30}
-          slidesPerView={1}
-          autoplay={{ delay: 3000 }}
-          breakpoints={{
-            640: { slidesPerView: 3 },
-            1024: { slidesPerView: 4 },
-          }}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
         >
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Nega bizni tanlashadi?
+            </span>
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Innovatsion yondashuv va ishonchli natijalar bilan ta'lim sari birga qadam tashlaymiz
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <SwiperSlide
+            <motion.div
               key={index}
-              className="p-8 bg-gray-200 rounded-3xl shadow-xl text-center transition-transform transform hover:scale-105 h-auto min-h-[350px] flex flex-col justify-between"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ y: -10, scale: 1.02 }}
+              className="group"
             >
-              <div
-                className={`w-20 h-20 mx-auto flex items-center justify-center rounded-full text-white ${feature.bgColor} text-4xl shadow-lg`}
-              >
-                {feature.icon}
+              <div className="relative h-full bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-700" />
+                
+                <div className="relative z-10">
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 transform group-hover:rotate-12 transition-transform duration-500`}>
+                    <div className="text-2xl text-white">
+                      {feature.icon}
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                    {feature.title}
+                  </h3>
+                  
+                  <p className="text-gray-600 mb-6">
+                    {feature.text}
+                  </p>
+                  
+                  <button className="flex items-center text-blue-600 font-semibold group-hover:text-purple-600 transition-colors">
+                    Batafsil
+                    <FaArrowRight className="ml-2 group-hover:translate-x-2 transition-transform" />
+                  </button>
+                </div>
               </div>
-              <div>
-                <h3 className="text-2xl font-bold mt-6 text-blue-900">{feature.title}</h3>
-                <p className="mt-3 text-gray-700 text-lg">{feature.text}</p>
-              </div>
-              <a
-                href={feature.link}
-                className="mt-5 inline-block text-blue-600 font-semibold hover:text-blue-800 transition-colors"
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Testimonials = () => {
+  const testimonials = [
+    {
+      name: "Azizbek Islomov",
+      role: "IELTS 8.5",
+      feedback: "6 oy ichida 5.5 dan 8.5 ga ko'tardim. O'qituvchilar juda sifatli!",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+      rating: 5
+    },
+    {
+      name: "Malika Nurmatova",
+      role: "SAT 1550",
+      feedback: "Amerika universitetiga kirishimga yordam berdi. Rahmat!",
+      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w-400&h=400&fit=crop",
+      rating: 5
+    },
+    {
+      name: "Dilmurod Karimov",
+      role: "Full Stack Developer",
+      feedback: "Dasturlash kursi mening karyeramni butunlay o'zgartirdi.",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
+      rating: 5
+    }
+  ];
+
+  return (
+    <section className="py-20 px-6 bg-gradient-to-b from-blue-50/50 to-white">
+      <div className="container mx-auto max-w-screen-xl">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Talabalarimiz fikrlari
+            </span>
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            50,000+ talaba bilan birga ishlash tajribamiz
+          </p>
+        </motion.div>
+
+        <Swiper
+          modules={[EffectCoverflow, Autoplay]}
+          effect="coverflow"
+          grabCursor={true}
+          centeredSlides={true}
+          slidesPerView="auto"
+          coverflowEffect={{
+            rotate: 0,
+            stretch: 0,
+            depth: 100,
+            modifier: 2.5,
+            slideShadows: true,
+          }}
+          autoplay={{ delay: 3000 }}
+          className="!pb-16"
+        >
+          {testimonials.map((testimonial, index) => (
+            <SwiperSlide key={index} className="!w-96 !h-auto">
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="bg-white rounded-3xl p-8 shadow-2xl h-full"
               >
-                Batafsil →
-              </a>
+                <div className="flex items-center mb-6">
+                  <img 
+                    src={testimonial.image} 
+                    alt={testimonial.name}
+                    className="w-16 h-16 rounded-full object-cover mr-4 border-4 border-blue-100"
+                  />
+                  <div>
+                    <h4 className="font-bold text-lg text-gray-800">{testimonial.name}</h4>
+                    <p className="text-blue-600">{testimonial.role}</p>
+                  </div>
+                </div>
+                
+                <div className="flex mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <FaStar key={i} className="text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                
+                <div className="relative">
+                  <FaQuoteLeft className="absolute -top-2 -left-2 text-blue-200 text-3xl" />
+                  <p className="text-gray-600 italic relative z-10 pl-6">
+                    "{testimonial.feedback}"
+                  </p>
+                </div>
+              </motion.div>
             </SwiperSlide>
           ))}
         </Swiper>
@@ -221,318 +513,254 @@ const Features = () => {
   );
 };
 
-// Testimonials (unchanged)
-const Testimonials = () => {
-  const [visibleTestimonials, setVisibleTestimonials] = useState(3);
-
-  const testimonials = [
-    {
-      name: "Jasur Islomov",
-      feedback: "Eng yaxshi o'quv tajribasi!",
-      location: "Toshkent",
-      profileImage: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-    {
-      name: "Malika Nurmatova",
-      feedback: "Ajoyib o'qituvchilar va ajoyib muhit!",
-      location: "Buxoro",
-      profileImage: "https://randomuser.me/api/portraits/women/1.jpg",
-    },
-    {
-      name: "Dilmurod Karimov",
-      feedback: "Faqat 6 oy ichida ingliz tilimni rivojlantirdim!",
-      location: "Andijon",
-      profileImage: "https://randomuser.me/api/portraits/men/2.jpg",
-    },
-    {
-      name: "Shahlo Rashidova",
-      feedback: "Har bir darsda yangi narsa o'rganaman!",
-      location: "Jizzax",
-      profileImage: "https://randomuser.me/api/portraits/women/3.jpg",
-    },
-    {
-      name: "Olimjon Davronov",
-      feedback: "Ta'lim sifati va yordam juda zo'r!",
-      location: "Navoiy",
-      profileImage: "https://randomuser.me/api/portraits/men/3.jpg",
-    },
-    {
-      name: "Gulnoza Rahimova",
-      feedback: "Haqiqatan ham qiziqarli va foydali darslar!",
-      location: "Samarqand",
-      profileImage: "https://randomuser.me/api/portraits/women/4.jpg",
-    },
-    {
-      name: "Bobur Anvarov",
-      feedback: "Men uchun eng yaxshi tanlov bo'ldi!",
-      location: "Farg'ona",
-      profileImage: "https://randomuser.me/api/portraits/men/4.jpg",
-    },
-    {
-      name: "Nilufar Saidova",
-      feedback: "Barcha savollarimga batafsil javob berishdi.",
-      location: "Namangan",
-      profileImage: "https://randomuser.me/api/portraits/women/5.jpg",
-    },
-    {
-      name: "Sanjar Eshmurodov",
-      feedback: "Innovatsion yondashuv menga juda yoqdi.",
-      location: "Xorazm",
-      profileImage: "https://randomuser.me/api/portraits/men/5.jpg",
-    },
-    {
-      name: "Zilola Kamolova",
-      feedback: "Darslar o'z vaqtida va qiziqarli o'tdi!",
-      location: "Qashqadaryo",
-      profileImage: "https://randomuser.me/api/portraits/women/6.jpg",
-    },
-    {
-      name: "Murod Mirzayev",
-      feedback: "Endi o'z sohamda bemalol muloqot qila olaman!",
-      location: "Surxondaryo",
-      profileImage: "https://randomuser.me/api/portraits/men/6.jpg",
-    },
-  ];
-
-  const handleShowMore = () => {
-    setVisibleTestimonials((prev) => prev + 3);
-  };
-
-  const handleShowLess = () => {
-    setVisibleTestimonials(3);
-  };
-
-  return (
-    <section className="bg-gradient-to-b from-blue-50 via-white to-blue-50 py-16 px-6">
-    <div className="container mx-auto max-w-screen-xl">
-      <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">
-        Talabalarimiz兜 nima deyishadi
-      </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
-        {testimonials.slice(0, visibleTestimonials).map((testimonial, index) => (
-          <div
-            key={index}
-            className="bg-white p-6 rounded-3xl shadow-lg text-center hover:shadow-2xl transition-shadow duration-300"
-            data-aos="fade-up"
-          >
-            <img
-              src={testimonial.profileImage}
-              alt={testimonial.name}
-              className="w-20 h-20 rounded-full mx-auto mb-4"
-            />
-            <p className="text-lg italic">"{testimonial.feedback}"</p>
-            <h3 className="font-bold text-xl mt-4 text-blue-900">
-              {testimonial.name}
-            </h3>
-            <div className="flex justify-center items-center mt-2">
-              <FaMapMarkerAlt className="text-gray-500 mr-2" />
-              <p className="text-gray-700">{testimonial.location}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-  
-      <div className="button-container text-center mt-8">
-        {visibleTestimonials < testimonials.length && (
-          <button
-            onClick={handleShowMore}
-            className="custom-button bg-blue-500 text-white py-2 px-4 rounded-lg"
-          >
-            Yana ko'rish
-          </button>
-        )}
-  
-        {visibleTestimonials > 3 && (
-          <button
-            onClick={handleShowLess}
-            className="custom-button bg-red-500 text-white py-2 px-4 rounded-lg"
-          >
-            Yopish
-          </button>
-        )}
-      </div>
-    </div>
-  </section>
-  );
-};
-
-// Gallery (unchanged)
 const Gallery = () => {
-  const galleryRef = React.useRef(null);
-  const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [hoveredCard, setHoveredCard] = useState(null);
 
   const subjects = [
-    "Matematika", "Fizika", "Kimyo", "Biologiya", "Informatika", "Tarix",
-    "Ona tili va adabiyot", "Chet села (Ingliz, Rus, Nemis)", "Geografiya", "Astronomiya",
-    "Iqtisodiyot", "Huquqshunoslik", "Jismoniy tarbiya", "Chizmachilik", "Texnologiya",
-    "Psixologiya", "Falsafa", "Ekologiya", "Tibbiyot asoslari", "San’at va madaniyat",
-    "Qur’on va hadis ilmi", "Robototexnika", "Dasturlash asoslari", "Sun’iy intellekt",
-    "Mexanika", "Elektronika", "Kiberxavfsizlik", "Nanotexnologiya", "Grafik dizayn",
-    "Web dasturlash"
+    "Matematika", "Fizika", "Kimyo", "Biologiya", "Dasturlash",
+    "Ingliz tili", "Rus tili", "Tarix", "Geografiya", "San'at"
   ];
 
   const lessons = subjects.map((title, index) => ({
     title,
-    imageUrl: `https://picsum.photos/200/300?random=${index + 1}`,
+    imageUrl: `https://images.unsplash.com/photo-${155 + index}?w=800&h=600&fit=crop`,
     category: title,
+    students: Math.floor(Math.random() * 1000) + 100,
+    rating: (Math.random() * 0.5 + 4.5).toFixed(1)
   }));
 
   const filteredLessons = selectedCategory === "All"
     ? lessons
     : lessons.filter((lesson) => lesson.category === selectedCategory);
 
-  useEffect(() => {
-    const galleryElement = galleryRef.current;
-    if (!galleryElement) return;
-
-    const cardHeight = 240;
-    const scrollAmount = cardHeight * 3;
-    let scrollInterval;
-
-    const startAutoScroll = () => {
-      scrollInterval = setInterval(() => {
-        if (!isUserScrolling) {
-          if (galleryElement.scrollTop + galleryElement.clientHeight >= galleryElement.scrollHeight) {
-            galleryElement.scrollTo({ top: 0, behavior: "smooth" });
-          } else {
-            galleryElement.scrollBy({ top: scrollAmount, behavior: "smooth" });
-          }
-        }
-      }, 3000);
-    };
-
-    startAutoScroll();
-
-    return () => clearInterval(scrollInterval);
-  }, [isUserScrolling]);
-
-  useEffect(() => {
-    const galleryElement = galleryRef.current;
-    if (!galleryElement) return;
-
-    const handleUserScroll = () => {
-      setIsUserScrolling(true);
-      clearTimeout(window.userScrollTimeout);
-      window.userScrollTimeout = setTimeout(() => {
-        setIsUserScrolling(false);
-      }, 2000);
-    };
-
-    galleryElement.addEventListener("scroll", handleUserScroll);
-
-    return () => galleryElement.removeEventListener("scroll", handleUserScroll);
-  }, []);
-
   return (
-    <section id="darslar" className="py-16 px-6 bg-gray-50">
+    <section id="darslar" className="py-20 px-6 bg-gradient-to-b from-white to-blue-50/50">
       <div className="container mx-auto max-w-screen-xl">
-        <h2 className="text-4xl font-extrabold text-center text-blue-900 mb-10">
-          Bizning Darslar
-        </h2>
-        <div className="mb-6 text-center">
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-white border border-blue-400 rounded-md px-4 py-2 shadow-lg transition-colors duration-300 hover:bg-blue-50"
-          >
-            <option value="All">Barchasi</option>
-            {subjects.map((subject, index) => (
-              <option key={index} value={subject}>
-                {subject}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div
-          ref={galleryRef}
-          className="overflow-auto rounded-2xl bg-white shadow-lg duration-300"
-          style={{ height: "600px" }}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
-            {filteredLessons.map((lesson, index) => (
-              <div
-                key={index}
-                className="bg-gradient-to-r from-blue-100 to-white rounded-3xl overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
-              >
-                <img
-                  src={lesson.imageUrl}
-                  alt={lesson.title}
-                  className="w-full h-64 object-cover rounded-t-3xl transition-transform duration-300 transform hover:scale-110"
-                />
-                <div className="p-6 text-center">
-                  <h3 className="text-xl font-semibold text-blue-800">{lesson.title}</h3>
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Mashhur Kurslar
+            </span>
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            30+ turli fanlar bo'yicha professional kurslar
+          </p>
+        </motion.div>
+
+        <div className="mb-8 flex flex-wrap gap-3 justify-center">
+          <button
+            onClick={() => setSelectedCategory("All")}
+            className={`px-6 py-3 rounded-full font-medium transition-all ${
+              selectedCategory === "All"
+                ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
+                : "bg-white text-gray-700 hover:bg-gray-100"
+            }`}
+          >
+            Barchasi
+          </button>
+          {subjects.slice(0, 6).map((subject) => (
+            <button
+              key={subject}
+              onClick={() => setSelectedCategory(subject)}
+              className={`px-6 py-3 rounded-full font-medium transition-all ${
+                selectedCategory === subject
+                  ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              {subject}
+            </button>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredLessons.slice(0, 6).map((lesson, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ y: -10 }}
+              onHoverStart={() => setHoveredCard(index)}
+              onHoverEnd={() => setHoveredCard(null)}
+              className="group cursor-pointer"
+            >
+              <div className="relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500">
+                <div className="relative h-64 overflow-hidden">
+                  <img
+                    src={lesson.imageUrl}
+                    alt={lesson.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  
+                  <div className="absolute top-4 right-4">
+                    <div className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1">
+                      <FaStar className="text-yellow-500" />
+                      <span className="font-bold">{lesson.rating}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                  <h3 className="text-2xl font-bold mb-2">{lesson.title}</h3>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <FaGraduationCap />
+                      <span>{lesson.students} talaba</span>
+                    </div>
+                    <button className="bg-white text-blue-600 px-4 py-2 rounded-full font-semibold hover:bg-blue-50 transition-colors">
+                      Ko'rish
+                    </button>
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="text-center mt-12">
+          <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-2xl hover:shadow-xl hover:shadow-blue-500/30 transition-all">
+            Barcha kurslarni ko'rish
+          </button>
         </div>
       </div>
     </section>
   );
 };
 
-// Pricing (unchanged)
 const Pricing = () => {
   const navigate = useNavigate();
+  const [hoveredPlan, setHoveredPlan] = useState(null);
 
   const pricingPlans = [
     {
-      plan: "Asosiy",
-      price: "$29/oy",
+      plan: "Boshlang'ich",
+      price: "$29",
+      period: "oyiga",
       features: [
-        { title: "Barcha kurslarga kirish", description: "Barcha asosiy kurslarga bepul kirish imkoniyati." },
-        { title: "Bepul tadbirlar", description: "Oylik bepul tadbirlar va vebinarlar." },
-        { title: "Elektron pochta yordam", description: "Elektron pochta orqali 24/7 yordam." },
+        "Barcha kurslarga kirish",
+        "Bepul tadbirlar",
+        "24/7 chat yordam",
+        "Davomatni kuzatish",
+        "Haftalik hisobotlar"
       ],
+      gradient: "from-gray-100 to-gray-200",
+      buttonColor: "bg-gray-600 hover:bg-gray-700"
     },
     {
       plan: "Premium",
-      price: "$49/oy",
+      price: "$49",
+      period: "oyiga",
       features: [
-        { title: "Asosiy xususiyatlar", description: "Asosiy plan xususiyatlariga to'liq kirish." },
-        { title: "Shaxsiy darslar", description: "1:1 shaxsiy darslar va maslahatlar." },
-        { title: "Prioritet yordam", description: "Tezkor javoblar va alohida yordam." },
+        "Boshlang'ich xususiyatlari",
+        "Shaxsiy o'qituvchi",
+        "Individual dastur",
+        "VIP qo'llab-quvvatlash",
+        "Sertifikatlar",
+        "Mentorlik darslari"
       ],
+      gradient: "from-blue-500 to-purple-600",
+      buttonColor: "bg-white text-blue-600 hover:bg-blue-50",
+      popular: true
     },
     {
       plan: "Pro",
-      price: "$79/oy",
+      price: "$79",
+      period: "oyiga",
       features: [
-        { title: "Premium xususiyatlar", description: "Premium xususiyatlarga to'liq kirish imkoniyati." },
-        { title: "Shaxsiy o'quv reja", description: "O'quv rejangizni shaxsiylashtirish." },
-        { title: "Birinchi o'quvchi bilan darslar", description: "To'g'ridan-to'g'ri ustoz bilan darslar." },
+        "Premium xususiyatlari",
+        "Cheksiz konsultatsiyalar",
+        "Karyera maslahatlari",
+        "Korxona hamkorligi",
+        "Xalqaro sertifikat",
+        "Shaxsiy murabbiy"
       ],
+      gradient: "from-purple-100 to-pink-100",
+      buttonColor: "bg-purple-600 hover:bg-purple-700"
     },
   ];
 
   return (
-    <section id="narxlar" className="py-16 px-6">
+    <section id="narxlar" className="py-20 px-6 bg-gradient-to-b from-blue-50/50 to-white">
       <div className="container mx-auto max-w-screen-xl">
-        <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">Narxlarimiz</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              To'g'ri rejani tanlang
+            </span>
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Har bir talaba uchun mos keladigan tariflar
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {pricingPlans.map((plan, index) => (
-            <div
+            <motion.div
               key={index}
-              className="bg-gray-200 p-6 rounded-3xl shadow-lg text-center w-full hover:shadow-2xl transition-shadow duration-300"
-              data-aos="fade-up"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.2 }}
+              whileHover={{ y: -10 }}
+              onHoverStart={() => setHoveredPlan(index)}
+              onHoverEnd={() => setHoveredPlan(null)}
+              className={`relative rounded-3xl p-8 shadow-xl transition-all duration-500 ${
+                plan.popular 
+                  ? "border-2 border-blue-400 scale-105" 
+                  : "border border-gray-200"
+              } ${hoveredPlan === index ? "shadow-2xl" : ""}`}
             >
-              <h3 className="text-2xl font-bold text-blue-900">{plan.plan}</h3>
-              <p className="text-xl font-semibold text-blue-500 mt-4">{plan.price}</p>
-              <ul className="text-left mt-6">
-                {plan.features.map((feature, index) => (
-                  <li key={index} className="text-gray-700 mb-2">
-                    <strong>{feature.title}:</strong> {feature.description}
+              {plan.popular && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full font-semibold">
+                    Eng tanlangan
+                  </span>
+                </div>
+              )}
+
+              <div className="text-center mb-8">
+                <h3 className="text-2xl font-bold text-gray-800 mb-4">{plan.plan}</h3>
+                <div className="mb-2">
+                  <span className="text-5xl font-bold text-gray-800">{plan.price}</span>
+                  <span className="text-gray-600">/{plan.period}</span>
+                </div>
+                <p className="text-gray-600">1 oy sinov muddati</p>
+              </div>
+
+              <ul className="space-y-4 mb-8">
+                {plan.features.map((feature, idx) => (
+                  <li key={idx} className="flex items-center gap-3">
+                    <FaCheckCircle className="text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">{feature}</span>
                   </li>
                 ))}
               </ul>
+
               <button
                 onClick={() => navigate('/buy')}
-                className="mt-6 px-6 py-3 bg-blue-500 text-white text-lg rounded-full hover:bg-blue-600"
+                className={`w-full py-4 rounded-2xl font-semibold transition-all duration-300 ${
+                  plan.popular
+                    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-xl hover:shadow-blue-500/30"
+                    : "bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:shadow-xl hover:shadow-blue-500/30"
+                }`}
               >
-                Sotib olish
+                Boshlash
               </button>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
@@ -540,177 +768,363 @@ const Pricing = () => {
   );
 };
 
-// FAQ (unchanged)
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(null);
-  const [showMore, setShowMore] = useState(false);
 
   const faqItems = [
     {
-      question: "Onlayn maktabda qanday kurslar mavjud?",
-      answer: "Bizda ingliz tili, matematika, dasturlash va boshqa ko'plab fanlar bo'yicha kurslar mavjud.",
-    },
-    {
-      question: "Qanday qilib ro'yxatdan o'tish mumkin?",
-      answer: "Ro'yxatdan o'tish uchun sahifada 'Ro'yxatdan o'tish' tugmasini bosing va kerakli ma'lumotlarni to'ldiring.",
-    },
-    {
       question: "Onlayn darslar qanday o'tkaziladi?",
-      answer: "Darslar onlayn platformada video darslar, interaktiv mashqlar va o'qituvchi bilan jonli muhokamalar shaklida o'tkaziladi.",
+      answer: "Bizning platformamizda interaktiv video darslar, jonli sessiyalar, mashqlar va testlar mavjud. Har bir darsda o'qituvchi bilan bevosita aloqa qilish imkoniyati bor."
     },
     {
-      question: "Shaxsiy darslarni qanday olish mumkin?",
-      answer: "Shaxsiy darslar uchun 'Premium' va 'Pro' rejalari mavjud. Ro'yxatdan o'tganingizdan so'ng, shaxsiy dars jadvalini belgilashingiz mumkin.",
+      question: "Qanday to'lov usullari mavjud?",
+      answer: "Bank kartalari (Visa, Mastercard), PayPal, Click, Payme va boshqa mahalliy to'lov tizimlari orqali to'lov qilishingiz mumkin."
     },
     {
-      question: "To'lovlarni qanday amalga oshirish mumkin?",
-      answer: "To'lovlarni onlayn tarzda, bank kartalari yoki boshqa to'lov tizimlari orqali amalga oshirishingiz mumkin.",
+      question: "Kursni qancha vaqtda tamomlashim mumkin?",
+      answer: "Kurslar o'zingizning tezligingizga qarab o'rganish imkonini beradi. O'rtacha 3-6 oy ichida kursni tamomlash mumkin."
     },
     {
-      question: "Kurslar uchun qanday sertifikatlar beriladi?",
-      answer: "Har bir tamomlagan kurs uchun biz sertifikatlar taqdim etamiz, ular sizning muvaffaqiyatli o'qishni tamomlaganingizni tasdiqlaydi.",
+      question: "Sertifikat berasizmi?",
+      answer: "Ha, har bir muvaffaqiyatli tamomlagan kurs uch biz rasmiy sertifikat beramiz, xalqaro tan olingan."
     },
+    {
+      question: "Qancha vaqt ichida natijani ko'raman?",
+      answer: "O'rtacha 1-2 oy ichida sezilarli natijalarni ko'rishingiz mumkin. Bu sizning qanchalik faol ishlashingizga bog'liq."
+    },
+    {
+      question: "Qayta o'rganish imkoniyati bormi?",
+      answer: "Ha, barcha video darslar va materiallar kurs davomida va undan keyin ham sizning hisobingizda qoladi."
+    }
   ];
 
-  const itemsToShow = showMore ? faqItems : faqItems.slice(0, 4);
-
   return (
-    <section id="savollar" className="bg-gray-100 py-16 px-6">
-      <div className="container mx-auto max-w-screen-xl">
-        <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">
-          Ko'p beriladigan savollar (FAQ)
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {itemsToShow.map((item, index) => (
-            <div
+    <section id="savollar" className="py-20 px-6 bg-gradient-to-b from-white to-blue-50/50">
+      <div className="container mx-auto max-w-4xl">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Ko'p beriladigan savollar
+            </span>
+          </h2>
+          <p className="text-xl text-gray-600">
+            Sizning barcha savollaringizga javob beramiz
+          </p>
+        </motion.div>
+
+        <div className="space-y-4">
+          {faqItems.map((item, index) => (
+            <motion.div
               key={index}
-              className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-              onClick={() => setOpenIndex(openIndex === index ? null : index)}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="bg-white rounded-2xl shadow-lg overflow-hidden"
             >
-              <h3 className="text-xl font-semibold text-blue-900 flex justify-between items-center">
-                {item.question}
-                <span
-                  className={`transform transition-transform duration-300 ${openIndex === index ? "rotate-180" : "rotate-0"}`}
+              <button
+                onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                className="w-full p-6 text-left flex justify-between items-center hover:bg-gray-50 transition-colors"
+              >
+                <span className="text-lg font-semibold text-gray-800">{item.question}</span>
+                <motion.div
+                  animate={{ rotate: openIndex === index ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white"
                 >
                   {openIndex === index ? <FaMinus /> : <FaPlus />}
-                </span>
-              </h3>
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{
-                  height: openIndex === index ? "auto" : 0,
-                  opacity: openIndex === index ? 1 : 0,
-                }}
-                className="overflow-hidden mt-2 text-gray-700"
-              >
-                {openIndex === index && <p>{item.answer}</p>}
-              </motion.div>
-            </div>
+                </motion.div>
+              </button>
+              
+              <AnimatePresence>
+                {openIndex === index && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="p-6 pt-0">
+                      <p className="text-gray-600 leading-relaxed">{item.answer}</p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           ))}
         </div>
-
-        {faqItems.length > 3 && (
-          <div className="text-center mt-6">
-            <button
-              onClick={() => setShowMore(!showMore)}
-              className="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition-colors duration-300"
-            >
-              {showMore ? "Kamroq ko'rsatish" : "Barchasini ko'rsatish"}
-            </button>
-          </div>
-        )}
       </div>
     </section>
   );
 };
 
-// Contact (unchanged)
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Form submission logic here
+    console.log('Form submitted:', formData);
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
   return (
-    <section id="aloqa" className="bg-white py-16 px-6">
+    <section id="aloqa" className="py-20 px-6 bg-gradient-to-br from-blue-500/10 via-white to-purple-500/10">
       <div className="container mx-auto max-w-screen-xl">
-        <h2 className="text-3xl font-bold text-center text-blue-900 mb-8">Biz bilan bog'laning</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
-            <h3 className="text-2xl font-bold text-blue-900 mb-4">Bizga xabar yuboring</h3>
-            <form>
-              <div className="mb-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Bog'lanish
+            </span>
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Savollaringiz bormi? Biz bilan bog'laning
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="bg-white rounded-3xl p-8 shadow-xl"
+          >
+            <h3 className="text-2xl font-bold text-gray-800 mb-6">Xabar yuboring</h3>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
                 <label htmlFor="name" className="block text-gray-700 mb-2">Ismingiz</label>
                 <input
                   type="text"
                   id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
                   placeholder="Ismingizni kiriting"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
                 />
               </div>
-              <div className="mb-4">
-                <label htmlFor="email" className="block text-gray-700 mb-2">Elektron pochta</label>
+              
+              <div>
+                <label htmlFor="email" className="block text-gray-700 mb-2">Email</label>
                 <input
                   type="email"
                   id="email"
-                  placeholder="Email manzilingiz"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none"
+                  placeholder="email@example.com"
+                  required
                 />
               </div>
-              <div className="mb-4">
+              
+              <div>
                 <label htmlFor="message" className="block text-gray-700 mb-2">Xabar</label>
                 <textarea
                   id="message"
-                  rows="4"
-                  placeholder="Xabaringizni kiriting"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  rows="5"
+                  className="w-full p-4 rounded-xl border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none resize-none"
+                  placeholder="Xabaringizni yozing..."
+                  required
                 />
               </div>
-              <button
+              
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 type="submit"
-                className="w-full px-6 py-3 bg-blue-500 text-white text-lg rounded-full hover:bg-blue-600 transition-colors duration-300"
+                className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-2xl hover:shadow-xl hover:shadow-blue-500/30 transition-all"
               >
-                Yuborish
-              </button>
+                Xabar yuborish
+              </motion.button>
             </form>
-          </div>
-          <div className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow duration-300">
-            <h3 className="text-2xl font-bold text-blue-900 mb-4">Biz bilan bog'laning</h3>
-            <p className="text-gray-700 mb-4">Onlayn maktabning asosiy manzili:</p>
-            <p className="text-gray-700 font-semibold">Toshkent, O'zbekiston</p>
-            <p className="text-gray-700 mt-4">Telefon: <span className="font-semibold">+998 90 123 45 67</span></p>
-            <p className="text-gray-700 mt-2">Email: <span className="font-semibold">support@onlinemaktab.uz</span></p>
-            <div className="mt-6">
-              <p className="text-gray-700 font-semibold">Telegram orqali bog'laning:</p>
-              <a href="https://t.me/Sadikov001" className="text-blue-500 hover:text-blue-600" target="_blank" rel="noopener noreferrer">
-                @Sadikov001 Telegram
-              </a>
-            </div>
-            <div className="mt-6">
-              <p className="text-gray-700 font-semibold">Bizni ijtimoiy tarmoqlarda kuzating:</p>
-              <div className="flex space-x-4 mt-2">
-                <a href="#" className="text-blue-500 hover:text-blue-600">Facebook</a>
-                <a href="#" className="text-blue-500 hover:text-blue-600">Instagram</a>
-                <a href="#" className="text-blue-500 hover:text-blue-600">Twitter</a>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="space-y-8"
+          >
+            <div className="bg-white rounded-3xl p-8 shadow-xl">
+              <h3 className="text-2xl font-bold text-gray-800 mb-6">Biz bilan bog'laning</h3>
+              
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
+                    <FaPhone className="text-white text-xl" />
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Telefon</p>
+                    <p className="text-lg font-semibold text-gray-800">+998 90 123 45 67</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 flex items-center justify-center">
+                    <FaEnvelope className="text-white text-xl" />
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Email</p>
+                    <p className="text-lg font-semibold text-gray-800">info@eduhub.uz</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-400 to-cyan-500 flex items-center justify-center">
+                    <FaTelegram className="text-white text-xl" />
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Telegram</p>
+                    <p className="text-lg font-semibold text-gray-800">@eduhub_support</p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+
+            <div className="bg-white rounded-3xl p-8 shadow-xl">
+              <h3 className="text-2xl font-bold text-gray-800 mb-6">Ijtimoiy tarmoqlar</h3>
+              
+              <div className="flex gap-4">
+                {[
+                  { icon: FaInstagram, color: "from-pink-500 to-purple-600", label: "Instagram" },
+                  { icon: FaFacebook, color: "from-blue-600 to-blue-700", label: "Facebook" },
+                  { icon: FaTwitter, color: "from-sky-500 to-blue-500", label: "Twitter" },
+                  { icon: FaTelegram, color: "from-blue-400 to-cyan-500", label: "Telegram" }
+                ].map((social, index) => (
+                  <motion.a
+                    key={index}
+                    whileHover={{ y: -5, scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    href="#"
+                    className={`w-14 h-14 rounded-xl bg-gradient-to-r ${social.color} flex items-center justify-center text-white hover:shadow-lg transition-all`}
+                    aria-label={social.label}
+                  >
+                    <social.icon className="text-xl" />
+                  </motion.a>
+                ))}
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
   );
 };
 
-// Footer (unchanged)
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="bg-blue-900 text-white py-8">
-      <div className="container mx-auto text-center">
-        <p>© 2025 Online School. All rights reserved.</p>
+    <footer className="bg-gradient-to-r from-gray-900 to-black text-white pt-12 pb-8">
+      <div className="container mx-auto max-w-screen-xl px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+          <div>
+            <h3 className="text-2xl font-bold mb-4">
+              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                EduHub
+              </span>
+            </h3>
+            <p className="text-gray-400">
+              Innovatsion ta'lim platformasi - kelajakni bugundan quring
+            </p>
+          </div>
+          
+          <div>
+            <h4 className="text-lg font-semibold mb-4">Tez havolalar</h4>
+            <ul className="space-y-2">
+              {["Bosh sahifa", "Kurslar", "Narxlar", "Blog", "Aloqa"].map((item) => (
+                <li key={item}>
+                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <div>
+            <h4 className="text-lg font-semibold mb-4">Kurslar</h4>
+            <ul className="space-y-2">
+              {["IELTS", "Matematika", "Dasturlash", "Biznes", "Dizayn"].map((course) => (
+                <li key={course}>
+                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    {course}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <div>
+            <h4 className="text-lg font-semibold mb-4">Yangiliklar</h4>
+            <p className="text-gray-400 mb-4">
+              Yangi kurslar va aksiyalar haqida birinchi bo'lib bilish uchun obuna bo'ling
+            </p>
+            <div className="flex">
+              <input
+                type="email"
+                placeholder="Email manzilingiz"
+                className="flex-grow px-4 py-2 rounded-l-lg bg-gray-800 text-white focus:outline-none"
+              />
+              <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-r-lg hover:opacity-90 transition-opacity">
+                →
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div className="pt-8 border-t border-gray-800 text-center text-gray-400">
+          <p>© {currentYear} EduHub. Barcha huquqlar himoyalangan.</p>
+        </div>
       </div>
     </footer>
   );
 };
 
-// HomePage (unchanged except for section IDs)
 const HomePage = () => {
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 500);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <div>
+    <div className="relative">
       <Navbar />
       <HeroSection />
       <Features />
@@ -720,6 +1134,18 @@ const HomePage = () => {
       <FAQ />
       <Contact />
       <Footer />
+
+      {showScrollTop && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.5 }}
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:shadow-3xl transition-all z-40"
+        >
+          <FaChevronUp />
+        </motion.button>
+      )}
     </div>
   );
 };
