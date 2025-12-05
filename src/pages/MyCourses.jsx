@@ -1,37 +1,272 @@
 // src/pages/MyCourses.js
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/UserContext';
+import { FaPlay, FaBook, FaClock, FaStar, FaCertificate, FaChartLine, FaFilter, FaSearch, FaSort } from 'react-icons/fa';
+import './MyCourses.css';
 
 const MyCourses = () => {
   const { purchasedCourses } = useUser();
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('recent');
+  const [progressFilter, setProgressFilter] = useState('all');
+
+  const getCourseProgress = (courseId) => {
+    // Bu yerda kurs progressini localStorage yoki API dan olish mumkin
+    const progress = localStorage.getItem(`course_progress_${courseId}`);
+    return progress ? parseInt(progress) : Math.floor(Math.random() * 100);
+  };
+
+  const getCourseRating = (courseId) => {
+    const rating = localStorage.getItem(`course_rating_${courseId}`);
+    return rating ? parseFloat(rating) : (4 + Math.random()).toFixed(1);
+  };
+
+  const handleCourseClick = (course) => {
+    const slug = course.sectionName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    navigate(`/videos/${slug}`);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('uz-UZ', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const filteredAndSortedCourses = purchasedCourses
+    .filter(course => {
+      const matchesSearch = course.sectionName.toLowerCase().includes(searchTerm.toLowerCase());
+      const progress = getCourseProgress(course.sectionId);
+      
+      let matchesProgress = true;
+      if (progressFilter === 'completed') matchesProgress = progress >= 90;
+      else if (progressFilter === 'inprogress') matchesProgress = progress > 0 && progress < 90;
+      else if (progressFilter === 'notstarted') matchesProgress = progress === 0;
+      
+      return matchesSearch && matchesProgress;
+    })
+    .sort((a, b) => {
+      const progressA = getCourseProgress(a.sectionId);
+      const progressB = getCourseProgress(b.sectionId);
+      
+      switch(sortBy) {
+        case 'progress':
+          return progressB - progressA;
+        case 'recent':
+          return b.purchaseDate?.localeCompare(a.purchaseDate) || 0;
+        case 'name':
+          return a.sectionName.localeCompare(b.sectionName);
+        case 'rating':
+          return getCourseRating(b.sectionId) - getCourseRating(a.sectionId);
+        default:
+          return 0;
+      }
+    });
+
+  const getProgressColor = (progress) => {
+    if (progress >= 80) return '#10B981';
+    if (progress >= 50) return '#F59E0B';
+    return '#EF4444';
+  };
 
   return (
-    <div className="my-courses-container p-6">
-      <h1 className="text-3xl font-semibold mb-6">Mening Kurslarim</h1>
-      {purchasedCourses.length === 0 ? (
-        <p className="text-center text-gray-600">Hozircha sotib olingan kurslar yo‘q.</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {purchasedCourses.map((course) => (
-            <div
-              key={course.sectionId}
-              className="course-card bg-white rounded-lg p-4 hover:scale-105 transform transition duration-300 hover:shadow-none"
-            >
-              <img
-                src={
-                  course.videos && course.videos[0]
-                    ? `https://img.youtube.com/vi/${course.videos[0].src}/hqdefault.jpg`
-                    : 'https://picsum.photos/500/300?random=' + course.sectionId
-                }
-                alt={course.sectionName}
-                className="w-full h-48 object-cover rounded-lg mb-4"
-              />
-              <h3 className="text-xl font-semibold mb-2">{course.sectionName}</h3>
-              <p className="text-gray-600 text-base">Kursni davom ettirish uchun bosing.</p>
-            </div>
-          ))}
+    <div className="my-courses-page">
+      <div className="courses-header">
+        <div className="header-content">
+          <h1 className="page-title">
+            <FaBook /> Mening Kurslarim
+          </h1>
+          <p className="page-subtitle">
+            Sotib olgan kurslaringiz: {purchasedCourses.length} ta
+          </p>
         </div>
-      )}
+        
+        {purchasedCourses.length > 0 && (
+          <div className="stats-cards">
+            <div className="stat-card">
+              <FaChartLine className="stat-icon" />
+              <div>
+                <h3>O'rtacha Progress</h3>
+                <p className="stat-value">
+                  {Math.round(purchasedCourses.reduce((acc, course) => 
+                    acc + getCourseProgress(course.sectionId), 0) / purchasedCourses.length)}%
+                </p>
+              </div>
+            </div>
+            <div className="stat-card">
+              <FaCertificate className="stat-icon" />
+              <div>
+                <h3>Tugatilgan</h3>
+                <p className="stat-value">
+                  {purchasedCourses.filter(course => getCourseProgress(course.sectionId) >= 90).length} ta
+                </p>
+              </div>
+            </div>
+            <div className="stat-card">
+              <FaClock className="stat-icon" />
+              <div>
+                <h3>O'rtacha Vaqt</h3>
+                <p className="stat-value">
+                  {Math.round(purchasedCourses.reduce((acc, course) => 
+                    acc + (course.totalDuration || 0), 0) / purchasedCourses.length)} min
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="courses-container">
+        {purchasedCourses.length === 0 ? (
+          <div className="empty-courses">
+            <div className="empty-content">
+              <FaBook className="empty-icon" />
+              <h2>Hozircha kurslaringiz yo'q</h2>
+              <p>Yangi kurslarni sotib olish uchun bosh sahifaga o'ting</p>
+              <button 
+                onClick={() => navigate('/dashboard/home')}
+                className="browse-courses-btn"
+              >
+                Kurslarni ko'rish
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="courses-filters">
+              <div className="search-box">
+                <FaSearch className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Kurslarni qidirish..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="search-input"
+                />
+              </div>
+              
+              <div className="filter-controls">
+                <div className="filter-group">
+                  <label><FaFilter /> Holati:</label>
+                  <select 
+                    value={progressFilter} 
+                    onChange={(e) => setProgressFilter(e.target.value)}
+                    className="filter-select"
+                  >
+                    <option value="all">Barchasi</option>
+                    <option value="completed">Tugatilgan</option>
+                    <option value="inprogress">Davom etayotgan</option>
+                    <option value="notstarted">Boshlanmagan</option>
+                  </select>
+                </div>
+                
+                <div className="filter-group">
+                  <label><FaSort /> Tartiblash:</label>
+                  <select 
+                    value={sortBy} 
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="filter-select"
+                  >
+                    <option value="recent">So'nggi qo'shilgan</option>
+                    <option value="progress">Progress bo'yicha</option>
+                    <option value="name">Nom bo'yicha</option>
+                    <option value="rating">Reyting bo'yicha</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div className="courses-grid">
+              {filteredAndSortedCourses.map((course) => {
+                const progress = getCourseProgress(course.sectionId);
+                const rating = getCourseRating(course.sectionId);
+                
+                return (
+                  <div 
+                    key={course.sectionId} 
+                    className="course-card"
+                    onClick={() => handleCourseClick(course)}
+                  >
+                    <div className="course-image">
+                      <img
+                        src={course.thumbnail || `https://picsum.photos/seed/${course.sectionId}/400/250`}
+                        alt={course.sectionName}
+                      />
+                      <div className="course-badges">
+                        <span className="badge category">
+                          {course.category || "Dasturlash"}
+                        </span>
+                        {progress >= 90 && (
+                          <span className="badge completed">
+                            <FaCertificate /> Tugatildi
+                          </span>
+                        )}
+                      </div>
+                      <div className="play-overlay">
+                        <FaPlay />
+                      </div>
+                    </div>
+
+                    <div className="course-content">
+                      <div className="course-header">
+                        <h3 className="course-title">{course.sectionName}</h3>
+                        <div className="course-rating">
+                          <FaStar className="star-icon" />
+                          <span>{rating}</span>
+                        </div>
+                      </div>
+
+                      <p className="course-description">
+                        {course.description || "Professional dasturlash kursi"}
+                      </p>
+
+                      <div className="course-meta">
+                        <span className="meta-item">
+                          <FaClock /> {course.totalDuration || 120} min
+                        </span>
+                        <span className="meta-item">
+                          <FaBook /> {course.videoCount || 12} dars
+                        </span>
+                      </div>
+
+                      <div className="progress-section">
+                        <div className="progress-header">
+                          <span>Progress: {progress}%</span>
+                          <span className="last-access">
+                            {course.lastAccess ? formatDate(course.lastAccess) : "Hali boshlanmagan"}
+                          </span>
+                        </div>
+                        <div className="progress-bar">
+                          <div 
+                            className="progress-fill"
+                            style={{
+                              width: `${progress}%`,
+                              backgroundColor: getProgressColor(progress)
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      <div className="course-actions">
+                        <button className="continue-btn">
+                          {progress === 0 ? "Boshlash" : progress >= 90 ? "Ko'rib chiqish" : "Davom etish"}
+                        </button>
+                        <button className="certificate-btn">
+                          Sertifikat
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

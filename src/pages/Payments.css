@@ -1,25 +1,28 @@
-/* Payments.css */
+/* Payments.css - O'zbekiston uchun maxsus stil */
 
 /* CSS Variables */
 :root {
-  --primary: #4F46E5;
-  --primary-dark: #3730A3;
-  --primary-light: #818CF8;
+  --primary: #FF6B00; /* Click rang */
+  --primary-dark: #E55A00;
+  --primary-light: #FFE5D4;
+  --secondary: #00A000; /* Payme rang */
+  --secondary-dark: #008000;
   --success: #10B981;
   --success-light: #D1FAE5;
   --danger: #EF4444;
   --warning: #F59E0B;
   --warning-light: #FEF3C7;
+  --info: #3B82F6;
   --light: #F9FAFB;
-  --dark: #111827;
+  --dark: #1F2937;
   --gray: #6B7280;
   --gray-light: #E5E7EB;
   --gray-dark: #374151;
-  --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.12);
   --radius: 12px;
   --radius-lg: 20px;
-  --transition: all 0.3s ease;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Dark Mode */
@@ -29,38 +32,25 @@
   --gray: #9CA3AF;
   --gray-light: #374151;
   --gray-dark: #E5E7EB;
-  --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.4);
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.4);
 }
 
-/* Reset & Base Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: var(--light);
-  color: var(--dark);
-  transition: var(--transition);
-}
-
-/* Payments Page */
+/* Asosiy sahifa */
 .payments-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Success Container */
+/* Muvaffaqiyatli to'lov */
 .success-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
 }
 
 .success-card {
@@ -72,6 +62,7 @@ body {
   text-align: center;
   box-shadow: var(--shadow-lg);
   animation: scaleIn 0.5s ease;
+  border: 2px solid var(--primary);
 }
 
 .dark-mode .success-card {
@@ -91,6 +82,7 @@ body {
   font-weight: 700;
   margin-bottom: 16px;
   color: var(--primary);
+  line-height: 1.3;
 }
 
 .success-message {
@@ -106,10 +98,12 @@ body {
   padding: 24px;
   margin-bottom: 30px;
   text-align: left;
+  border: 1px solid var(--gray-light);
 }
 
 .dark-mode .success-details {
   background: var(--dark);
+  border-color: var(--gray-dark);
 }
 
 .detail-item {
@@ -126,15 +120,68 @@ body {
 .detail-label {
   color: var(--gray);
   font-weight: 500;
+  font-size: 14px;
 }
 
 .detail-value {
   font-weight: 600;
   color: var(--dark);
+  font-size: 14px;
 }
 
 .dark-mode .detail-value {
   color: white;
+}
+
+.detail-value.discount {
+  color: var(--success);
+}
+
+.success-benefits {
+  background: var(--primary-light);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 30px;
+  border: 1px solid var(--primary);
+}
+
+.dark-mode .success-benefits {
+  background: rgba(255, 107, 0, 0.1);
+}
+
+.success-benefits h3 {
+  color: var(--primary);
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.benefit-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--dark);
+}
+
+.dark-mode .benefit-item {
+  background: var(--gray-light);
+  color: white;
+}
+
+.benefit-item svg {
+  color: var(--primary);
+  font-size: 20px;
 }
 
 .success-actions {
@@ -152,6 +199,9 @@ body {
   transition: var(--transition);
   border: none;
   font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .start-course-btn {
@@ -182,7 +232,7 @@ body {
   opacity: 0.8;
 }
 
-/* Payments Container */
+/* Asosiy to'lov konteyneri */
 .payments-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -194,22 +244,27 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   color: white;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 20px 30px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .back-button {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: 50px;
   display: flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
   transition: var(--transition);
-  font-weight: 500;
+  font-weight: 600;
   backdrop-filter: blur(10px);
 }
 
@@ -218,26 +273,34 @@ body {
   transform: translateX(-4px);
 }
 
+.header-center {
+  text-align: center;
+}
+
 .page-title {
   font-size: 32px;
   font-weight: 700;
-  text-align: center;
-  flex: 1;
+  margin-bottom: 8px;
+}
+
+.page-subtitle {
+  font-size: 16px;
+  opacity: 0.9;
 }
 
 .security-badge {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: 50px;
   display: flex;
   align-items: center;
   gap: 8px;
-  font-weight: 500;
+  font-weight: 600;
   backdrop-filter: blur(10px);
 }
 
-/* Payments Content */
+/* Kontent qismi */
 .payments-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -250,7 +313,7 @@ body {
   }
 }
 
-/* Course Info Section */
+/* Kurs ma'lumotlari */
 .course-info-section {
   display: flex;
   flex-direction: column;
@@ -262,17 +325,40 @@ body {
   border-radius: var(--radius-lg);
   padding: 30px;
   box-shadow: var(--shadow);
+  border: 1px solid var(--gray-light);
+  position: relative;
 }
 
 .dark-mode .course-card {
   background: var(--gray-light);
   color: white;
+  border-color: var(--gray-dark);
+}
+
+.course-badge {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.hot-badge, .certificate-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.hot-badge {
+  background: linear-gradient(135deg, #FF6B00 0%, #FF8E00 100%);
+  color: white;
+}
+
+.certificate-badge {
+  background: linear-gradient(135deg, #10B981 0%, #34D399 100%);
+  color: white;
 }
 
 .course-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
   margin-bottom: 20px;
 }
 
@@ -280,25 +366,34 @@ body {
   font-size: 24px;
   font-weight: 700;
   color: var(--dark);
-  margin: 0;
+  margin-bottom: 12px;
+  line-height: 1.4;
 }
 
 .dark-mode .course-title {
   color: white;
 }
 
-.course-category {
-  background: var(--primary-light);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.course-meta {
+  display: flex;
+  gap: 20px;
+  color: var(--gray);
+  font-size: 14px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.uzcard-icon {
+  color: #00A000;
+  font-size: 18px;
 }
 
 .course-image {
+  position: relative;
   margin-bottom: 20px;
   border-radius: var(--radius);
   overflow: hidden;
@@ -311,11 +406,30 @@ body {
   border-radius: var(--radius);
 }
 
+.image-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.course-features {
+  margin-bottom: 20px;
+}
+
 .features-title {
   font-size: 18px;
   font-weight: 600;
   margin-bottom: 16px;
   color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .features-list {
@@ -329,6 +443,7 @@ body {
   padding: 10px 0;
   border-bottom: 1px solid var(--gray-light);
   color: var(--gray-dark);
+  font-size: 14px;
 }
 
 .dark-mode .feature-item {
@@ -342,37 +457,85 @@ body {
 .feature-icon {
   color: var(--success);
   min-width: 20px;
+  font-size: 16px;
 }
 
-.price-section {
+.stats-card {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
   background: var(--light);
   border-radius: var(--radius);
   padding: 20px;
   margin-top: 20px;
 }
 
-.dark-mode .price-section {
+.dark-mode .stats-card {
   background: var(--dark);
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  font-size: 12px;
+  color: var(--gray);
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* Narx kartasi */
+.price-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  box-shadow: var(--shadow);
+  border: 2px solid var(--primary);
+}
+
+.dark-mode .price-card {
+  background: var(--gray-light);
+  color: white;
+}
+
+.price-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.price-details {
+  margin-bottom: 20px;
 }
 
 .price-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-light);
 }
 
-.price-row.total-row {
-  border-top: 2px solid var(--gray-light);
-  margin-top: 8px;
-  padding-top: 12px;
-  font-weight: 700;
+.price-row:last-child {
+  border-bottom: none;
 }
 
 .original-price {
-  text-decoration: line-through;
+  font-size: 18px;
   color: var(--gray);
-  font-size: 14px;
+  text-decoration: line-through;
 }
 
 .discount-row {
@@ -383,35 +546,83 @@ body {
 .discount-amount {
   color: var(--success);
   font-weight: 600;
+  font-size: 18px;
+}
+
+.saved-badge {
+  background: var(--success-light);
+  color: var(--success);
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  text-align: center;
+  margin: 12px 0;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.dark-mode .saved-badge {
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.total-row {
+  padding-top: 16px;
+  border-top: 2px solid var(--gray-light);
+  font-size: 18px;
 }
 
 .total-price {
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 28px;
+  font-weight: 800;
   color: var(--primary);
 }
 
-.installment-info {
+.installment-summary {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-  padding: 12px 16px;
+  gap: 12px;
+  padding: 16px;
   background: var(--warning-light);
   border-radius: var(--radius);
   color: var(--dark);
+  margin-top: 20px;
 }
 
-.dark-mode .installment-info {
+.dark-mode .installment-summary {
   background: rgba(245, 158, 11, 0.2);
   color: white;
 }
 
 .installment-icon {
   color: var(--warning);
+  font-size: 24px;
 }
 
-/* Promo Section */
+.installment-info {
+  flex: 1;
+}
+
+.installment-label {
+  display: block;
+  font-size: 14px;
+  color: var(--gray);
+  margin-bottom: 4px;
+}
+
+.installment-price {
+  display: block;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--warning);
+}
+
+.interest-note {
+  display: block;
+  font-size: 12px;
+  color: var(--gray);
+  margin-top: 2px;
+}
+
+/* Promo kod qismi */
 .promo-section {
   background: white;
   border-radius: var(--radius-lg);
@@ -425,24 +636,24 @@ body {
 }
 
 .promo-title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
   color: var(--primary);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .promo-input-group {
   display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .promo-input {
   flex: 1;
-  padding: 12px 16px;
+  padding: 14px 20px;
   border: 2px solid var(--gray-light);
   border-radius: var(--radius);
   font-size: 16px;
@@ -460,13 +671,14 @@ body {
 .promo-input:focus {
   outline: none;
   border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
 }
 
 .apply-promo-btn {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: white;
   border: none;
-  padding: 12px 24px;
+  padding: 14px 28px;
   border-radius: var(--radius);
   font-weight: 600;
   cursor: pointer;
@@ -486,12 +698,16 @@ body {
   color: var(--danger);
   font-size: 14px;
   margin-bottom: 16px;
+  padding: 10px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: var(--radius);
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .available-promos {
   font-size: 14px;
   color: var(--gray);
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .promo-tags {
@@ -502,11 +718,11 @@ body {
 
 .promo-tag {
   background: var(--light);
-  border: 1px solid var(--primary-light);
+  border: 2px solid var(--primary-light);
   color: var(--primary);
-  padding: 6px 12px;
+  padding: 8px 16px;
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition);
@@ -516,12 +732,13 @@ body {
   background: var(--dark);
 }
 
-.promo-tag:hover {
-  background: var(--primary-light);
+.promo-tag:hover, .promo-tag.active {
+  background: var(--primary);
   color: white;
+  transform: translateY(-2px);
 }
 
-/* Payment Form Section */
+/* To'lov formasi */
 .payment-form-section {
   display: flex;
   flex-direction: column;
@@ -533,17 +750,25 @@ body {
   border-radius: var(--radius-lg);
   padding: 30px;
   box-shadow: var(--shadow);
+  border: 1px solid var(--gray-light);
 }
 
 .dark-mode .payment-card {
   background: var(--gray-light);
   color: white;
+  border-color: var(--gray-dark);
+}
+
+.payment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
 }
 
 .payment-title {
   font-size: 24px;
   font-weight: 700;
-  margin-bottom: 24px;
   color: var(--dark);
 }
 
@@ -551,11 +776,27 @@ body {
   color: white;
 }
 
-/* Payment Methods */
+.payment-secure {
+  background: var(--success-light);
+  color: var(--success);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dark-mode .payment-secure {
+  background: rgba(16, 185, 129, 0.2);
+}
+
+/* To'lov usullari */
 .payment-methods {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: 16px;
   margin-bottom: 30px;
 }
 
@@ -568,15 +809,14 @@ body {
 .payment-method {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 16px;
+  gap: 12px;
+  padding: 20px;
   border: 2px solid var(--gray-light);
   border-radius: var(--radius);
   background: transparent;
   cursor: pointer;
   transition: var(--transition);
-  min-height: 100px;
+  text-align: left;
 }
 
 .dark-mode .payment-method {
@@ -586,40 +826,131 @@ body {
 .payment-method:hover {
   border-color: var(--primary);
   transform: translateY(-2px);
+  box-shadow: var(--shadow);
 }
 
 .payment-method.active {
   border-color: var(--primary);
-  background: rgba(79, 70, 229, 0.05);
+  background: var(--primary-light);
+}
+
+.method-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .method-icon {
-  font-size: 32px;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.method-info {
+  flex: 1;
 }
 
 .method-name {
-  font-weight: 600;
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
   color: var(--dark);
+  margin-bottom: 4px;
 }
 
 .dark-mode .method-name {
   color: white;
 }
 
-/* Card Form */
-.card-form {
+.recommended-badge {
+  background: var(--primary);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.method-description {
+  font-size: 12px;
+  color: var(--gray);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Click formasi */
+.click-form, .payme-form, .mobile-payment-form, .bank-transfer-form {
+  margin-bottom: 30px;
+  padding: 20px;
+  border-radius: var(--radius);
+  background: var(--light);
+  border: 1px solid var(--gray-light);
+}
+
+.dark-mode .click-form,
+.dark-mode .payme-form,
+.dark-mode .mobile-payment-form,
+.dark-mode .bank-transfer-form {
+  background: var(--dark);
+  border-color: var(--gray-dark);
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 24px;
 }
 
+.form-header h3 {
+  margin: 0;
+  color: var(--dark);
+  font-size: 20px;
+}
+
+.dark-mode .form-header h3 {
+  color: white;
+}
+
+.click-logo, .payme-logo, .mobile-icon, .bank-icon {
+  font-size: 32px;
+}
+
+.click-logo {
+  color: var(--primary);
+}
+
+.payme-logo {
+  color: var(--secondary);
+}
+
+.mobile-icon {
+  color: var(--info);
+}
+
+.bank-icon {
+  color: var(--warning);
+}
+
+/* Form elementlari */
 .form-group {
   margin-bottom: 20px;
 }
 
 .form-label {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 8px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--dark);
+  font-size: 14px;
 }
 
 .dark-mode .form-label {
@@ -630,52 +961,61 @@ body {
   position: relative;
 }
 
-.card-input {
+.card-input, .phone-input {
   width: 100%;
   padding: 14px 16px;
   border: 2px solid var(--gray-light);
   border-radius: var(--radius);
   font-size: 16px;
   transition: var(--transition);
-  background: var(--light);
+  background: white;
   color: var(--dark);
 }
 
-.dark-mode .card-input {
-  background: var(--dark);
+.dark-mode .card-input,
+.dark-mode .phone-input {
+  background: var(--gray-light);
   border-color: var(--gray-dark);
   color: white;
 }
 
-.card-input:focus {
+.card-input:focus, .phone-input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
 }
 
-.card-icons {
+.card-types {
   position: absolute;
   right: 16px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
+  align-items: center;
   gap: 8px;
 }
 
-.card-icon {
+.card-type {
   font-size: 24px;
+  color: var(--gray);
 }
 
-.card-icon.visa {
-  color: #1a1f71;
+.card-type.active {
+  color: var(--secondary);
 }
 
-.card-icon.mastercard {
-  color: #eb001b;
+.card-type-text {
+  font-size: 12px;
+  color: var(--gray);
+  padding: 2px 8px;
+  background: var(--gray-light);
+  border-radius: 4px;
 }
 
-.card-icon.amex {
-  color: #2e77bc;
+.input-note {
+  font-size: 12px;
+  color: var(--gray);
+  margin-top: 6px;
 }
 
 .form-row {
@@ -690,6 +1030,10 @@ body {
   }
 }
 
+.half {
+  width: 100%;
+}
+
 .cvv-input-wrapper {
   position: relative;
 }
@@ -702,10 +1046,11 @@ body {
   font-size: 12px;
   color: var(--gray);
   background: white;
-  padding: 2px 8px;
+  padding: 4px 8px;
   border-radius: 4px;
   opacity: 0;
   transition: var(--transition);
+  pointer-events: none;
 }
 
 .dark-mode .cvv-hint {
@@ -716,199 +1061,392 @@ body {
   opacity: 1;
 }
 
-/* PayPal Section */
-.paypal-section, .apple-pay-section, .qr-section {
-  text-align: center;
-  padding: 30px;
-  border: 2px dashed var(--gray-light);
-  border-radius: var(--radius);
+/* Afzalliklar */
+.click-benefits, .payme-benefits {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.benefit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--success-light);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--success);
+}
+
+.dark-mode .benefit {
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.payme-benefits h4 {
+  margin: 16px 0 12px;
+  color: var(--dark);
+}
+
+.dark-mode .payme-benefits h4 {
+  color: white;
+}
+
+.payme-benefits ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.payme-benefits li {
+  padding: 6px 0;
+  color: var(--gray-dark);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dark-mode .payme-benefits li {
+  color: var(--gray);
+}
+
+/* Operatorlar va banklar */
+.operator-selector, .bank-selector {
   margin-bottom: 24px;
 }
 
-.paypal-icon {
-  font-size: 64px;
-  color: #003087;
-  margin-bottom: 16px;
+.operator-selector h4, .bank-selector h4 {
+  margin-bottom: 12px;
+  color: var(--dark);
+  font-size: 16px;
 }
 
-.apple-pay-icon {
-  font-size: 64px;
-  color: #000000;
-  margin-bottom: 16px;
-}
-
-.paypal-description, .apple-pay-description, .qr-description {
-  color: var(--gray);
-  margin-bottom: 20px;
-  line-height: 1.6;
-}
-
-.paypal-button, .apple-pay-button {
-  background: linear-gradient(135deg, #003087 0%, #009cde 100%);
+.dark-mode .operator-selector h4,
+.dark-mode .bank-selector h4 {
   color: white;
-  border: none;
-  padding: 14px 32px;
+}
+
+.operators {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .operators {
+    grid-template-columns: 1fr;
+  }
+}
+
+.operator-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 2px solid var(--gray-light);
   border-radius: var(--radius);
-  font-weight: 600;
+  background: white;
   cursor: pointer;
   transition: var(--transition);
+  font-weight: 600;
 }
 
-.paypal-button:hover, .apple-pay-button:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
+.dark-mode .operator-btn {
+  background: var(--gray-light);
+  border-color: var(--gray-dark);
+  color: white;
 }
 
-.apple-pay-button {
-  background: linear-gradient(135deg, #000000 0%, #333333 100%);
+.operator-btn:hover, .operator-btn.active {
+  border-color: var(--primary);
+  background: var(--primary-light);
 }
 
-.qr-section {
-  background: var(--light);
+.operator-btn img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
 
-.dark-mode .qr-section {
-  background: var(--dark);
+.banks-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
-.qr-code-placeholder {
-  background: white;
+.bank-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 2px solid var(--gray-light);
   border-radius: var(--radius);
-  padding: 40px;
+  background: white;
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 600;
+}
+
+.dark-mode .bank-btn {
+  background: var(--gray-light);
+  border-color: var(--gray-dark);
+  color: white;
+}
+
+.bank-btn:hover, .bank-btn.selected {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  transform: translateY(-2px);
+}
+
+.bank-color {
+  width: 8px;
+  height: 24px;
+  border-radius: 4px;
+}
+
+.bank-details {
+  margin-top: 24px;
+  padding: 20px;
+  background: var(--light);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-light);
+}
+
+.dark-mode .bank-details {
+  background: var(--dark);
+  border-color: var(--gray-dark);
+}
+
+.bank-details h4 {
+  margin-bottom: 16px;
+  color: var(--dark);
+}
+
+.dark-mode .bank-details h4 {
+  color: white;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
   margin-bottom: 20px;
+}
+
+@media (max-width: 576px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
+  gap: 4px;
 }
 
-.qr-icon {
-  font-size: 80px;
-  color: var(--primary);
+.detail-label {
+  font-size: 12px;
+  color: var(--gray);
 }
 
-/* Installment Section */
+.detail-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dark);
+}
+
+.dark-mode .detail-value {
+  color: white;
+}
+
+.bank-instruction {
+  background: var(--warning-light);
+  padding: 16px;
+  border-radius: var(--radius);
+  color: var(--dark);
+}
+
+.dark-mode .bank-instruction {
+  background: rgba(245, 158, 11, 0.2);
+  color: white;
+}
+
+.bank-instruction ol {
+  margin: 12px 0 0 20px;
+  padding: 0;
+}
+
+.bank-instruction li {
+  padding: 4px 0;
+  font-size: 14px;
+}
+
+/* Bo'lib to'lash */
 .installment-section {
-  margin-bottom: 24px;
+  margin: 30px 0;
+  padding: 20px;
+  background: var(--light);
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-light);
+}
+
+.dark-mode .installment-section {
+  background: var(--dark);
+  border-color: var(--gray-dark);
 }
 
 .installment-title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 20px;
   color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .installment-plans {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-
-@media (max-width: 768px) {
-  .installment-plans {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
 }
 
 .installment-plan {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 16px;
+  padding: 20px;
   border: 2px solid var(--gray-light);
   border-radius: var(--radius);
-  background: transparent;
+  background: white;
   cursor: pointer;
   transition: var(--transition);
+  text-align: center;
 }
 
 .dark-mode .installment-plan {
+  background: var(--gray-light);
   border-color: var(--gray-dark);
 }
 
 .installment-plan:hover {
   border-color: var(--primary);
+  transform: translateY(-2px);
 }
 
 .installment-plan.selected {
   border-color: var(--primary);
-  background: rgba(79, 70, 229, 0.05);
+  background: var(--primary-light);
+}
+
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
 .plan-months {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 800;
   color: var(--primary);
+}
+
+.interest-rate {
+  font-size: 12px;
+  color: var(--danger);
+  font-weight: 700;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.plan-payment {
+  margin-bottom: 8px;
+}
+
+.payment-amount {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--dark);
   margin-bottom: 4px;
 }
 
-.plan-price {
-  font-size: 12px;
-  color: var(--gray);
-  text-align: center;
-}
-
-/* Terms Section */
-.terms-section {
-  margin-bottom: 24px;
-}
-
-.terms-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-  cursor: pointer;
-  color: var(--dark);
-}
-
-.dark-mode .terms-checkbox {
+.dark-mode .payment-amount {
   color: white;
 }
 
-.terms-checkbox input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--primary);
+.total-with-interest {
+  display: block;
+  font-size: 12px;
+  color: var(--gray);
 }
 
-.terms-link {
-  color: var(--primary);
-  text-decoration: none;
-  font-weight: 600;
+.plan-label {
+  font-size: 12px;
+  color: var(--gray);
 }
 
-.terms-link:hover {
-  text-decoration: underline;
-}
-
-.terms-note {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
+/* Xavfsizlik bo'limi */
+.security-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 30px 0;
+  padding: 20px;
   background: var(--light);
   border-radius: var(--radius);
-  color: var(--gray);
-  font-size: 14px;
+  border: 1px solid var(--gray-light);
 }
 
-.dark-mode .terms-note {
+@media (max-width: 768px) {
+  .security-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dark-mode .security-section {
   background: var(--dark);
+  border-color: var(--gray-dark);
 }
 
-.shield-icon {
-  color: var(--success);
+.security-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-/* Payment Button */
+.security-icon {
+  font-size: 24px;
+  color: var(--primary);
+}
+
+.security-item h4 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  color: var(--dark);
+}
+
+.dark-mode .security-item h4 {
+  color: white;
+}
+
+.security-item p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--gray);
+}
+
+/* To'lov tugmasi */
 .payment-button {
   width: 100%;
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: white;
   border: none;
-  padding: 18px;
+  padding: 20px;
   border-radius: var(--radius);
   font-size: 18px;
   font-weight: 700;
@@ -918,11 +1456,11 @@ body {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  margin-bottom: 24px;
+  margin: 30px 0;
 }
 
 .payment-button:hover:not(:disabled) {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   box-shadow: var(--shadow-lg);
 }
 
@@ -944,36 +1482,52 @@ body {
   animation: spin 1s ease-in-out infinite;
 }
 
-/* Secure Info */
-.secure-info {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+/* Footer */
+.payment-footer {
   text-align: center;
-  padding: 20px;
-  background: var(--light);
-  border-radius: var(--radius);
+  padding-top: 20px;
+  border-top: 1px solid var(--gray-light);
 }
 
-.dark-mode .secure-info {
-  background: var(--dark);
+.footer-note {
+  font-size: 14px;
+  color: var(--gray);
+  margin-bottom: 16px;
+  line-height: 1.5;
 }
 
-.secure-item {
-  display: flex;
-  flex-direction: column;
+.terms-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.terms-link:hover {
+  text-decoration: underline;
+}
+
+.contact-support {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--gray);
-  font-size: 12px;
+  padding: 12px 24px;
+  background: var(--light);
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dark);
 }
 
-.secure-item svg {
-  font-size: 20px;
-  color: var(--success);
+.dark-mode .contact-support {
+  background: var(--dark);
+  color: white;
 }
 
-/* Animations */
+.contact-support svg {
+  color: var(--primary);
+}
+
+/* Animatsiyalar */
 @keyframes scaleIn {
   from {
     transform: scale(0.9);
@@ -1000,27 +1554,97 @@ body {
   }
 }
 
-/* Responsive Design */
+/* Mobil responsivlik */
 @media (max-width: 768px) {
   .payments-header {
     flex-direction: column;
     gap: 16px;
     text-align: center;
+    padding: 20px;
   }
   
   .page-title {
     font-size: 24px;
   }
   
-  .success-title {
-    font-size: 24px;
+  .payment-header {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
   }
   
   .success-actions {
     flex-direction: column;
   }
   
-  .secure-info {
+  .benefits-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Print uchun stil */
+@media print {
+  .payments-page {
+    background: white;
+  }
+  
+  .success-card {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+  
+  .payment-button {
+    display: none;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* operator logolari uchun qo'shimcha stil */
+.operator-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: white;
+}
+
+.operator-btn.active .operator-logo {
+  background: var(--primary);
+}
+
+.operator-btn:nth-child(1) .operator-logo {
+  background: #F59E0B;
+}
+
+.operator-btn:nth-child(2) .operator-logo {
+  background: #EF4444;
+}
+
+.operator-btn:nth-child(3) .operator-logo {
+  background: #3B82F6;
+}
+
+.operator-btn:nth-child(4) .operator-logo {
+  background: #10B981;
 }

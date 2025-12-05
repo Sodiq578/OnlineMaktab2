@@ -193,14 +193,7 @@ const HeroSection = () => {
               <FaArrowRight className="inline ml-2 group-hover:translate-x-1 transition-transform" />
             </motion.button>
             
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/courses')}
-              className="px-8 py-4 bg-white/80 backdrop-blur-sm text-blue-600 text-lg font-semibold rounded-2xl border-2 border-blue-200 hover:border-blue-400 hover:bg-white transition-all duration-300"
-            >
-              Kurslarni ko'rish
-            </motion.button>
+           
           </motion.div>
           
           <motion.div 
@@ -415,29 +408,72 @@ const Features = () => {
 };
 
 const Testimonials = () => {
-  const testimonials = [
-    {
-      name: "Azizbek Islomov",
-      role: "IELTS 8.5",
-      feedback: "6 oy ichida 5.5 dan 8.5 ga ko'tardim. O'qituvchilar juda sifatli!",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-      rating: 5
-    },
-    {
-      name: "Malika Nurmatova",
-      role: "SAT 1550",
-      feedback: "Amerika universitetiga kirishimga yordam berdi. Rahmat!",
-      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w-400&h=400&fit=crop",
-      rating: 5
-    },
-    {
-      name: "Dilmurod Karimov",
-      role: "Full Stack Developer",
-      feedback: "Dasturlash kursi mening karyeramni butunlay o'zgartirdi.",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
-      rating: 5
-    }
-  ];
+const testimonials = [
+  {
+    name: "Azizbek Islomov",
+    role: "IELTS 8.5",
+    feedback: "6 oy ichida 5.5 dan 8.5 ga ko‘tardim. O‘qituvchilar juda sifatli!",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+    rating: 5
+  },
+  {
+    name: "Malika Nurmatova",
+    role: "SAT 1550",
+    feedback: "Amerika universitetiga kirishimga yordam berdi. Rahmat!",
+    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop",
+    rating: 5
+  },
+  {
+    name: "Dilmurod Karimov",
+    role: "Full Stack Developer",
+    feedback: "Dasturlash kursi mening karyeramni butunlay o‘zgartirdi.",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
+    rating: 5
+  },
+  {
+    name: "Shahnoza Qodirova",
+    role: "General English B2",
+    feedback: "Ingliz tilini 0 dan o‘rgana boshlagandim. Endi chet elliklar bilan bemalol gaplasha olaman.",
+    image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop",
+    rating: 5
+  },
+  {
+    name: "Behruz Akramov",
+    role: "Frontend Developer",
+    feedback: "React darslari juda sodda va tushunarli. 3 oyda ish topdim!",
+    image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop",
+    rating: 5
+  },
+  {
+    name: "Ozoda Muhammadova",
+    role: "IELTS 7.5",
+    feedback: "Writing bo‘yicha kuchli ko‘rsatmalar bo‘ldi. O‘qituvchilar e’tiborli.",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop",
+    rating: 5
+  },
+  {
+    name: "Sarvar Jo‘rayev",
+    role: "Backend Developer",
+    feedback: "Node.js kursi orqali real loyihalar qildik. Juda foydali bo‘ldi.",
+    image: "https://images.unsplash.com/photo-1603415526960-f7e0328dfee1?w=400&h=400&fit=crop",
+    rating: 5
+  },
+  {
+    name: "Mohira Karimova",
+    role: "IELTS 8.0",
+    feedback: "Speaking klublari juda kuchli. O‘zimni bemalol gapira oladigan bo‘ldim.",
+    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop",
+    rating: 5
+  },
+  {
+    name: "Javohir Xolmatov",
+    role: "Python Developer",
+    feedback: "0 dan Python o‘rgandim va hozir freelance qilayapman. Rahmat!",
+    image: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=400&fit=crop",
+    rating: 5
+  }
+];
+
 
   return (
     <section className="py-20 px-6 bg-gradient-to-b from-blue-50/50 to-white">
