@@ -1,70 +1,481 @@
 <!DOCTYPE html>
-<html lang="uz">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+<html lang="uz" prefix="og: http://ogp.me/ns#">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    
+    <!-- Asosiy SEO meta teglar -->
+    <title>Online O'quv Platformasi - 500+ Kurslar | IELTS, IT, Matematika, Ingliz Tili, Dasturlash</title>
+    
+    <meta name="description" 
+          content="✅ 500+ kurslar, 1000+ videodarslar, 10,000+ testlar. IELTS, IT dasturlash, matematika, ingliz tili, bolalar kurslari, sertifikatlash. Professional o'qituvchilar bilan onlayn ta'lim.">
+    
+    <meta name="keywords" 
+          content="online kurslar, onlayn ta'lim, dasturlash kurslari, IELTS tayyorgarlik, ingliz tili, matematika, maktab fanlari, IT kurslar, frontend kursi, backend kursi, fullstack dasturlash, python kursi, javascript kursi, mobil dasturlash, android kursi, ios kursi, robototexnika, suniy intellekt, AI kursi, bolalar uchun dasturlash, kompyuter savodxonligi, grafik dizayn, veb dizayn, SMM kursi, marketing, biznes, menejment, muhandislik, tibbiyot, huquq, moliya, buxgalteriya, 1C, o'zbek tili, rus tili, arab tili, koreys tili, yapon tili, xitoy tili, nemis tili, fransuz tili, ispan tili, musiqiy kurslar, rasm chizish, sport, fitness, yoga, shaxmat, rivojlanish kurslari, sertifikat, diplom, malaka oshirish, kasb-hunar">
+    
+    <meta name="author" content="Sodiqjon Sodqov - Online O'quv Platformasi">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+    <meta name="bingbot" content="index, follow">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://onlinekurslar.uz">
+    
+    <!-- Open Graph (Facebook, LinkedIn, Telegram) -->
+    <meta property="og:title" content="Online O'quv Platformasi - 500+ Kurslar | Sertifikat bilan ta'lim">
+    <meta property="og:description" 
+          content="O'zbekistondagi eng yirik onlayn ta'lim platformasi. IELTS, IT, matematika, dasturlash, chet tillari va 50+ kategoriyada kurslar.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://onlinekurslar.uz">
+    <meta property="og:image" content="https://onlinekurslar.uz/images/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Online O'quv Platformasi - Kurslar va Darslar">
+    <meta property="og:site_name" content="Online O'quv Platformasi">
+    <meta property="og:locale" content="uz_UZ">
+    <meta property="og:locale:alternate" content="ru_RU">
+    <meta property="og:locale:alternate" content="en_US">
+    
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@onlinekurslaruz">
+    <meta name="twitter:creator" content="@sodiqjonsodqov">
+    <meta name="twitter:title" content="Online O'quv Platformasi - 500+ Kurslar">
+    <meta name="twitter:description" content="Sertifikat bilan tasdiqlangan onlayn kurslar. IELTS, IT, dasturlash va boshqa yo'nalishlar.">
+    <meta name="twitter:image" content="https://onlinekurslar.uz/images/twitter-card.jpg">
+    <meta name="twitter:image:alt" content="Online O'quv Platformasi">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Online O'quv Platformasi",
+      "alternateName": "Online Kurslar Platformasi",
+      "url": "https://onlinekurslar.uz",
+      "description": "O'zbekistondagi eng yirik onlayn ta'lim platformasi. 500+ kurslar, 1000+ videodarslar, sertifikatlar.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Online O'quv Platformasi",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://onlinekurslar.uz/logo.png",
+          "width": 600,
+          "height": 200
+        }
+      },
+      "founder": {
+        "@type": "Person",
+        "name": "Sodiqjon Sodqov",
+        "jobTitle": "Platforma asoschisi",
+        "sameAs": [
+          "https://linkedin.com/in/sodiqjonsodqov",
+          "https://twitter.com/sodiqjonsodqov"
+        ]
+      }
+    }
+    </script>
+    
+    <!-- Kurslar uchun structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Eng mashhur kurslar",
+      "description": "Platformadagi eng ko'p sotilgan va yuqori reytingli kurslar",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "item": {
+            "@type": "Course",
+            "name": "IELTS Complete Preparation Course 8.0+",
+            "description": "IELTS imtihoniga to'liq tayyorgarlik kursi. Reading, Writing, Listening, Speaking bo'limlari.",
+            "provider": "Online O'quv Platformasi",
+            "courseCode": "IELTS-PRO-2024",
+            "hasCourseInstance": {
+              "@type": "CourseInstance",
+              "courseMode": "online",
+              "courseWorkload": "PT80H"
+            }
+          }
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "item": {
+            "@type": "Course",
+            "name": "FullStack Web Dasturlash (React + Node.js)",
+            "description": "Noldan professional FullStack dasturchi bo'lish kursi. React, Node.js, MongoDB, Express.",
+            "provider": "Online O'quv Platformasi",
+            "courseCode": "FULLSTACK-PRO-2024"
+          }
+        }
+      ]
+    }
+    </script>
+    
+    <!-- Mobile app metadata -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Online Kurslar">
+    
+    <!-- PWA manifest -->
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    
+    <!-- Theme color -->
+    <meta name="msapplication-TileColor" content="#1a73e8">
+    <meta name="theme-color" content="#1a73e8">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#1a73e8">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/css/main.css" as="style">
+    <link rel="preload" href="/js/main.js" as="script">
+    
+    <!-- DNS prefetch -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    
+    <!-- Performance optimizations -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="format-detection" content="telephone=no">
+    
+    <!-- Security headers (bu headerga emas, server tomondan beriladi) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;">
+    
+    <!-- Language alternates -->
+    <link rel="alternate" hreflang="uz" href="https://onlinekurslar.uz">
+    <link rel="alternate" hreflang="ru" href="https://onlinekurslar.uz/ru">
+    <link rel="alternate" hreflang="en" href="https://onlinekurslar.uz/en">
+    <link rel="alternate" hreflang="x-default" href="https://onlinekurslar.uz">
+    
+    <!-- Breadcrumb structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Bosh sahifa",
+          "item": "https://onlinekurslar.uz"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Kurslar",
+          "item": "https://onlinekurslar.uz/kurslar"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "IT va Dasturlash",
+          "item": "https://onlinekurslar.uz/kurslar/it-dasturlash"
+        }
+      ]
+    }
+    </script>
+    
+    <!-- Organization structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Online O'quv Platformasi",
+      "url": "https://onlinekurslar.uz",
+      "logo": "https://onlinekurslar.uz/logo.png",
+      "description": "O'zbekistondagi eng yirik onlayn ta'lim platformasi",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "Uzbekistan",
+        "addressLocality": "Tashkent",
+        "postalCode": "100000",
+        "streetAddress": "Amir Temur shoh ko'chasi, 100"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+998901234567",
+        "contactType": "Customer Support",
+        "availableLanguage": ["Uzbek", "Russian", "English"]
+      },
+      "sameAs": [
+        "https://facebook.com/onlinekurslaruz",
+        "https://twitter.com/onlinekurslaruz",
+        "https://instagram.com/onlinekurslaruz",
+        "https://t.me/onlinekurslaruz",
+        "https://youtube.com/@onlinekurslaruz"
+      ]
+    }
+    </script>
+    
+    <!-- FAQ structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Kurslar qanday o'qitiladi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Kurslar video darslar, amaliy topshiriqlar, testlar va uy vazifalari orqali o'qitiladi. Har bir kursda professional o'qituvchi tomonidan yordam beriladi."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Sertifikat qanday olinadi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Kursni muvaffaqiyatli tamomlagan talabalar raqamli sertifikat oladi. Sertifikat QR kod orqali tekshiriladi va xalqaro standartlarga mos keladi."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Kurs narxlari qancha?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Kurs narxlari 99,000 so'mdan boshlanadi. Har oy chegirmalar va to'lov bo'yicha moslashuvchan variantlar mavjud."
+          }
+        }
+      ]
+    }
+    </script>
+    
+    <!-- Site verification -->
+    <meta name="google-site-verification" content="GOOGLE_SITE_VERIFICATION_CODE">
+    <meta name="yandex-verification" content="YANDEX_VERIFICATION_CODE">
+    <meta name="facebook-domain-verification" content="FACEBOOK_VERIFICATION_CODE">
+    
+    <!-- Content rating -->
+    <meta name="rating" content="General">
+    <meta name="content-language" content="uz">
+    
+    <!-- Cache control -->
+    <meta http-equiv="Cache-Control" content="max-age=31536000, public">
+    
+    <!-- Windows specific -->
+    <meta name="msapplication-config" content="/browserconfig.xml">
+    
+    <!-- iOS specific -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Online Kurslar">
+    
+    <!-- Android specific -->
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Preconnect to CDNs -->
+    <link rel="preconnect" href="https://cdn.onlinekurslar.uz">
+    <link rel="preconnect" href="https://api.onlinekurslar.uz">
+    
+    <!-- Sitelinks search box -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://onlinekurslar.uz",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://onlinekurslar.uz/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    
+    <!-- Video structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoObject",
+      "name": "Online O'quv Platformasi - Kurslarga kirish",
+      "description": "Platformamizda kurslar qanday o'qitilishini ko'rsatuvchi video",
+      "thumbnailUrl": "https://onlinekurslar.uz/videos/intro-thumbnail.jpg",
+      "uploadDate": "2024-01-15T08:00:00+05:00",
+      "duration": "PT2M30S",
+      "contentUrl": "https://onlinekurslar.uz/videos/platform-intro.mp4",
+      "embedUrl": "https://onlinekurslar.uz/embed/platform-intro",
+      "interactionCount": "1500"
+    }
+    </script>
+    
+    <!-- Local business structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Online O'quv Platformasi",
+      "description": "Professional onlayn ta'lim markazi",
+      "url": "https://onlinekurslar.uz",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Amir Temur shoh ko'chasi 100",
+        "addressLocality": "Tashkent",
+        "addressRegion": "Tashkent",
+        "postalCode": "100000",
+        "addressCountry": "UZ"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 41.311081,
+        "longitude": 69.240562
+      },
+      "openingHours": "Mo-Fr 09:00-18:00",
+      "telephone": "+998901234567",
+      "priceRange": "$$",
+      "currenciesAccepted": "UZS, USD",
+      "paymentAccepted": "Cash, Credit Card, Bank Transfer"
+    }
+    </script>
+    
+    <!-- Review/rating structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "AggregateRating",
+      "itemReviewed": {
+        "@type": "Organization",
+        "name": "Online O'quv Platformasi"
+      },
+      "ratingValue": "4.8",
+      "bestRating": "5",
+      "worstRating": "1",
+      "ratingCount": "1250"
+    }
+    </script>
+</head>
 
-    <!-- RESPONSIVE -->
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <!-- THEME COLOR -->
-    <meta name="theme-color" content="#1a73e8" />
-
-    <!-- MAIN SEO -->
-    <title>Online O‘quv Platformasi — Kurslar, Darslar, Testlar va Sertifikatlar</title>
-
-    <meta
-      name="description"
-      content="Online o‘quv platformasi: Ingliz tili, IELTS, IT dasturlash, matematika, maktab fanlari, bolalar uchun kurslar, testlar, videodarslar, va sertifikatlar. O‘zingizga qulay vaqtda o‘qing!"
-    />
-
-    <meta
-      name="keywords"
-      content="online o‘quv platformasi, online kurslar, videodarslar, ingliz tili, IELTS kursi, onlayn ta’lim, IT kurslari, o‘quv platforma, LMS, testlar, matematika, frontend kursi"
-    />
-
-    <meta name="author" content="Online O‘quv Platformasi" />
-
-    <!-- OPEN GRAPH (Telegram / Facebook / Instagram Preview) -->
-    <meta property="og:title" content="Online O‘quv Platformasi — Qulay va Zamonaviy Ta’lim" />
-    <meta
-      property="og:description"
-      content="Videodarslar, testlar, o‘qituvchilar bilan aloqa, reytinglar, sertifikatlar — hammasi bitta platformada!"
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://your-domain.com" />
-    <meta property="og:image" content="%PUBLIC_URL%/preview.png" />
-
-    <!-- TWITTER CARDS -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Online O‘quv Platformasi — Kurslar va Darslar" />
-    <meta
-      name="twitter:description"
-      content="Onlayn darslar, videolar, testlar, uy vazifalari va sertifikatlar — hammasi siz uchun."
-    />
-    <meta name="twitter:image" content="%PUBLIC_URL%/preview.png" />
-
-    <!-- MANIFEST + ICONS -->
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-
-    <!-- FONTS (optional) -->
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- PERFOMANCE BOOST -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="robots" content="index, follow" />
-    <meta name="language" content="Uzbek" />
-    <meta name="rating" content="general" />
-    <meta name="distribution" content="global" />
-  </head>
-
-  <body>
-    <noscript>Platformani ishlatish uchun JavaScript yoqilgan bo‘lishi shart.</noscript>
+<body>
+    <!-- Accessibility skip link -->
+    <a href="#main-content" class="skip-link">Asosiy kontentga o'tish</a>
+    
+    <!-- Navigation will be loaded by React -->
     <div id="root"></div>
-  </body>
+    
+    <!-- Fallback for no JavaScript -->
+    <noscript>
+        <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+            <h1>⚠️ JavaScript yoqilmagan</h1>
+            <p>Online O'quv Platformasidan to'liq foydalanish uchun JavaScript yoqilgan bo'lishi kerak.</p>
+            <p>Iltimos, brauzeringizda JavaScript-ni yoqing yoki zamonaviy brauzerga o'ting.</p>
+            <p><a href="https://www.enable-javascript.com/" style="color: #1a73e8;">JavaScript-ni qanday yoqish kerak?</a></p>
+            <div style="margin-top: 30px;">
+                <p>Yoki biz bilan bog'laning:</p>
+                <p>📞 Telefon: +998 90 123 45 67</p>
+                <p>📧 Email: info@onlinekurslar.uz</p>
+                <p>📍 Manzil: Toshkent sh., Amir Temur shoh ko'chasi, 100</p>
+            </div>
+        </div>
+    </noscript>
+    
+    <!-- Loading progress bar -->
+    <div id="loading-bar" style="display: none;">
+        <div class="progress"></div>
+    </div>
+    
+    <!-- Preloaded critical CSS -->
+    <style>
+        /* Critical above-the-fold CSS */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: #f8f9fa;
+        }
+        
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #1a73e8;
+            color: white;
+            padding: 8px;
+            z-index: 1001;
+            text-decoration: none;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+        }
+        
+        #loading-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: transparent;
+            z-index: 9999;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #1a73e8, #4c8bf5);
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+    
+    <!-- Google Analytics/GTM (optional) -->
+    <script>
+        // Google Tag Manager
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-XXXXXX');
+    </script>
+    
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXX"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    
+    <!-- Performance monitoring -->
+    <script>
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            setTimeout(function(){
+                var perfEntries = performance.getEntriesByType('navigation');
+                if (perfEntries.length > 0) {
+                    var navEntry = perfEntries[0];
+                    var data = {
+                        'page_load_time': navEntry.loadEventEnd - navEntry.startTime,
+                        'dom_interactive': navEntry.domInteractive - navEntry.startTime,
+                        'first_contentful_paint': performance.getEntriesByName('first-contentful-paint')[0]?.startTime || 0
+                    };
+                    // Send to analytics
+                    console.log('Performance metrics:', data);
+                }
+            }, 0);
+        });
+    </script>
+    
+    <!-- Error tracking -->
+    <script>
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            console.error('Error:', {msg, url, lineNo, columnNo, error});
+            return false;
+        };
+    </script>
+</body>
 </html>
