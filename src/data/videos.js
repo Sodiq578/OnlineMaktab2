@@ -1,5 +1,6 @@
 // src/data/videos.js
-const videoData = [
+// Boshlang‘ich ma'lumotlar (faqat bir marta ishlaydi)
+const defaultData = [
   {
     sectionId: 1,
     sectionName: "HTML Darslari",
@@ -620,7 +621,6 @@ const videoData = [
         src: "IVpZW-SRV-I",
         exercise: "Masala: Bir sonning 3 ga ko'paytmasidan 5 ayirilganda 16 hosil bo'ladi. Bu sonni toping. Tenglama tuzing, yeching va javobni tekshiring. Test sifatida o'xshash 2 ta masala o'ylab toping.",
       },
-    
       {
         id: "UPUBY-ychBY",
         title: "19-Dars. Oddiy va aralash kasrlarni bo'lish | Matematikani 0 dan o'rganamiz",
@@ -774,7 +774,6 @@ const videoData = [
     sectionId: 4,
     sectionName: "Fizika",
     videos: [
-    
       {
         id: "oxoBvF7j8JA",
         title: "1-dars | Fizika bu nima? Fizikadagi asosiy tushunchalar | Masofaviy Fizika",
@@ -1967,4 +1966,31 @@ const videoData = [
   } 
 ];
 
+// localStorage dan o‘qish, agar yo‘q bo‘lsa — defaultData dan foydalanish
+const getVideoData = () => {
+  const saved = localStorage.getItem('onlineMaktab_videoData');
+  if (saved) {
+    try {
+      return JSON.parse(saved);
+    } catch (e) {
+      console.error("localStorage ma'lumotlari buzilgan, standart ma'lumotlar yuklandi");
+    }
+  }
+  return defaultData;
+};
+
+// localStorage ga yozish
+const saveVideoData = (data) => {
+  localStorage.setItem('onlineMaktab_videoData', JSON.stringify(data));
+};
+
+// Eksport qilamiz
+let videoData = getVideoData();
+
+// Har safar o‘zgartirganda avto-saqlash
+const updateAndSave = () => {
+  saveVideoData(videoData);
+};
+
+export { videoData, updateAndSave };
 export default videoData;

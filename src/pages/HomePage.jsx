@@ -7,11 +7,11 @@ import {
   FaPlay, FaLock, FaCheck, FaStar, FaUsers, FaClock, FaChevronRight, 
   FaBookOpen, FaGraduationCap, FaVideo, FaCertificate, FaTrophy, 
   FaRocket, FaSearch, FaFire, FaChartLine, FaHeart, FaEye, 
-  FaBookmark, FaRegBookmark, FaFilter, FaSortAmountDown, 
-  FaRegHeart, FaHeartbeat, FaCrown, FaMedal, FaAward, 
-  FaSeedling, FaSun, FaMoon, FaLightbulb, FaMagic, 
-  FaPaintBrush, FaCode, FaMobileAlt, FaRobot, FaGamepad, 
-  FaMusic, FaCamera, FaEnvelope  // FaEnvelope qo'shildi!
+  FaBookmark, FaFilter, FaSortAmountDown, 
+  FaRegHeart, FaCrown, FaMedal, FaAward, FaSeedling,
+  FaBolt, FaMagic, FaPaintBrush, FaCode, FaMobileAlt,
+  FaRobot, FaGamepad, FaMusic, FaCamera, FaEnvelope,
+  FaDesktop, FaBolt as FaLightning, FaSeedling as FaLeaf
 } from 'react-icons/fa';
 import './HomePage.css';
 
@@ -82,14 +82,14 @@ const HomePage = () => {
   };
 
   const categories = [
-    { id: 'all', name: 'Barcha Kurslar', icon: 'Book', count: videoData.length, color: '#4f46e5' },
-    { id: 'web', name: 'Web Dasturlash', icon: 'Computer', count: videoData.filter(s => s.category === 'web').length, color: '#06b6d4' },
-    { id: 'mobile', name: 'Mobil Dasturlash', icon: 'Phone', count: videoData.filter(s => s.category === 'mobile').length, color: '#8b5cf6' },
-    { id: 'design', name: 'Dizayn', icon: 'Paintbrush', count: videoData.filter(s => s.category === 'design').length, color: '#ec4899' },
-    { id: 'ai', name: 'Suniy Intelekt', icon: 'Robot', count: videoData.filter(s => s.category === 'ai').length, color: '#10b981' },
-    { id: 'game', name: 'Oʻyin Dasturlash', icon: 'Gamepad', count: videoData.filter(s => s.category === 'game').length, color: '#f59e0b' },
-    { id: 'music', name: 'Musiqa', icon: 'Music', count: videoData.filter(s => s.category === 'music').length, color: '#ef4444' },
-    { id: 'photo', name: 'Fotografiya', icon: 'Camera', count: videoData.filter(s => s.category === 'photo').length, color: '#84cc16' },
+    { id: 'all', name: 'Barcha Kurslar', icon: <FaBookOpen />, count: videoData.length, color: '#4f46e5' },
+    { id: 'web', name: 'Web Dasturlash', icon: <FaDesktop />, count: videoData.filter(s => s.category === 'web').length, color: '#06b6d4' },
+    { id: 'mobile', name: 'Mobil Dasturlash', icon: <FaMobileAlt />, count: videoData.filter(s => s.category === 'mobile').length, color: '#8b5cf6' },
+    { id: 'design', name: 'Dizayn', icon: <FaPaintBrush />, count: videoData.filter(s => s.category === 'design').length, color: '#ec4899' },
+    { id: 'ai', name: 'Suniy Intelekt', icon: <FaRobot />, count: videoData.filter(s => s.category === 'ai').length, color: '#10b981' },
+    { id: 'game', name: 'Oʻyin Dasturlash', icon: <FaGamepad />, count: videoData.filter(s => s.category === 'game').length, color: '#f59e0b' },
+    { id: 'music', name: 'Musiqa', icon: <FaMusic />, count: videoData.filter(s => s.category === 'music').length, color: '#ef4444' },
+    { id: 'photo', name: 'Fotografiya', icon: <FaCamera />, count: videoData.filter(s => s.category === 'photo').length, color: '#84cc16' },
   ];
 
   const sortOptions = [
@@ -102,10 +102,10 @@ const HomePage = () => {
 
   const getDifficultyBadge = (level) => {
     const config = {
-      beginner: { color: '#10b981', label: "Boshlang'ich", icon: 'Seedling' },
-      intermediate: { color: '#f59e0b', label: "O'rta", icon: 'Lightning' },
-      advanced: { color: '#ef4444', label: 'Qiyin', icon: 'Fire' },
-      expert: { color: '#8b5cf6', label: 'Ekspert', icon: 'Crown' }
+      beginner: { color: '#10b981', label: "Boshlang'ich", icon: <FaLeaf /> },
+      intermediate: { color: '#f59e0b', label: "O'rta", icon: <FaLightning /> },
+      advanced: { color: '#ef4444', label: 'Qiyin', icon: <FaFire /> },
+      expert: { color: '#8b5cf6', label: 'Ekspert', icon: <FaCrown /> }
     };
     return config[level] || config.beginner;
   };
@@ -194,16 +194,20 @@ const HomePage = () => {
         <h2 className="section-title"><FaFilter /> Kategoriyalar</h2>
         <div className="categories-grid">
           {categories.map(category => (
-            <button
+            <div
               key={category.id}
               className={`category-card ${selectedCategory === category.id ? 'active' : ''}`}
               onClick={() => setSelectedCategory(category.id)}
-              style={{ '--category-color': category.color, borderColor: selectedCategory === category.id ? category.color : '#e5e7eb' }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setSelectedCategory(category.id)}
             >
-              <span className="category-icon" style={{ color: category.color }}>{category.icon}</span>
+              <div className="category-icon" style={{ color: category.color }}>
+                {category.icon}
+              </div>
               <h3>{category.name}</h3>
               <span className="category-count">{category.count} kurs</span>
-            </button>
+            </div>
           ))}
         </div>
       </div>
@@ -216,6 +220,7 @@ const HomePage = () => {
               key={option.id}
               className={`sort-btn ${sortBy === option.id ? 'active' : ''}`}
               onClick={() => setSortBy(option.id)}
+              type="button"
             >
               {option.icon}<span>{option.name}</span>
             </button>
@@ -247,11 +252,12 @@ const HomePage = () => {
           </div>
         ) : (
           <div className="courses-grid">
-            {filteredSections.map(section => {
+            {filteredSections.map((section, index) => {
               const isPurchased = purchasedCourses.some(c => c.sectionId === section.sectionId);
               const isFavorite = favorites.includes(section.sectionId);
               const difficulty = getDifficultyBadge(section.difficulty);
               const progress = user?.progress?.[section.sectionId] || 0;
+              const thumbnail = section.thumbnail || `https://picsum.photos/seed/${section.sectionId || Math.random()}/400/250`;
 
               return (
                 <div
@@ -261,9 +267,18 @@ const HomePage = () => {
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleCourseClick(section)}
+                  style={{ '--index': index }}
                 >
                   <div className="course-image">
-                    <img src={section.thumbnail || `https://picsum.photos/seed/${section.sectionId}/400/250`} alt={section.sectionName} loading="lazy" />
+                    <img 
+                      src={thumbnail} 
+                      alt={section.sectionName} 
+                      loading="lazy" 
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = `https://picsum.photos/seed/${Date.now()}/400/250`;
+                      }}
+                    />
                     <div className="course-badges">
                       <span className="difficulty-badge" style={{ backgroundColor: difficulty.color }}>
                         {difficulty.icon} {difficulty.label}
@@ -271,7 +286,12 @@ const HomePage = () => {
                       {section.isNew && <span className="new-badge"><FaRocket /> Yangi</span>}
                       {section.isHot && <span className="hot-badge"><FaFire /> Mashhur</span>}
                     </div>
-                    <button className={`favorite-btn ${isFavorite ? 'active' : ''}`} onClick={(e) => toggleFavorite(section.sectionId, e)}>
+                    <button 
+                      className={`favorite-btn ${isFavorite ? 'active' : ''}`} 
+                      onClick={(e) => toggleFavorite(section.sectionId, e)}
+                      type="button"
+                      aria-label={isFavorite ? "Sevimlilardan olib tashlash" : "Sevimlilarga qo'shish"}
+                    >
                       {isFavorite ? <FaHeart /> : <FaRegHeart />}
                     </button>
                     <div className="play-overlay"><FaPlay /></div>
@@ -292,7 +312,9 @@ const HomePage = () => {
 
                     {section.tags && (
                       <div className="course-tags">
-                        {section.tags.slice(0,3).map((tag, i) => <span key={i} className="tag">{tag}</span>)}
+                        {section.tags.slice(0,3).map((tag, i) => (
+                          <span key={i} className="tag">{tag}</span>
+                        ))}
                       </div>
                     )}
 
@@ -303,19 +325,37 @@ const HomePage = () => {
                         ) : (
                           <>
                             <span className="price-current">{(section.price || 99000).toLocaleString()} so'm</span>
-                            {section.oldPrice && <span className="price-old">{section.oldPrice.toLocaleString()} so'm</span>}
+                            {section.oldPrice && (
+                              <span className="price-old">{section.oldPrice.toLocaleString()} so'm</span>
+                            )}
                           </>
                         )}
                       </div>
                       <button className={`course-action-btn ${isPurchased ? 'purchased' : 'buy'}`}>
-                        {isPurchased ? <> <FaPlay /> Davom etish </> : <> <FaLock /> Sotib olish </>}
+                        {isPurchased ? (
+                          <>
+                            <FaPlay /> Davom etish
+                          </>
+                        ) : (
+                          <>
+                            <FaLock /> Sotib olish
+                          </>
+                        )}
                       </button>
                     </div>
 
                     {progress > 0 && (
                       <div className="progress-container">
                         <div className="progress-bar">
-                          <div className="progress-fill" style={{ width: `${progress}%`, background: progress === 100 ? '#10b981' : 'linear-gradient(90deg, #4f46e5, #8b5cf6)' }}></div>
+                          <div 
+                            className="progress-fill" 
+                            style={{ 
+                              width: `${progress}%`, 
+                              background: progress === 100 ? 
+                                'var(--success)' : 
+                                'linear-gradient(90deg, var(--primary), var(--accent))' 
+                            }}
+                          ></div>
                         </div>
                         <span className="progress-text">
                           {progress}% tamomlandi {progress === 100 && <FaCheck style={{ marginLeft: '5px' }} />}
@@ -334,13 +374,19 @@ const HomePage = () => {
       <div className="featured-section">
         <div className="featured-content">
           <div className="featured-badge"><FaAward /> Siz uchun maxsus</div>
-          <h2 className="featured-title"><FaRocket className="rocket-icon" /> O'qing, O'rganing, O'sting!</h2>
+          <h2 className="featured-title">
+            <FaRocket className="rocket-icon" /> O'qing, O'rganing, O'sting!
+          </h2>
           <p className="featured-text">
             Har bir kurs sizga amaliy ko'nikmalar, sertifikat va yangi imkoniyatlar keltiradi. Bugundan boshlang!
           </p>
           <div className="featured-buttons">
-            <button className="cta-button primary"><FaGraduationCap /> Bepul kursni boshlash</button>
-            <button className="cta-button secondary"><FaCertificate /> Sertifikat olish</button>
+            <button className="cta-button primary" type="button">
+              <FaGraduationCap /> Bepul kursni boshlash
+            </button>
+            <button className="cta-button secondary" type="button">
+              <FaCertificate /> Sertifikat olish
+            </button>
           </div>
         </div>
       </div>
@@ -352,10 +398,14 @@ const HomePage = () => {
             <FaEnvelope /> Yangiliklardan xabardor bo'ling
           </h3>
           <p>Yangi kurslar va chegirmalar haqida birinchi bo'lib bilib oling</p>
-          <div className="newsletter-form">
-            <input type="email" placeholder="Email manzilingiz" />
-            <button>Obuna bo'lish</button>
-          </div>
+          <form className="newsletter-form" onSubmit={(e) => e.preventDefault()}>
+            <input 
+              type="email" 
+              placeholder="Email manzilingiz" 
+              required 
+            />
+            <button type="submit">Obuna bo'lish</button>
+          </form>
         </div>
       </div>
     </div>
