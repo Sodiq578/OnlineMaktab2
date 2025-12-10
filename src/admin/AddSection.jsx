@@ -1,6 +1,6 @@
 // src/admin/AddSection.jsx
 import React, { useState } from 'react';
-import { videoData, updateAndSave } from '../data/videos';
+import videoData, { updateAndSave } from '../data/videos';
 import { useNavigate } from 'react-router-dom';
 
 const AddSection = () => {
@@ -15,7 +15,6 @@ const AddSection = () => {
       return;
     }
 
-    // Yangi ID yaratish
     const newId = videoData.length > 0 
       ? Math.max(...videoData.map(s => s.sectionId)) + 1 
       : 1;
@@ -23,22 +22,29 @@ const AddSection = () => {
     const newSection = {
       sectionId: newId,
       sectionName: sectionName.trim(),
-      videos: []
+      videos: [],
+      category: "other",
+      price: 0,
+      rating: 0,
+      enrolled: 0,
+      videoCount: 0,
+      totalDuration: 0,
+      difficulty: "beginner",
+      thumbnail: "https://via.placeholder.com/400x250/4f46e5/ffffff?text=Yangi+Kurs",
+      description: "Yangi qo'shilgan fan",
+      tags: []
     };
 
     videoData.push(newSection);
-    updateAndSave(); // localStorage’ga saqlaydi
+    updateAndSave();
 
     setSectionName('');
     setMessage(`"${newSection.sectionName}" fani qo‘shildi!`);
-    setTimeout(() => {
-      setMessage('');
-      navigate('/admin');
-    }, 2000);
+    setTimeout(() => navigate('/admin'), 2000);
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto p-6">
       <h2 className="text-3xl font-bold mb-8 text-center text-indigo-700">Yangi Fan Qo‘shish</h2>
 
       {message && (
@@ -58,17 +64,10 @@ const AddSection = () => {
         />
 
         <div className="mt-8 flex gap-4">
-          <button
-            type="submit"
-            className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-5 rounded-xl font-bold text-xl hover:from-indigo-700 hover:to-purple-700 transition shadow-xl"
-          >
+          <button type="submit" className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-5 rounded-xl font-bold text-xl hover:from-indigo-700 hover:to-purple-700 transition shadow-xl">
             Qo‘shish
           </button>
-          <button
-            type="button"
-            onClick={() => navigate('/admin')}
-            className="flex-1 bg-gray-500 text-white py-5 rounded-xl font-bold text-xl hover:bg-gray-600 transition"
-          >
+          <button type="button" onClick={() => navigate('/admin')} className="flex-1 bg-gray-500 text-white py-5 rounded-xl font-bold text-xl hover:bg-gray-600 transition">
             Orqaga
           </button>
         </div>

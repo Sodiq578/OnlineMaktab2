@@ -17,7 +17,8 @@ import './HomePage.css';
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { purchasedCourses, user } = useUser();
+  const { purchasedCourses = [], user = {} } = useUser(); // Bu yerda default qiymatlar!
+  
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredSections, setFilteredSections] = useState(videoData);
@@ -36,9 +37,9 @@ const HomePage = () => {
     // Qidiruv
     if (searchTerm) {
       filtered = filtered.filter(section =>
-        section.sectionName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        section.sectionName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         section.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        section.tags?.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+        (section.tags && section.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
       );
     }
 
@@ -62,13 +63,16 @@ const HomePage = () => {
   }, [searchTerm, selectedCategory, sortBy]);
 
   const handleCourseClick = (section) => {
-    const slug = section.sectionName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-    const isPurchased = purchasedCourses.some(course => course.sectionId === section.sectionId);
+    const slug = section.sectionName?.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || 'course';
+    
+    // purchasedCourses array ekanligini va undefined emasligini tekshirdik
+    const isPurchased = Array.isArray(purchasedCourses) && 
+      purchasedCourses.some(course => course?.sectionId === section.sectionId);
 
     if (isPurchased) {
       navigate(`/videos/${slug}`);
     } else {
-      navigate(`/dashboard/payments`, { state: { section } });
+      navigate('/dashboard/payments', { state: { section } });
     }
   };
 
@@ -253,9 +257,10 @@ const HomePage = () => {
         ) : (
           <div className="courses-grid">
             {filteredSections.map((section, index) => {
-              const isPurchased = purchasedCourses.some(c => c.sectionId === section.sectionId);
+              const isPurchased = Array.isArray(purchasedCourses) && 
+                purchasedCourses.some(c => c?.sectionId === section.sectionId);
               const isFavorite = favorites.includes(section.sectionId);
-              const difficulty = getDifficultyBadge(section.difficulty);
+              const difficulty = getDifficultyBadge(section.difficulty || 'beginner');
               const progress = user?.progress?.[section.sectionId] || 0;
               const thumbnail = section.thumbnail || `https://picsum.photos/seed/${section.sectionId || Math.random()}/400/250`;
 
@@ -310,9 +315,9 @@ const HomePage = () => {
                       <span className="meta-item"><FaUsers /> {section.enrolled || 145} o'quvchi</span>
                     </div>
 
-                    {section.tags && (
+                    {section.tags && section.tags.length > 0 && (
                       <div className="course-tags">
-                        {section.tags.slice(0,3).map((tag, i) => (
+                        {section.tags.slice(0, 3).map((tag, i) => (
                           <span key={i} className="tag">{tag}</span>
                         ))}
                       </div>
@@ -324,22 +329,22 @@ const HomePage = () => {
                           <span className="price-purchased"><FaCheck /> Sizda mavjud</span>
                         ) : (
                           <>
-                            <span className="price-current">{(section.price || 99000).toLocaleString()} so'm</span>
+                            <span className="price-current">
+                              {(section.price || 99000).toLocaleString()} so'm
+                            </span>
                             {section.oldPrice && (
-                              <span className="price-old">{section.oldPrice.toLocaleString()} so'm</span>
+                              <span className="price-old">
+                                {section.oldPrice.toLocaleString()} so'm
+                              </span>
                             )}
                           </>
                         )}
                       </div>
                       <button className={`course-action-btn ${isPurchased ? 'purchased' : 'buy'}`}>
                         {isPurchased ? (
-                          <>
-                            <FaPlay /> Davom etish
-                          </>
+                          <> <FaPlay /> Davom etish </>
                         ) : (
-                          <>
-                            <FaLock /> Sotib olish
-                          </>
+                          <> <FaLock /> Sotib olish </>
                         )}
                       </button>
                     </div>
@@ -351,11 +356,11 @@ const HomePage = () => {
                             className="progress-fill" 
                             style={{ 
                               width: `${progress}%`, 
-                              background: progress === 100 ? 
-                                'var(--success)' : 
-                                'linear-gradient(90deg, var(--primary), var(--accent))' 
+                              background: progress === 100 
+                                ? '#10b981' 
+                                : 'linear-gradient(90deg, #4f46e5, #8b5cf6)' 
                             }}
-                          ></div>
+                          />
                         </div>
                         <span className="progress-text">
                           {progress}% tamomlandi {progress === 100 && <FaCheck style={{ marginLeft: '5px' }} />}

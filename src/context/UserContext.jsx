@@ -1,29 +1,51 @@
-// src/context/UserContext.jsx
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { auth } from "../firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+// src/context/UserContext.js
+import React, { createContext, useContext, useState } from 'react';
 
 const UserContext = createContext();
 
-export const useUser = () => useContext(UserContext);
-
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-    return () => unsubscribe();
+  const [purchasedCourses, setPurchasedCourses] = useState([]);
+  
+  // localStorage dan sotib olingan kurslarni yuklash
+  useState(() => {
+    try {
+      const saved = localStorage.getItem('eduhub_purchasedCourses');
+      if (saved) {
+        setPurchasedCourses(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error('Kurslarni yuklashda xato:', e);
+    }
   }, []);
 
-  const logout = () => signOut(auth);
+  // Kurs sotib olish funksiyasi
+  const purchaseCourse = (course) => {
+    setPurchasedCourses(prev => {
+      const newCourses = [...prev, { 
+        ...course, 
+        purchaseDate: new Date().toISOString(),
+        lastAccess: new Date().toISOString()
+      }];
+      localStorage.setItem('eduhub_purchasedCourses', JSON.stringify(newCourses));
+      return newCourses;
+    });
+  };
 
   return (
-    <UserContext.Provider value={{ user, loading, logout }}>
+    <UserContext.Provider value={{ 
+      purchasedCourses, 
+      purchaseCourse,
+      setPurchasedCourses 
+    }}>
       {children}
     </UserContext.Provider>
   );
+};
+
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error('useUser must be used within UserProvider');
+  }
+  return context;
 };
