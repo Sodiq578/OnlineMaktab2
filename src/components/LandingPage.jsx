@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { FaPlus, FaMinus, FaChevronDown, FaChevronUp, FaArrowRight, FaStar, FaQuoteLeft } from "react-icons/fa";
+import { FaPlus, FaMinus, FaChevronDown, FaChevronUp, FaArrowRight, FaStar, FaQuoteLeft, FaGoogle, FaPhone, FaEnvelope, FaLock, FaEye, FaEyeSlash, FaCheckCircle } from "react-icons/fa";
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "aos/dist/aos.css";
@@ -11,12 +11,902 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-coverflow";
 
-import { FaChalkboardTeacher, FaCheckCircle, FaGraduationCap, FaCalendarAlt, FaCoffee, FaMapMarkerAlt, FaPhone, FaEnvelope, FaTelegram, FaInstagram, FaFacebook, FaTwitter } from "react-icons/fa";
-import { FaBars, FaTimes } from "react-icons/fa";
-
+import { FaChalkboardTeacher, FaGraduationCap, FaCalendarAlt, FaCoffee, FaMapMarkerAlt, FaTelegram, FaInstagram, FaFacebook, FaTwitter, FaBars, FaTimes } from "react-icons/fa";
 import backImg from "../assets/HeroBack.jpg";
 
-const Navbar = () => {
+// Mock user database (localStorage ga saqlanadi)
+const mockUsersDB = {
+  users: [],
+  googleUsers: [],
+  
+  init() {
+    try {
+      const stored = localStorage.getItem('eduhub_users');
+      if (stored) {
+        const data = JSON.parse(stored);
+        this.users = data.users || [];
+        this.googleUsers = data.googleUsers || [];
+      }
+    } catch (error) {
+      console.error('Error loading users:', error);
+      this.users = [];
+      this.googleUsers = [];
+    }
+  },
+  
+  save() {
+    try {
+      localStorage.setItem('eduhub_users', JSON.stringify({
+        users: this.users,
+        googleUsers: this.googleUsers
+      }));
+    } catch (error) {
+      console.error('Error saving users:', error);
+    }
+  },
+  
+  findByEmail(email) {
+    return this.users.find(user => user.email === email);
+  },
+  
+  findByPhone(phone) {
+    return this.users.find(user => user.phone === phone);
+  },
+  
+  addUser(user) {
+    this.users.push(user);
+    this.save();
+    return user;
+  },
+  
+  addGoogleUser(user) {
+    this.googleUsers.push(user);
+    this.save();
+    return user;
+  }
+};
+
+// OTP generator
+const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+// Mock SMS sending (faqat console ga chiqaradi)
+const mockSendSMS = (phone, otp) => {
+  console.log(`📱 SMS sent to ${phone}: Your OTP code is ${otp}`);
+  return true;
+};
+
+// Registration Modal komponenti
+const RegistrationModal = ({ isOpen, onClose, onSuccess }) => {
+  const [activeTab, setActiveTab] = useState('email');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [otpSent, setOtpSent] = useState(false);
+  const [generatedOtp, setGeneratedOtp] = useState('');
+  const [timer, setTimer] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState('');
+  const otpRefs = useRef([]);
+  const modalRef = useRef();
+
+  // Initialize database
+  useEffect(() => {
+    mockUsersDB.init();
+  }, []);
+
+  // Modal tashqarisiga bosilsa yopish
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onClose]);
+
+  // OTP timer
+  useEffect(() => {
+    if (timer > 0) {
+      const interval = setInterval(() => {
+        setTimer(prev => prev - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [timer]);
+
+  // Reset form when modal opens/closes
+  useEffect(() => {
+    if (isOpen) {
+      resetForm();
+    }
+  }, [isOpen]);
+
+  const resetForm = () => {
+    setPhone('');
+    setEmail('');
+    setFullName('');
+    setPassword('');
+    setConfirmPassword('');
+    setOtp(['', '', '', '', '', '']);
+    setOtpSent(false);
+    setGeneratedOtp('');
+    setTimer(0);
+    setLoading(false);
+    setErrors({});
+    setSuccessMessage('');
+    setActiveTab('email');
+  };
+
+  // Form validation
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (activeTab === 'email') {
+      if (!email) newErrors.email = "Email manzilni kiriting";
+      else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Noto'g'ri email format";
+      
+      if (!fullName) newErrors.fullName = "Ism familiyangizni kiriting";
+      
+      if (!password) newErrors.password = "Parolni kiriting";
+      else if (password.length < 8) newErrors.password = "Parol kamida 8 ta belgidan iborat bo'lishi kerak";
+      
+      if (password !== confirmPassword) newErrors.confirmPassword = "Parollar mos kelmadi";
+    } else {
+      if (!phone) newErrors.phone = "Telefon raqamni kiriting";
+      else if (!/^998[0-9]{9}$/.test(phone)) newErrors.phone = "Noto'g'ri telefon raqam formati (998XXXXXXXXX)";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Google orqali ro'yxatdan o'tish (mock)
+  const handleGoogleSignUp = () => {
+    setLoading(true);
+    setErrors({});
+    
+    setTimeout(() => {
+      // Mock Google auth success
+      const mockGoogleUser = {
+        id: Date.now(),
+        email: 'demo@google.com',
+        name: 'Google User',
+        avatar: `https://ui-avatars.com/api/?name=Google+User&background=random`,
+        provider: 'google',
+        createdAt: new Date().toISOString()
+      };
+      
+      mockUsersDB.addGoogleUser(mockGoogleUser);
+      
+      setSuccessMessage("Google orqali muvaffaqiyatli ro'yxatdan o'tdingiz!");
+      setLoading(false);
+      
+      setTimeout(() => {
+        onSuccess(mockGoogleUser);
+        onClose();
+      }, 1500);
+    }, 1000);
+  };
+
+  // Email orqali ro'yxatdan o'tish
+  const handleEmailSignUp = (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+    
+    setLoading(true);
+    setErrors({});
+    
+    setTimeout(() => {
+      try {
+        // Check if user exists
+        const existingUser = mockUsersDB.findByEmail(email);
+        if (existingUser) {
+          setErrors({ email: "Bu email manzil allaqachon ro'yxatdan o'tgan" });
+          setLoading(false);
+          return;
+        }
+        
+        // Create new user
+        const newUser = {
+          id: Date.now(),
+          email,
+          fullName,
+          password: btoa(password), // Simple encoding
+          phone: '',
+          avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=random`,
+          provider: 'email',
+          createdAt: new Date().toISOString(),
+          isVerified: true
+        };
+        
+        mockUsersDB.addUser(newUser);
+        
+        // Save to localStorage
+        localStorage.setItem('eduhub_current_user', JSON.stringify(newUser));
+        
+        setSuccessMessage("Ro'yxatdan muvaffaqiyatli o'tdingiz!");
+        console.log('Yangi foydalanuvchi:', newUser);
+        
+        setLoading(false);
+        
+        setTimeout(() => {
+          onSuccess(newUser);
+          onClose();
+        }, 1500);
+      } catch (error) {
+        console.error('Ro\'yxatdan o\'tishda xato:', error);
+        setErrors({ general: "Xatolik yuz berdi. Iltimos, qayta urinib ko'ring." });
+        setLoading(false);
+      }
+    }, 1500);
+  };
+
+  // Telefon raqam orqali ro'yxatdan o'tish
+  const handlePhoneSignUp = (e) => {
+    if (e) e.preventDefault();
+    
+    if (!otpSent) {
+      if (!phone) {
+        setErrors({ phone: "Telefon raqamni kiriting" });
+        return;
+      }
+      
+      if (!/^998[0-9]{9}$/.test(phone)) {
+        setErrors({ phone: "Noto'g'ri telefon raqam formati (998XXXXXXXXX)" });
+        return;
+      }
+      
+      // Check if phone exists
+      const existingUser = mockUsersDB.findByPhone(phone);
+      if (existingUser) {
+        setErrors({ phone: "Bu telefon raqam allaqachon ro'yxatdan o'tgan" });
+        return;
+      }
+      
+      // Generate and send OTP
+      const otpCode = generateOTP();
+      setGeneratedOtp(otpCode);
+      mockSendSMS(phone, otpCode);
+      
+      setOtpSent(true);
+      setTimer(120); // 2 daqiqa
+      setErrors({});
+      setSuccessMessage(`Tasdiqlash kodi ${phone} raqamiga yuborildi`);
+      
+      // Clear message after 3 seconds
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } else {
+      // Verify OTP
+      const enteredOtp = otp.join('');
+      if (enteredOtp !== generatedOtp) {
+        setErrors({ otp: "Noto'g'ri tasdiqlash kodi" });
+        return;
+      }
+      
+      setLoading(true);
+      
+      setTimeout(() => {
+        try {
+          // Create new user with phone
+          const newUser = {
+            id: Date.now(),
+            email: '',
+            fullName: `User_${phone.slice(-4)}`,
+            phone,
+            password: '',
+            avatar: `https://ui-avatars.com/api/?name=User&background=random`,
+            provider: 'phone',
+            createdAt: new Date().toISOString(),
+            isVerified: true
+          };
+          
+          mockUsersDB.addUser(newUser);
+          
+          // Save to localStorage
+          localStorage.setItem('eduhub_current_user', JSON.stringify(newUser));
+          
+          setSuccessMessage("Ro'yxatdan muvaffaqiyatli o'tdingiz!");
+          console.log('Yangi foydalanuvchi (telefon):', newUser);
+          
+          setLoading(false);
+          
+          setTimeout(() => {
+            onSuccess(newUser);
+            onClose();
+          }, 1500);
+        } catch (error) {
+          console.error('Telefon orqali ro\'yxatdan o\'tishda xato:', error);
+          setErrors({ general: "Xatolik yuz berdi. Iltimos, qayta urinib ko'ring." });
+          setLoading(false);
+        }
+      }, 1000);
+    }
+  };
+
+  // OTP inputlari uchun avtomatik o'tish
+  const handleOtpChange = (index, value) => {
+    if (!/^[0-9]?$/.test(value)) return;
+    
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+    setErrors({...errors, otp: ''});
+    
+    // Keyingi inputga o'tish
+    if (value && index < 5) {
+      setTimeout(() => {
+        otpRefs.current[index + 1]?.focus();
+      }, 10);
+    }
+  };
+
+  // OTP inputlari uchun keydown handler
+  const handleOtpKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      setTimeout(() => {
+        otpRefs.current[index - 1]?.focus();
+      }, 10);
+    }
+  };
+
+  // Resend OTP
+  const handleResendOtp = () => {
+    const otpCode = generateOTP();
+    setGeneratedOtp(otpCode);
+    mockSendSMS(phone, otpCode);
+    setTimer(120);
+    setOtp(['', '', '', '', '', '']);
+    setErrors({});
+    setSuccessMessage("Yangi kod yuborildi!");
+    
+    setTimeout(() => setSuccessMessage(''), 3000);
+  };
+
+  // Format phone number
+  const formatPhone = (value) => {
+    const numbers = value.replace(/\D/g, '');
+    if (numbers.startsWith('998')) {
+      return numbers.slice(0, 12);
+    }
+    return `998${numbers}`.slice(0, 12);
+  };
+
+  // Demo test uchun tezkor to'ldirish
+  const fillDemoData = () => {
+    if (activeTab === 'email') {
+      setFullName("Test Foydalanuvchi");
+      setEmail("test@example.com");
+      setPassword("test12345");
+      setConfirmPassword("test12345");
+      setErrors({});
+    } else {
+      setPhone("998901234567");
+      setErrors({});
+    }
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Overlay */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+          />
+          
+          {/* Modal */}
+          <div className="fixed inset-0 flex items-center justify-center p-4 z-50 overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              ref={modalRef}
+              className="bg-white rounded-3xl max-w-md w-full my-auto"
+            >
+              <div className="p-8">
+                {/* Header */}
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    Ro'yxatdan o'tish
+                  </h2>
+                  <button
+                    onClick={onClose}
+                    className="text-gray-500 hover:text-gray-700 text-xl"
+                  >
+                    <FaTimes />
+                  </button>
+                </div>
+
+                {/* Demo test button */}
+                <button
+                  onClick={fillDemoData}
+                  className="w-full mb-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl text-sm font-medium hover:shadow-md transition-all"
+                >
+                  🚀 Demo ma'lumotlarni to'ldirish
+                </button>
+
+                {/* Success Message */}
+                {successMessage && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-4 p-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl text-sm"
+                  >
+                    <div className="flex items-center gap-2">
+                      <FaCheckCircle />
+                      <span>{successMessage}</span>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Tabs */}
+                <div className="flex mb-6 border-b">
+                  <button
+                    onClick={() => {
+                      setActiveTab('email');
+                      setErrors({});
+                      setSuccessMessage('');
+                    }}
+                    className={`flex-1 py-3 font-medium text-center ${
+                      activeTab === 'email'
+                        ? 'text-blue-600 border-b-2 border-blue-600'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    Email orqali
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveTab('phone');
+                      setErrors({});
+                      setSuccessMessage('');
+                    }}
+                    className={`flex-1 py-3 font-medium text-center ${
+                      activeTab === 'phone'
+                        ? 'text-blue-600 border-b-2 border-blue-600'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    Telefon orqali
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveTab('google');
+                      setErrors({});
+                      setSuccessMessage('');
+                    }}
+                    className={`flex-1 py-3 font-medium text-center ${
+                      activeTab === 'google'
+                        ? 'text-blue-600 border-b-2 border-blue-600'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    Google
+                  </button>
+                </div>
+
+                {/* Google Tab */}
+                {activeTab === 'google' && (
+                  <div className="space-y-4">
+                    <motion.button
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleGoogleSignUp}
+                      disabled={loading}
+                      className="w-full flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {loading ? (
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <>
+                          <FaGoogle className="text-xl" />
+                          Google orqali ro'yxatdan o'tish
+                        </>
+                      )}
+                    </motion.button>
+
+                    <div className="text-center">
+                      <button
+                        onClick={() => setActiveTab('email')}
+                        className="text-blue-600 hover:text-blue-700 text-sm"
+                      >
+                        Email orqali ro'yxatdan o'tish
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Email Tab */}
+                {activeTab === 'email' && (
+                  <div>
+                    <form onSubmit={handleEmailSignUp} className="space-y-4">
+                      <div>
+                        <label className="block text-gray-700 mb-2 text-sm font-medium">
+                          Ism familiya
+                        </label>
+                        <div className="relative">
+                          <FaEnvelope className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                          <input
+                            type="text"
+                            value={fullName}
+                            onChange={(e) => {
+                              setFullName(e.target.value);
+                              setErrors({...errors, fullName: ''});
+                            }}
+                            placeholder="Ism familiyangiz"
+                            className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-200 outline-none ${
+                              errors.fullName ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
+                            }`}
+                          />
+                        </div>
+                        {errors.fullName && (
+                          <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-gray-700 mb-2 text-sm font-medium">
+                          Email manzil
+                        </label>
+                        <div className="relative">
+                          <FaEnvelope className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                          <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => {
+                              setEmail(e.target.value);
+                              setErrors({...errors, email: ''});
+                            }}
+                            placeholder="example@gmail.com"
+                            className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-200 outline-none ${
+                              errors.email ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
+                            }`}
+                          />
+                        </div>
+                        {errors.email && (
+                          <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-gray-700 mb-2 text-sm font-medium">
+                          Parol
+                        </label>
+                        <div className="relative">
+                          <FaLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                          <input
+                            type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(e) => {
+                              setPassword(e.target.value);
+                              setErrors({...errors, password: ''});
+                            }}
+                            placeholder="Kamida 8 ta belgi"
+                            className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:ring-2 focus:ring-blue-200 outline-none ${
+                              errors.password ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
+                            }`}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                          >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                          </button>
+                        </div>
+                        {errors.password && (
+                          <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-gray-700 mb-2 text-sm font-medium">
+                          Parolni tasdiqlash
+                        </label>
+                        <div className="relative">
+                          <FaLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                          <input
+                            type={showConfirmPassword ? "text" : "password"}
+                            value={confirmPassword}
+                            onChange={(e) => {
+                              setConfirmPassword(e.target.value);
+                              setErrors({...errors, confirmPassword: ''});
+                            }}
+                            placeholder="Parolni qayta kiriting"
+                            className={`w-full pl-12 pr-12 py-3 border rounded-xl focus:ring-2 focus:ring-blue-200 outline-none ${
+                              errors.confirmPassword ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
+                            }`}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                          >
+                            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                          </button>
+                        </div>
+                        {errors.confirmPassword && (
+                          <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>
+                        )}
+                      </div>
+
+                      {errors.general && (
+                        <div className="p-3 bg-red-50 border border-red-200 rounded-xl">
+                          <p className="text-red-600 text-sm">{errors.general}</p>
+                        </div>
+                      )}
+
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        type="submit"
+                        disabled={loading}
+                        className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {loading ? (
+                          <div className="flex items-center justify-center gap-2">
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <span>Ro'yxatdan o'tilmoqda...</span>
+                          </div>
+                        ) : (
+                          "Ro'yxatdan o'tish"
+                        )}
+                      </motion.button>
+                    </form>
+                  </div>
+                )}
+
+                {/* Phone Tab */}
+                {activeTab === 'phone' && (
+                  <div>
+                    {!otpSent ? (
+                      <form onSubmit={handlePhoneSignUp} className="space-y-4">
+                        <div>
+                          <label className="block text-gray-700 mb-2 text-sm font-medium">
+                            Telefon raqam
+                          </label>
+                          <div className="relative">
+                            <FaPhone className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                            <input
+                              type="tel"
+                              value={phone}
+                              onChange={(e) => {
+                                const formatted = formatPhone(e.target.value);
+                                setPhone(formatted);
+                                setErrors({...errors, phone: ''});
+                              }}
+                              placeholder="998901234567"
+                              maxLength="12"
+                              className={`w-full pl-12 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-200 outline-none ${
+                                errors.phone ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
+                              }`}
+                            />
+                          </div>
+                          {errors.phone && (
+                            <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+                          )}
+                          <p className="text-xs text-gray-500 mt-2">
+                            Format: 998901234567
+                          </p>
+                        </div>
+
+                        {errors.general && (
+                          <div className="p-3 bg-red-50 border border-red-200 rounded-xl">
+                            <p className="text-red-600 text-sm">{errors.general}</p>
+                          </div>
+                        )}
+
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          type="submit"
+                          disabled={loading}
+                          className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {loading ? (
+                            <div className="flex items-center justify-center gap-2">
+                              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                              <span>Kod yuborilmoqda...</span>
+                            </div>
+                          ) : (
+                            "Kod yuborish"
+                          )}
+                        </motion.button>
+                      </form>
+                    ) : (
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-gray-700 mb-3 text-center">
+                            <span className="font-medium">{phone}</span> raqamiga yuborilgan 6 xonali kodni kiriting
+                          </label>
+                          <div className="flex justify-center gap-2 mb-3">
+                            {otp.map((digit, index) => (
+                              <input
+                                key={index}
+                                ref={(ref) => {
+                                  if (ref) otpRefs.current[index] = ref;
+                                }}
+                                type="text"
+                                maxLength="1"
+                                value={digit}
+                                onChange={(e) => handleOtpChange(index, e.target.value)}
+                                onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                                className={`w-12 h-12 text-center text-xl font-bold border-2 rounded-xl focus:ring-2 focus:ring-blue-200 outline-none ${
+                                  errors.otp ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
+                                }`}
+                                autoFocus={index === 0}
+                              />
+                            ))}
+                          </div>
+                          
+                          {errors.otp && (
+                            <p className="text-red-500 text-sm text-center">{errors.otp}</p>
+                          )}
+                          
+                          {timer > 0 ? (
+                            <p className="text-center text-gray-600 text-sm">
+                              Kod {Math.floor(timer / 60)}:{String(timer % 60).padStart(2, '0')} dan keyin eskiradi
+                            </p>
+                          ) : (
+                            <p className="text-center text-red-500 text-sm">
+                              Kod eskirgan
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="flex gap-3">
+                          <button
+                            onClick={() => {
+                              setOtpSent(false);
+                              setOtp(['', '', '', '', '', '']);
+                              setErrors({});
+                            }}
+                            className="flex-1 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors"
+                          >
+                            Ortga
+                          </button>
+                          
+                          <motion.button
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={handlePhoneSignUp}
+                            disabled={loading || timer === 0}
+                            className="flex-1 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {loading ? (
+                              <div className="flex items-center justify-center">
+                                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                              </div>
+                            ) : (
+                              "Tasdiqlash"
+                            )}
+                          </motion.button>
+                        </div>
+
+                        {timer === 0 && (
+                          <button
+                            onClick={handleResendOtp}
+                            className="w-full py-2 text-blue-600 font-medium hover:text-blue-700 transition-colors text-sm"
+                          >
+                            Kodni qayta yuborish
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Demo Info */}
+                <div className="mt-6 p-3 bg-blue-50 rounded-xl border border-blue-200">
+                  <p className="text-xs text-blue-700 mb-1">
+                    🚀 Demo test qilish uchun:
+                  </p>
+                  <ul className="text-xs text-blue-600 space-y-0.5">
+                    <li>• Email: test@example.com</li>
+                    <li>• Telefon: 998901234567</li>
+                    <li>• OTP: console'dan ko'ring</li>
+                    <li>• Parol: test12345</li>
+                  </ul>
+                </div>
+
+                {/* Terms and Conditions */}
+                <p className="text-center text-gray-500 text-xs mt-6">
+                  Ro'yxatdan o'tish orqali siz{' '}
+                  <button type="button" className="text-blue-600 hover:underline">
+                    Foydalanish shartlari
+                  </button>{' '}
+                  va{' '}
+                  <button type="button" className="text-blue-600 hover:underline">
+                    Maxfiylik siyosati
+                  </button>{' '}
+                  bilan rozilik bildirasiz
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+};
+
+// User Profile Indicator (navbar'da ko'rinadi)
+const UserProfile = ({ user, onLogout }) => {
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setShowDropdown(!showDropdown)}
+        className="flex items-center gap-3 p-2 rounded-full hover:bg-gray-100 transition-colors"
+      >
+        <img
+          src={user.avatar}
+          alt={user.fullName || user.name}
+          className="w-10 h-10 rounded-full border-2 border-blue-500"
+        />
+        <span className="hidden lg:inline text-gray-700 font-medium">
+          {user.fullName || user.name}
+        </span>
+        <FaChevronDown className="text-gray-500" />
+      </button>
+
+      {showDropdown && (
+        <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-50">
+          <div className="px-4 py-3 border-b border-gray-100">
+            <p className="font-semibold text-gray-800">{user.fullName || user.name}</p>
+            <p className="text-sm text-gray-500">{user.email || user.phone}</p>
+          </div>
+          <div className="py-2">
+            <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
+              Profil
+            </button>
+            <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
+              Mening kurslarim
+            </button>
+            <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
+              Sozlamalar
+            </button>
+          </div>
+          <div className="border-t border-gray-100 pt-2">
+            <button
+              onClick={onLogout}
+              className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
+            >
+              Chiqish
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Navbar component'iga registration modalni ochish tugmasini qo'shamiz
+const Navbar = ({ onRegisterClick, currentUser, onLogout }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -112,30 +1002,40 @@ const Navbar = () => {
           ))}
         </motion.ul>
 
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => setMenuOpen(!menuOpen)}
-          className={`text-2xl ${
-            scrolled ? "text-blue-600" : "text-white"
-          } hover:text-blue-500 focus:outline-none lg:hidden`}
-        >
-          {menuOpen ? <FaTimes /> : <FaBars />}
-        </motion.button>
-
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="hidden lg:block px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300"
-        >
-          Ro'yxatdan o'tish
-        </motion.button>
+        <div className="flex items-center gap-4">
+          {currentUser ? (
+            <UserProfile user={currentUser} onLogout={onLogout} />
+          ) : (
+            <>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={onRegisterClick}
+                className="hidden lg:block px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300"
+              >
+                Ro'yxatdan o'tish
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setMenuOpen(!menuOpen)}
+                className={`text-2xl ${
+                  scrolled ? "text-blue-600" : "text-white"
+                } hover:text-blue-500 focus:outline-none lg:hidden`}
+              >
+                {menuOpen ? <FaTimes /> : <FaBars />}
+              </motion.button>
+            </>
+          )}
+        </div>
       </div>
     </motion.nav>
   );
 };
 
-const HeroSection = () => {
+// HeroSection component'iga registration modalni ochish tugmasini qo'shamiz
+const HeroSection = ({ onRegisterClick }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -145,9 +1045,9 @@ const HeroSection = () => {
   return (
     <div id="home" className="relative w-full min-h-screen overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-white/50 to-purple-500/20" />
-    <div 
-  className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width=%2260%22%20height=%2260%22%20viewBox=%220%200%2060%2060%22%20xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg%20fill=%22none%22%20fill-rule=%22evenodd%22%3E%3Cg%20fill=%22%239C92AC%22%20fill-opacity=%220.05%22%3E%3Cpath%20d=%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]" 
-/>
+      <div 
+        className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width=%2260%22%20height=%2260%22%20viewBox=%220%200%2060%2060%22%20xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg%20fill=%22none%22%20fill-rule=%22evenodd%22%3E%3Cg%20fill=%22%239C92AC%22%20fill-opacity=%220.05%22%3E%3Cpath%20d=%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]" 
+      />
       <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between w-full max-w-7xl mx-auto px-6 py-20 lg:py-32">
         <motion.div 
           initial={{ opacity: 0, x: -50 }}
@@ -186,14 +1086,12 @@ const HeroSection = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/login')}
+              onClick={onRegisterClick}
               className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-semibold rounded-2xl shadow-xl hover:shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 group"
             >
               Birinchi darsni boshlash
               <FaArrowRight className="inline ml-2 group-hover:translate-x-1 transition-transform" />
             </motion.button>
-            
-           
           </motion.div>
           
           <motion.div 
@@ -289,7 +1187,7 @@ const HeroSection = () => {
         className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
       >
         <button 
-          onClick={() => document.getElementById('xizmatlar').scrollIntoView({ behavior: 'smooth' })}
+          onClick={() => document.getElementById('xizmatlar')?.scrollIntoView({ behavior: 'smooth' })}
           className="text-gray-600 hover:text-blue-600 transition-colors"
         >
           <FaChevronDown className="text-2xl" />
@@ -299,6 +1197,7 @@ const HeroSection = () => {
   );
 };
 
+// Features komponenti
 const Features = () => {
   const features = [
     {
@@ -407,73 +1306,52 @@ const Features = () => {
   );
 };
 
+// Testimonials komponenti
 const Testimonials = () => {
-const testimonials = [
-  {
-    name: "Azizbek Islomov",
-    role: "IELTS 8.5",
-    feedback: "6 oy ichida 5.5 dan 8.5 ga ko‘tardim. O‘qituvchilar juda sifatli!",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
-    rating: 5
-  },
-  {
-    name: "Malika Nurmatova",
-    role: "SAT 1550",
-    feedback: "Amerika universitetiga kirishimga yordam berdi. Rahmat!",
-    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop",
-    rating: 5
-  },
-  {
-    name: "Dilmurod Karimov",
-    role: "Full Stack Developer",
-    feedback: "Dasturlash kursi mening karyeramni butunlay o‘zgartirdi.",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
-    rating: 5
-  },
-  {
-    name: "Shahnoza Qodirova",
-    role: "General English B2",
-    feedback: "Ingliz tilini 0 dan o‘rgana boshlagandim. Endi chet elliklar bilan bemalol gaplasha olaman.",
-    image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop",
-    rating: 5
-  },
-  {
-    name: "Behruz Akramov",
-    role: "Frontend Developer",
-    feedback: "React darslari juda sodda va tushunarli. 3 oyda ish topdim!",
-    image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop",
-    rating: 5
-  },
-  {
-    name: "Ozoda Muhammadova",
-    role: "IELTS 7.5",
-    feedback: "Writing bo‘yicha kuchli ko‘rsatmalar bo‘ldi. O‘qituvchilar e’tiborli.",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop",
-    rating: 5
-  },
-  {
-    name: "Sarvar Jo‘rayev",
-    role: "Backend Developer",
-    feedback: "Node.js kursi orqali real loyihalar qildik. Juda foydali bo‘ldi.",
-    image: "https://images.unsplash.com/photo-1603415526960-f7e0328dfee1?w=400&h=400&fit=crop",
-    rating: 5
-  },
-  {
-    name: "Mohira Karimova",
-    role: "IELTS 8.0",
-    feedback: "Speaking klublari juda kuchli. O‘zimni bemalol gapira oladigan bo‘ldim.",
-    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop",
-    rating: 5
-  },
-  {
-    name: "Javohir Xolmatov",
-    role: "Python Developer",
-    feedback: "0 dan Python o‘rgandim va hozir freelance qilayapman. Rahmat!",
-    image: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=400&fit=crop",
-    rating: 5
-  }
-];
-
+  const testimonials = [
+    {
+      name: "Azizbek Islomov",
+      role: "IELTS 8.5",
+      feedback: "6 oy ichida 5.5 dan 8.5 ga ko'tardim. O'qituvchilar juda sifatli!",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+      rating: 5
+    },
+    {
+      name: "Malika Nurmatova",
+      role: "SAT 1550",
+      feedback: "Amerika universitetiga kirishimga yordam berdi. Rahmat!",
+      image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop",
+      rating: 5
+    },
+    {
+      name: "Dilmurod Karimov",
+      role: "Full Stack Developer",
+      feedback: "Dasturlash kursi mening karyeramni butunlay o'zgartirdi.",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
+      rating: 5
+    },
+    {
+      name: "Shahnoza Qodirova",
+      role: "General English B2",
+      feedback: "Ingliz tilini 0 dan o'rgana boshlagandim. Endi chet elliklar bilan bemalol gaplasha olaman.",
+      image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop",
+      rating: 5
+    },
+    {
+      name: "Behruz Akramov",
+      role: "Frontend Developer",
+      feedback: "React darslari juda sodda va tushunarli. 3 oyda ish topdim!",
+      image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop",
+      rating: 5
+    },
+    {
+      name: "Ozoda Muhammadova",
+      role: "IELTS 7.5",
+      feedback: "Writing bo'yicha kuchli ko'rsatmalar bo'ldi. O'qituvchilar e'tiborli.",
+      image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop",
+      rating: 5
+    }
+  ];
 
   return (
     <section className="py-20 px-6 bg-gradient-to-b from-blue-50/50 to-white">
@@ -549,9 +1427,9 @@ const testimonials = [
   );
 };
 
+// Gallery komponenti
 const Gallery = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [hoveredCard, setHoveredCard] = useState(null);
 
   const subjects = [
     "Matematika", "Fizika", "Kimyo", "Biologiya", "Dasturlash",
@@ -624,8 +1502,6 @@ const Gallery = () => {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
               whileHover={{ y: -10 }}
-              onHoverStart={() => setHoveredCard(index)}
-              onHoverEnd={() => setHoveredCard(null)}
               className="group cursor-pointer"
             >
               <div className="relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500">
@@ -672,8 +1548,8 @@ const Gallery = () => {
   );
 };
 
-const Pricing = () => {
-  const navigate = useNavigate();
+// Pricing komponenti
+const Pricing = ({ onRegisterClick }) => {
   const [hoveredPlan, setHoveredPlan] = useState(null);
 
   const pricingPlans = [
@@ -787,7 +1663,7 @@ const Pricing = () => {
               </ul>
 
               <button
-                onClick={() => navigate('/buy')}
+                onClick={onRegisterClick}
                 className={`w-full py-4 rounded-2xl font-semibold transition-all duration-300 ${
                   plan.popular
                     ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-xl hover:shadow-blue-500/30"
@@ -804,6 +1680,7 @@ const Pricing = () => {
   );
 };
 
+// FAQ komponenti
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(null);
 
@@ -900,6 +1777,7 @@ const FAQ = () => {
   );
 };
 
+// Contact komponenti
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -909,8 +1787,9 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Form submission logic here
     console.log('Form submitted:', formData);
+    alert("Xabaringiz yuborildi! Tez orada siz bilan bog'lanamiz.");
+    setFormData({ name: '', email: '', message: '' });
   };
 
   const handleChange = (e) => {
@@ -1073,6 +1952,7 @@ const Contact = () => {
   );
 };
 
+// Footer komponenti
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
@@ -1143,8 +2023,11 @@ const Footer = () => {
   );
 };
 
+// Asosiy HomePage komponenti
 const HomePage = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [showRegistration, setShowRegistration] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -1152,6 +2035,27 @@ const HomePage = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
+    
+    // Load user from localStorage
+    try {
+      const savedUser = localStorage.getItem('eduhub_current_user');
+      if (savedUser) {
+        const parsedUser = JSON.parse(savedUser);
+        setCurrentUser(parsedUser);
+        console.log('Loaded user from localStorage:', parsedUser);
+      }
+    } catch (error) {
+      console.error('Error loading user from localStorage:', error);
+    }
+    
+    // Initialize mock database
+    try {
+      mockUsersDB.init();
+      console.log('Database initialized. Total users:', mockUsersDB.users.length);
+    } catch (error) {
+      console.error('Error initializing database:', error);
+    }
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -1159,17 +2063,74 @@ const HomePage = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleRegisterClick = () => {
+    console.log('Register button clicked');
+    setShowRegistration(true);
+  };
+
+  const handleRegistrationSuccess = (user) => {
+    console.log('Registration successful:', user);
+    setCurrentUser(user);
+    setShowRegistration(false);
+    
+    // Show welcome message
+    setTimeout(() => {
+      alert(`Xush kelibsiz, ${user.fullName || user.name}!`);
+    }, 100);
+  };
+
+  const handleLogout = () => {
+    console.log('Logout clicked');
+    localStorage.removeItem('eduhub_current_user');
+    setCurrentUser(null);
+    setTimeout(() => {
+      alert("Siz tizimdan chiqdingiz!");
+    }, 100);
+  };
+
+  // Debug uchun foydalanuvchilarni ko'rish
+  const showAllUsers = () => {
+    console.log('All users in database:', mockUsersDB.users);
+    console.log('All Google users:', mockUsersDB.googleUsers);
+    alert(`Jami foydalanuvchilar: ${mockUsersDB.users.length}\nGoogle foydalanuvchilar: ${mockUsersDB.googleUsers.length}`);
+  };
+
   return (
     <div className="relative">
-      <Navbar />
-      <HeroSection />
+      <Navbar 
+        onRegisterClick={handleRegisterClick} 
+        currentUser={currentUser}
+        onLogout={handleLogout}
+      />
+      <HeroSection onRegisterClick={handleRegisterClick} />
       <Features />
       <Testimonials />
       <Gallery />
-      <Pricing />
+      <Pricing onRegisterClick={handleRegisterClick} />
       <FAQ />
       <Contact />
       <Footer />
+
+      {/* Registration Modal */}
+      <RegistrationModal 
+        isOpen={showRegistration} 
+        onClose={() => {
+          console.log('Modal closed');
+          setShowRegistration(false);
+        }}
+        onSuccess={handleRegistrationSuccess}
+      />
+
+      {/* Debug button (faqat development uchun) */}
+      {process.env.NODE_ENV === 'development' && (
+        <button
+          onClick={showAllUsers}
+          className="fixed bottom-20 right-8 w-10 h-10 bg-red-500 text-white rounded-full shadow-lg z-40 flex items-center justify-center"
+          title="Debug Users"
+        >
+          🐛
+        </button>
+      )}
 
       {showScrollTop && (
         <motion.button

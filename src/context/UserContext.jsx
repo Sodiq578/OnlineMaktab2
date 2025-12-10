@@ -1,20 +1,29 @@
-// src/context/UserContext.js
-import React, { createContext, useState, useContext } from 'react';
+// src/context/UserContext.jsx
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { auth } from "../firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 const UserContext = createContext();
 
-export const UserProvider = ({ children }) => {
-  const [purchasedCourses, setPurchasedCourses] = useState([]);
+export const useUser = () => useContext(UserContext);
 
-  const purchaseCourse = (section) => {
-    setPurchasedCourses((prev) => [...prev, section]);
-  };
+export const UserProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const logout = () => signOut(auth);
 
   return (
-    <UserContext.Provider value={{ purchasedCourses, purchaseCourse }}>
+    <UserContext.Provider value={{ user, loading, logout }}>
       {children}
     </UserContext.Provider>
   );
 };
-
-export const useUser = () => useContext(UserContext);
