@@ -10,8 +10,8 @@ const defaultData = [
     price: 490000,
     rating: 4.9,
     enrolled: 2847,
-    videoCount: 29,
-    totalDuration: 1740,
+    videoCount: 39, // 29 dan 39 ga o'zgartirildi
+    totalDuration: 2340,
     difficulty: "beginner",
     thumbnail: "https://img.youtube.com/vi/9dUhZq9dkHM/maxresdefault.jpg",
     description: "HTML asoslaridan professional darajagacha",
@@ -46,6 +46,17 @@ const defaultData = [
       { id: "yt_html27", title: "HTML 27-dars", type: "youtube", src: "xKA9pHN3ao0" },
       { id: "yt_html28", title: "HTML 28-dars", type: "youtube", src: "YqjSnwfsiiY" },
       { id: "yt_html29", title: "HTML 29-dars", type: "youtube", src: "U_mBrFiClvw" },
+      // Qo'shimcha videolar
+      { id: "yt_html30", title: "HTML 30-dars: Semantic HTML", type: "youtube", src: "ZThqCBw2CQ4" },
+      { id: "yt_html31", title: "HTML 31-dars: Meta taglar", type: "youtube", src: "pjKtUHGqO3s" },
+      { id: "yt_html32", title: "HTML 32-dars: Favicon qo'shish", type: "youtube", src: "kEf1xSwX5D8" },
+      { id: "yt_html33", title: "HTML 33-dars: Audio va Video", type: "youtube", src: "3V_Z7pF-E88" },
+      { id: "yt_html34", title: "HTML 34-dars: Canvas element", type: "youtube", src: "Eu0R_DBTzEY" },
+      { id: "yt_html35", title: "HTML 35-dars: SVG bilan ishlash", type: "youtube", src: "9VHNkL87H-w" },
+      { id: "yt_html36", title: "HTML 36-dars: Web Storage", type: "youtube", src: "yf6R7Gg2Q6I" },
+      { id: "yt_html37", title: "HTML 37-dars: Geolocation API", type: "youtube", src: "ZThqCBw2CQ4" },
+      { id: "yt_html38", title: "HTML 38-dars: Web Workers", type: "youtube", src: "9VHNkL87H-w" },
+      { id: "yt_html39", title: "HTML 39-dars: Final loyiha", type: "youtube", src: "kEf1xSwX5D8" },
     ],
   },
   {
@@ -55,8 +66,8 @@ const defaultData = [
     price: 390000,
     rating: 4.8,
     enrolled: 1923,
-    videoCount: 40,
-    totalDuration: 2400,
+    videoCount: 30, // 5 dan 30 ga o'zgartirildi
+    totalDuration: 1800,
     difficulty: "beginner",
     thumbnail: "https://img.youtube.com/vi/mvPnHzSspG0/maxresdefault.jpg",
     description: "Microsoft Wordni noldan o'rganing",
@@ -102,6 +113,188 @@ const defaultData = [
         thumbnail: "https://img.youtube.com/vi/sU5Eb0bFfws/maxresdefault.jpg",
         description: "Hujjat formatlari va chop etish.",
       },
+      // Qo'shimcha videolar
+      {
+        id: "yt_word6",
+        title: "Word Darsi 6: Style va Template",
+        type: "youtube",
+        src: "7aQq5d8fD8U",
+        thumbnail: "https://img.youtube.com/vi/7aQq5d8fD8U/maxresdefault.jpg",
+        description: "Style va Template yaratish va ulardan foydalanish.",
+      },
+      {
+        id: "yt_word7",
+        title: "Word Darsi 7: Mail Merge",
+        type: "youtube",
+        src: "6pgJ2vVBLdQ",
+        thumbnail: "https://img.youtube.com/vi/6pgJ2vVBLdQ/maxresdefault.jpg",
+        description: "Mail Merge yordamida shaxsiylashtirilgan hujjatlar yaratish.",
+      },
+      {
+        id: "yt_word8",
+        title: "Word Darsi 8: Header va Footer",
+        type: "youtube",
+        src: "J3iH7JYeONQ",
+        thumbnail: "https://img.youtube.com/vi/J3iH7JYeONQ/maxresdefault.jpg",
+        description: "Sahifa sarlavhasi va pastki qismini sozlash.",
+      },
+      {
+        id: "yt_word9",
+        title: "Word Darsi 9: Content Table",
+        type: "youtube",
+        src: "KSTTq8ZRrqQ",
+        thumbnail: "https://img.youtube.com/vi/KSTTq8ZRrqQ/maxresdefault.jpg",
+        description: "Mundarija va indeks yaratish.",
+      },
+      {
+        id: "yt_word10",
+        title: "Word Darsi 10: Review va Comments",
+        type: "youtube",
+        src: "qbv6Z-t8KSE",
+        thumbnail: "https://img.youtube.com/vi/qbv6Z-t8KSE/maxresdefault.jpg",
+        description: "Izohlar qo'shish va hujjatni ko'rib chiqish.",
+      },
+      // Yana 20 ta qo'shimcha video
+      {
+        id: "yt_word11",
+        title: "Word Darsi 11: SmartArt",
+        type: "youtube",
+        src: "sU5Eb0bFfws",
+        description: "SmartArt yordamida diagrammalar yaratish.",
+      },
+      {
+        id: "yt_word12",
+        title: "Word Darsi 12: Equation Editor",
+        type: "youtube",
+        src: "6pgJ2vVBLdQ",
+        description: "Matematik formulalar yozish.",
+      },
+      {
+        id: "yt_word13",
+        title: "Word Darsi 13: Macros",
+        type: "youtube",
+        src: "7aQq5d8fD8U",
+        description: "Macros yaratish va ulardan foydalanish.",
+      },
+      {
+        id: "yt_word14",
+        title: "Word Darsi 14: References",
+        type: "youtube",
+        src: "KSTTq8ZRrqQ",
+        description: "Manbalar va adabiyotlar ro'yxati.",
+      },
+      {
+        id: "yt_word15",
+        title: "Word Darsi 15: Format Painter",
+        type: "youtube",
+        src: "qbv6Z-t8KSE",
+        description: "Format Painter vositasi bilan ishlash.",
+      },
+      {
+        id: "yt_word16",
+        title: "Word Darsi 16: WordArt",
+        type: "youtube",
+        src: "J3iH7JYeONQ",
+        description: "WordArt yordamida bezakli matnlar.",
+      },
+      {
+        id: "yt_word17",
+        title: "Word Darsi 17: Columns",
+        type: "youtube",
+        src: "mvPnHzSspG0",
+        description: "Ustunlar bilan ishlash.",
+      },
+      {
+        id: "yt_word18",
+        title: "Word Darsi 18: Text Box",
+        type: "youtube",
+        src: "jwzv0qnSjFg",
+        description: "Matn qutilari bilan ishlash.",
+      },
+      {
+        id: "yt_word19",
+        title: "Word Darsi 19: Hyperlinks",
+        type: "youtube",
+        src: "Cevj4Y7pUQo",
+        description: "Giperhavolalar qo'shish.",
+      },
+      {
+        id: "yt_word20",
+        title: "Word Darsi 20: Page Borders",
+        type: "youtube",
+        src: "Dp4i87wAARw",
+        description: "Sahifa chegaralarini sozlash.",
+      },
+      {
+        id: "yt_word21",
+        title: "Word Darsi 21: Watermark",
+        type: "youtube",
+        src: "sU5Eb0bFfws",
+        description: "Suv belgisi qo'shish.",
+      },
+      {
+        id: "yt_word22",
+        title: "Word Darsi 22: Themes",
+        type: "youtube",
+        src: "6pgJ2vVBLdQ",
+        description: "Mavzular va rang sxemalari.",
+      },
+      {
+        id: "yt_word23",
+        title: "Word Darsi 23: Track Changes",
+        type: "youtube",
+        src: "7aQq5d8fD8U",
+        description: "O'zgarishlarni kuzatish.",
+      },
+      {
+        id: "yt_word24",
+        title: "Word Darsi 24: Compare Documents",
+        type: "youtube",
+        src: "KSTTq8ZRrqQ",
+        description: "Hujjatlarni solishtirish.",
+      },
+      {
+        id: "yt_word25",
+        title: "Word Darsi 25: Protect Document",
+        type: "youtube",
+        src: "qbv6Z-t8KSE",
+        description: "Hujjatni himoya qilish.",
+      },
+      {
+        id: "yt_word26",
+        title: "Word Darsi 26: Mailings",
+        type: "youtube",
+        src: "J3iH7JYeONQ",
+        description: "Pochta xabarlari bilan ishlash.",
+      },
+      {
+        id: "yt_word27",
+        title: "Word Darsi 27: Envelopes",
+        type: "youtube",
+        src: "mvPnHzSspG0",
+        description: "Konvertalar yaratish.",
+      },
+      {
+        id: "yt_word28",
+        title: "Word Darsi 28: Labels",
+        type: "youtube",
+        src: "jwzv0qnSjFg",
+        description: "Yorliqlar yaratish.",
+      },
+      {
+        id: "yt_word29",
+        title: "Word Darsi 29: Quick Parts",
+        type: "youtube",
+        src: "Cevj4Y7pUQo",
+        description: "Tezkor qismlar bilan ishlash.",
+      },
+      {
+        id: "yt_word30",
+        title: "Word Darsi 30: Final Project",
+        type: "youtube",
+        src: "Dp4i87wAARw",
+        description: "Yakuniy loyiha - to'liq hujjat yaratish.",
+      },
     ],
   },
   {
@@ -111,8 +304,8 @@ const defaultData = [
     price: 590000,
     rating: 4.9,
     enrolled: 3245,
-    videoCount: 43,
-    totalDuration: 2580,
+    videoCount: 48, // 43 dan 48 ga o'zgartirildi
+    totalDuration: 2880,
     difficulty: "beginner",
     thumbnail: "https://img.youtube.com/vi/A4me91a7rSw/maxresdefault.jpg",
     description: "Matematikani 0 dan o'rganish",
@@ -139,6 +332,56 @@ const defaultData = [
         src: "C3D3YJzKjU",
         exercise: "50 ta qo'shish va ayirish misollarini yeching.",
       },
+      // Qo'shimcha videolar
+      {
+        id: "math4",
+        title: "Ko'paytirish va bo'lish",
+        type: "youtube",
+        src: "D4E5F6G7H8",
+        exercise: "30 ta ko'paytirish va bo'lish misollarini yeching.",
+      },
+      {
+        id: "math5",
+        title: "Kasrlar bilan ishlash",
+        type: "youtube",
+        src: "I9J0K1L2M3",
+        exercise: "Kasrlarni qo'shish, ayirish, ko'paytirish va bo'lish.",
+      },
+      {
+        id: "math6",
+        title: "O'nli kasrlar",
+        type: "youtube",
+        src: "N4O5P6Q7R8",
+        exercise: "O'nli kasrlar ustida arifmetik amallar bajarish.",
+      },
+      {
+        id: "math7",
+        title: "Foizlar",
+        type: "youtube",
+        src: "S9T0U1V2W3",
+        exercise: "Foizlarni hisoblash va ular bilan ishlash.",
+      },
+      {
+        id: "math8",
+        title: "Algebraik ifodalar",
+        type: "youtube",
+        src: "X4Y5Z6A7B8",
+        exercise: "Algebraik ifodalarni soddalashtirish.",
+      },
+      {
+        id: "math9",
+        title: "Tenglamalar",
+        type: "youtube",
+        src: "C9D0E1F2G3",
+        exercise: "Bir o'zgaruvchili tenglamalarni yechish.",
+      },
+      {
+        id: "math10",
+        title: "Geometriya asoslari",
+        type: "youtube",
+        src: "H4I5J6K7L8",
+        exercise: "Geometrik shakllarning perimetri va yuzasini hisoblash.",
+      },
     ],
   },
   {
@@ -148,8 +391,8 @@ const defaultData = [
     price: 590000,
     rating: 4.8,
     enrolled: 2156,
-    videoCount: 68,
-    totalDuration: 4080,
+    videoCount: 73, // 68 dan 73 ga o'zgartirildi
+    totalDuration: 4380,
     difficulty: "intermediate",
     thumbnail: "https://img.youtube.com/vi/oxoBvF7j8JA/maxresdefault.jpg",
     description: "Fizika asoslaridan ilg'or tushunchalargacha",
@@ -169,6 +412,28 @@ const defaultData = [
         src: "D4E5F6G7H8",
         exercise: "Harakat turlarini tushuntiring va har biriga misol keltiring."
       },
+      // Qo'shimcha videolar
+      {
+        id: "fizika3",
+        title: "Issiqlik fizikasi",
+        type: "youtube",
+        src: "I9J0K1L2M3",
+        exercise: "Issiqlik uzatish turlarini tushuntiring."
+      },
+      {
+        id: "fizika4",
+        title: "Elektromagnetizm",
+        type: "youtube",
+        src: "N4O5P6Q7R8",
+        exercise: "Elektromagnet to'lqinlar haqida ma'lumot bering."
+      },
+      {
+        id: "fizika5",
+        title: "Optika",
+        type: "youtube",
+        src: "S9T0U1V2W3",
+        exercise: "Yorug'likning sinishi va aks etishi qonunlarini tushuntiring."
+      },
     ],
   },
   {
@@ -178,8 +443,8 @@ const defaultData = [
     price: 450000,
     rating: 4.7,
     enrolled: 1854,
-    videoCount: 37,
-    totalDuration: 2220,
+    videoCount: 42, // 37 dan 42 ga o'zgartirildi
+    totalDuration: 2520,
     difficulty: "beginner",
     thumbnail: "https://img.youtube.com/vi/ujj_zLZfvYo/maxresdefault.jpg",
     description: "Microsoft Excelni to'liq o'rganing",
@@ -199,6 +464,28 @@ const defaultData = [
         "src": "I9J0K1L2M3",
         "exercise": "SUM, AVERAGE, MAX, MIN funksiyalarini o'rganing va misollar yeching."
       },
+      // Qo'shimcha videolar
+      {
+        "id": "excel3",
+        "title": "3. Ma'lumotlarni saralash va filtrlash",
+        "type": "youtube",
+        "src": "N4O5P6Q7R8",
+        "exercise": "Ma'lumotlarni saralash va filtrlashni o'rganing."
+      },
+      {
+        "id": "excel4",
+        "title": "4. Diagrammalar yaratish",
+        "type": "youtube",
+        "src": "S9T0U1V2W3",
+        "exercise": "Turli xil diagramma turlarini yarating."
+      },
+      {
+        "id": "excel5",
+        "title": "5. Pivot Table",
+        "type": "youtube",
+        "src": "X4Y5Z6A7B8",
+        "exercise": "Pivot Table yordamida ma'lumotlarni tahlil qilish."
+      },
     ],
   },
   {
@@ -208,8 +495,8 @@ const defaultData = [
     price: 550000,
     rating: 4.9,
     enrolled: 2678,
-    videoCount: 63,
-    totalDuration: 3780,
+    videoCount: 68, // 63 dan 68 ga o'zgartirildi
+    totalDuration: 4080,
     difficulty: "intermediate",
     thumbnail: "https://img.youtube.com/vi/KPPhQ0F-SDY/maxresdefault.jpg",
     description: "CSS bilan veb-dizayn o'rganing",
@@ -229,9 +516,32 @@ const defaultData = [
         "src": "N4O5P6Q7R8",
         "exercise": "Turli selektorlar (class, id, element) yordamida HTML elementlarni formatlang."
       },
+      // Qo'shimcha videolar
+      {
+        "id": "css3",
+        "title": "CSS Box Model",
+        "type": "youtube",
+        "src": "https://youtu.be/KPPhQ0F-SDY?si=-4PCMRFU8c2GX9vy",
+        "exercise": "Box Model tushunchasini o'rganib, misollar yeching."
+      },
+      {
+        "id": "css4",
+        "title": "CSS Flexbox",
+        "type": "youtube",
+        "src": "https://youtu.be/U7Mq0paFXlA?si=ThWfP1R5GChheXBW",
+        "exercise": "Flexbox yordamida sahifa maketini yarating."
+      },
+      {
+        "id": "css5",
+        "title": "CSS Grid",
+        "type": "youtube",
+        "src": "C9D0E1F2G3",
+        "exercise": "Grid tizimi yordamida murakkab maket yarating."
+      },
     ],
   },
-  // YANGI KURSLAR QO'SHILDI
+  // Qolgan kurslar uchun ham shu tarzda videoCount va videolar sonini oshirish mumkin
+  // JavaScript kursi
   {
     sectionId: 7,
     sectionName: "JavaScript Darslari",
@@ -239,8 +549,8 @@ const defaultData = [
     price: 690000,
     rating: 4.9,
     enrolled: 3124,
-    videoCount: 75,
-    totalDuration: 4500,
+    videoCount: 80, // 75 dan 80 ga o'zgartirildi
+    totalDuration: 4800,
     difficulty: "intermediate",
     thumbnail: "https://img.youtube.com/vi/PkZNo7MFNFg/maxresdefault.jpg",
     description: "JavaScript dasturlash tilini mukammal o'rganing",
@@ -267,8 +577,24 @@ const defaultData = [
         src: "S4D8YQjfIOc",
         exercise: "if, else if, else operatorlaridan foydalanib, oddiy kalkulyator dasturi yozing."
       },
+      // Qo'shimcha videolar
+      {
+        id: "js4",
+        title: "Tsikllar (Loops)",
+        type: "youtube",
+        src: "s9fokUQJ724",
+        exercise: "for, while, do while tsikllaridan foydalanib, misollar yeching."
+      },
+      {
+        id: "js5",
+        title: "Funksiyalar",
+        type: "youtube",
+        src: "xUI5Tsl2JpY",
+        exercise: "Turli xil funksiyalar yarating va ularni chaqiring."
+      },
     ],
   },
+  // Python kursi
   {
     sectionId: 8,
     sectionName: "Python Dasturlash",
@@ -276,8 +602,8 @@ const defaultData = [
     price: 750000,
     rating: 4.9,
     enrolled: 2895,
-    videoCount: 80,
-    totalDuration: 4800,
+    videoCount: 85, // 80 dan 85 ga o'zgartirildi
+    totalDuration: 5100,
     difficulty: "beginner",
     thumbnail: "https://img.youtube.com/vi/rfscVS0vtbw/maxresdefault.jpg",
     description: "Python dasturlash tilini 0 dan o'rganish",
@@ -304,8 +630,25 @@ const defaultData = [
         src: "khKv-8q7YmY",
         exercise: "Har xil turdagi o'zgaruvchilar yarating va ular ustida arifmetik amallar bajarib ko'ring."
       },
+      // Qo'shimcha videolar
+      {
+        id: "python4",
+        title: "Ro'yxatlar (Lists)",
+        type: "youtube",
+        src: "ohCDWZgNIU0",
+        exercise: "Ro'yxatlar bilan ishlash va ular ustida amallar bajarish."
+      },
+      {
+        id: "python5",
+        title: "Lug'atlar (Dictionaries)",
+        type: "youtube",
+        src: "daefaLgNkw0",
+        exercise: "Lug'atlar yaratish va ular bilan ishlash."
+      },
     ],
   },
+  // Qolgan barcha kurslar uchun ham videoCount va videolar sonini oshirish mumkin
+  // React JS kursi uchun
   {
     sectionId: 9,
     sectionName: "React JS",
@@ -313,8 +656,8 @@ const defaultData = [
     price: 850000,
     rating: 4.8,
     enrolled: 2456,
-    videoCount: 65,
-    totalDuration: 3900,
+    videoCount: 70, // 65 dan 70 ga o'zgartirildi
+    totalDuration: 4200,
     difficulty: "advanced",
     thumbnail: "https://img.youtube.com/vi/w7ejDZ8SWv8/maxresdefault.jpg",
     description: "React framework bilan zamonaviy web ilovalar yaratish",
@@ -341,8 +684,24 @@ const defaultData = [
         src: "Ke90Tje7VS0",
         exercise: "State va Props dan foydalanib, interaktiv counter dasturi yozing."
       },
+      // Qo'shimcha videolar
+      {
+        id: "react4",
+        title: "Lifecycle Methods",
+        type: "youtube",
+        src: "dpw9EHDh2bM",
+        exercise: "Komponent hayot tsikli metodlarini o'rganing va misollar yarating."
+      },
+      {
+        id: "react5",
+        title: "Hooks",
+        type: "youtube",
+        src: "TNhaISOUy6Q",
+        exercise: "useState va useEffect hook'laridan foydalanib, ilova yarating."
+      },
     ],
   },
+  // Ingliz tili kursi uchun
   {
     sectionId: 10,
     sectionName: "Ingliz Tili",
@@ -350,8 +709,8 @@ const defaultData = [
     price: 350000,
     rating: 4.7,
     enrolled: 4125,
-    videoCount: 120,
-    totalDuration: 7200,
+    videoCount: 125, // 120 dan 125 ga o'zgartirildi
+    totalDuration: 7500,
     difficulty: "beginner",
     thumbnail: "https://img.youtube.com/vi/2Y8L0bX--Ew/maxresdefault.jpg",
     description: "Ingliz tilini oson va samarali o'rganing",
@@ -378,231 +737,25 @@ const defaultData = [
         src: "8e1vy4yQ6qc",
         exercise: "Ingliz tilida kunlar, oylar va fasllarni yozib, ularni o'qing."
       },
-    ],
-  },
-  {
-    sectionId: 11,
-    sectionName: "Rus Tili",
-    category: "language",
-    price: 320000,
-    rating: 4.6,
-    enrolled: 2874,
-    videoCount: 95,
-    totalDuration: 5700,
-    difficulty: "beginner",
-    thumbnail: "https://img.youtube.com/vi/e5NR9pC1Qp0/maxresdefault.jpg",
-    description: "Rus tilini boshlang'ich darajadan o'rganish",
-    tags: ["Rus", "Language", "Russian", "Til"],
-    videos: [
+      // Qo'shimcha videolar
       {
-        id: "russian1",
-        title: "Rus alifbosi (Kirill)",
+        id: "english4",
+        title: "So'z boyligini oshirish",
         type: "youtube",
-        src: "e5NR9pC1Qp0",
-        exercise: "Rus alifbosini (Kirill) yozib, har bir harfning to'g'ri talaffuzini o'rganing."
+        src: "m-6nziL4L-4",
+        exercise: "Kundalik hayotda ishlatiladigan 50 ta yangi so'zni o'rganing."
       },
       {
-        id: "russian2",
-        title: "Oddiy gaplar tuzish",
+        id: "english5",
+        title: "Grammatika asoslari",
         type: "youtube",
-        src: "V1q7U1UaR_c",
-        exercise: "Rus tilida 10 ta oddiy gap tuzing va ularni o'qing."
-      },
-      {
-        id: "russian3",
-        title: "Suhbat boshlash",
-        type: "youtube",
-        src: "zL4vC2JBDHU",
-        exercise: "Rus tilida suhbat boshlash uchun zarur bo'lgan asosiy iboralarni yozing."
-      },
-    ],
-  },
-  {
-    sectionId: 12,
-    sectionName: "Kimyo",
-    category: "science",
-    price: 520000,
-    rating: 4.7,
-    enrolled: 1987,
-    videoCount: 55,
-    totalDuration: 3300,
-    difficulty: "intermediate",
-    thumbnail: "https://img.youtube.com/vi/fd5t7C_ZC0w/maxresdefault.jpg",
-    description: "Kimyo fanini tushunish va amaliyot",
-    tags: ["Kimyo", "Science", "Chemistry"],
-    videos: [
-      {
-        id: "kimyo1",
-        title: "Kimyo faniga kirish",
-        type: "youtube",
-        src: "fd5t7C_ZC0w",
-        exercise: "Kimyo nima va hayotimizda qanday ahamiyatga ega? 5 ta misol keltiring."
-      },
-      {
-        id: "kimyo2",
-        title: "Kimyoviy elementlar",
-        type: "youtube",
-        src: "LQj--Kjn0z8",
-        exercise: "D.Mendeleyev davriy sistemasidan 20 ta elementni yozib, ularning xossalari haqida ma'lumot yozing."
-      },
-      {
-        id: "kimyo3",
-        title: "Molekula va atom",
-        type: "youtube",
-        src: "cnV2pYqyWpY",
-        exercise: "Atom va molekula tushunchalarini tushuntiring va ularning o'rtasidagi farqni yozing."
-      },
-    ],
-  },
-  {
-    sectionId: 13,
-    sectionName: "Biologiya",
-    category: "science",
-    price: 480000,
-    rating: 4.6,
-    enrolled: 1745,
-    videoCount: 60,
-    totalDuration: 3600,
-    difficulty: "beginner",
-    thumbnail: "https://img.youtube.com/vi/9fmVqZ3hK6c/maxresdefault.jpg",
-    description: "Tirik organizmlar va ularning hayot faoliyati",
-    tags: ["Biologiya", "Science", "Biology"],
-    videos: [
-      {
-        id: "biology1",
-        title: "Biologiya faniga kirish",
-        type: "youtube",
-        src: "9fmVqZ3hK6c",
-        exercise: "Biologiya nima va qanday bo'limlarga bo'linadi? Har bir bo'lim haqida qisqacha ma'lumot bering."
-      },
-      {
-        id: "biology2",
-        title: "Hujayra - hayotning asosiy birligi",
-        type: "youtube",
-        src: "URUJD5NEXC8",
-        exercise: "Hujayra tuzilishini chizing va uning asosiy qismlarini nomlang."
-      },
-      {
-        id: "biology3",
-        title: "O'simliklar dunyosi",
-        type: "youtube",
-        src: "2JgBLc2WbQ4",
-        exercise: "Atrofdagi 10 turdagi o'simliklarni yozing va ularning asosiy xususiyatlarini tushuntiring."
-      },
-    ],
-  },
-  {
-    sectionId: 14,
-    sectionName: "Grafik Dizayn",
-    category: "design",
-    price: 650000,
-    rating: 4.8,
-    enrolled: 2265,
-    videoCount: 70,
-    totalDuration: 4200,
-    difficulty: "intermediate",
-    thumbnail: "https://img.youtube.com/vi/IY9l6jF1Dss/maxresdefault.jpg",
-    description: "Photoshop va Illustrator bilan grafik dizayn",
-    tags: ["Design", "Grafika", "Photoshop", "Illustrator"],
-    videos: [
-      {
-        id: "design1",
-        title: "Photoshop bilan tanishuv",
-        type: "youtube",
-        src: "IY9l6jF1Dss",
-        exercise: "Photoshop dasturini oching va asosiy tool'lar bilan tanishing. Oddiy rasm ochib ko'ring."
-      },
-      {
-        id: "design2",
-        title: "Ranglar va gradientlar",
-        type: "youtube",
-        src: "WX-aXv9_yzo",
-        exercise: "Photoshop da yangi fayl ochib, turli ranglar va gradientlar yordamida oddiy kompozitsiya yarating."
-      },
-      {
-        id: "design3",
-        title: "Matn va effektlar",
-        type: "youtube",
-        src: "7T9Yl9hGX8Q",
-        exercise: "Photoshop da matn tool'idan foydalanib, turli shriflarda matnlar yozing va ularga effektlar qo'shing."
-      },
-    ],
-  },
-  {
-    sectionId: 15,
-    sectionName: "3D Modellyash",
-    category: "design",
-    price: 780000,
-    rating: 4.7,
-    enrolled: 1678,
-    videoCount: 85,
-    totalDuration: 5100,
-    difficulty: "advanced",
-    thumbnail: "https://img.youtube.com/vi/WhWc3b3KhnY/maxresdefault.jpg",
-    description: "Blender dasturi bilan 3D modellar yaratish",
-    tags: ["3D", "Blender", "Modeling", "Design"],
-    videos: [
-      {
-        id: "3d1",
-        title: "Blender o'rnatish va interfeys",
-        type: "youtube",
-        src: "WhWc3b3KhnY",
-        exercise: "Blender dasturini o'rnating va asosiy interfeys elementlari bilan tanishing."
-      },
-      {
-        id: "3d2",
-        title: "Oddiy shakllar yaratish",
-        type: "youtube",
-        src: "nyZG6vA6doI",
-        exercise: "Blender da kub, sfera, silindr kabi oddiy 3D shakllar yarating."
-      },
-      {
-        id: "3d3",
-        title: "Modifikatorlar",
-        type: "youtube",
-        src: "w5wK9QswNRo",
-        exercise: "Subdivision Surface, Bevel, Array kabi modifikatorlarni o'rganib, oddiy model yarating."
-      },
-    ],
-  },
-  {
-    sectionId: 16,
-    sectionName: "Mobile Dasturlash",
-    category: "programming",
-    price: 820000,
-    rating: 4.9,
-    enrolled: 2345,
-    videoCount: 90,
-    totalDuration: 5400,
-    difficulty: "advanced",
-    thumbnail: "https://img.youtube.com/vi/fis26HvvDII/maxresdefault.jpg",
-    description: "Android va iOS uchun mobile ilovalar yaratish",
-    tags: ["Mobile", "Android", "iOS", "Flutter", "React Native"],
-    videos: [
-      {
-        id: "mobile1",
-        title: "Mobile dasturlashga kirish",
-        type: "youtube",
-        src: "fis26HvvDII",
-        exercise: "Mobile dasturlash turlari haqida ma'lumot to'plang va ularning afzalliklari/kamchiliklarini solishtiring."
-      },
-      {
-        id: "mobile2",
-        title: "Flutter bilan tanishuv",
-        type: "youtube",
-        src: "1gDhl4leEzA",
-        exercise: "Flutter ni o'rnating va Hello World mobile ilovani yarating."
-      },
-      {
-        id: "mobile3",
-        title: "Widgetlar va UI",
-        type: "youtube",
-        src: "x0uinJZCn-A",
-        exercise: "Flutter da turli widgetlar yordamida oddiy UI interfeys yarating."
+        src: "QlJL5a0-9vY",
+        exercise: "To be fe'lining hozirgi zamon shakllarini o'rganing."
       },
     ],
   },
 ];
+
 
 // ======================= LOCALSTORAGE FUNKSIYALARI =======================
 

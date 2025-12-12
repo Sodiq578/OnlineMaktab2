@@ -1,766 +1,331 @@
-// src/pages/VideoListPage.js
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import videoData from '../data/videos';
-import './VideoListPage.css';
-import Confetti from 'react-confetti';
 import { CircularProgressbar } from 'react-circular-progressbar';
-import { 
-  FaPlay, FaPause, FaBookmark, FaBook, FaClock, 
-  FaCheckCircle, FaFilter, FaSearch, FaArrowLeft,
-  FaSun, FaMoon, FaExpand, FaCompress, FaStar,
-  FaVolumeUp, FaClosedCaptioning, FaDownload,
-  FaShareAlt, FaThumbsUp, FaEye, FaFileAlt,
-  FaChevronDown, FaChevronUp, FaCrown, FaMedal
+import 'react-circular-progressbar/dist/styles.css';
+import Confetti from 'react-confetti';
+import {
+  FaPlay,
+  FaBookmark,
+  FaFileAlt,
+  FaClock,
+  FaCheckCircle,
+  FaSearch,
+  FaArrowLeft,
+  FaSun,
+  FaMoon,
+  FaCrown,
+  FaEye    // YANGI QO‘SHILDI
 } from 'react-icons/fa';
-import { GiAchievement } from 'react-icons/gi';
 
 const VideoListPage = () => {
   const { subject } = useParams();
   const navigate = useNavigate();
+
   const [searchQuery, setSearchQuery] = useState('');
-  const [completionPercentage, setCompletionPercentage] = useState(0);
-  const [playingVideo, setPlayingVideo] = useState(null);
-  const [watchedVideos, setWatchedVideos] = useState([]);
-  const [showCelebration, setShowCelebration] = useState(false);
-  const [windowSize, setWindowSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-  const [darkMode, setDarkMode] = useState(() => 
-    localStorage.getItem('darkMode') === 'true'
-  );
-  const [bookmarkedVideos, setBookmarkedVideos] = useState([]);
-  const [exerciseAnswers, setExerciseAnswers] = useState({});
-  const [filterWatched, setFilterWatched] = useState('all');
-  const [videoNotes, setVideoNotes] = useState({});
-  const [videoRatings, setVideoRatings] = useState({});
-  const [showNotes, setShowNotes] = useState({});
-  const [showExercises, setShowExercises] = useState({});
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [videoSpeed, setVideoSpeed] = useState(1);
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const [showQuizModal, setShowQuizModal] = useState(false);
-  const [quizScore, setQuizScore] = useState(null);
-  const [showAchievements, setShowAchievements] = useState(false);
-  const [achievements, setAchievements] = useState([]);
-  const videoRefs = useRef({});
-  const playerRef = useRef(null);
+  const [watchedVideos, setWatchedVideos] = useState([]);
+  const [bookmarkedVideos, setBookmarkedVideos] = useState([]);
+  const [videoNotes, setVideoNotes] = useState({});
+  const [showNotes, setShowNotes] = useState({});
+  const [showCelebration, setShowCelebration] = useState(false); // TO'G'RI NOM
+  const [completionPercentage, setCompletionPercentage] = useState(0);
+  const [darkMode, setDarkMode] = useState(false);
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
 
-  const formattedSubject = subject.replace(/-/g, ' ').toLowerCase().trim();
-  const section = videoData.find(
-    (sec) => sec.sectionName.toLowerCase() === formattedSubject
-  );
+  // Format subject: react-js-toliq-kurs → React Js Toliq Kurs
+  const formatSubject = (str) =>
+    str
+      .replace(/-/g, ' ')
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
 
-  // Window resize handler
+  const formattedSubject = formatSubject(subject || '');
+  const section = videoData.find((s) => s.sectionName === formattedSubject);
+
+  // localStorage dan yuklash
   useEffect(() => {
-    const handleResize = () => {
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    const savedWatched = JSON.parse(localStorage.getItem(`watched_${subject}`)) || [];
+    const savedBookmarks = JSON.parse(localStorage.getItem(`bookmarks_${subject}`)) || [];
+    const savedNotes = JSON.parse(localStorage.getItem(`notes_${subject}`)) || {};
 
-  // Load data from localStorage
-  useEffect(() => {
-    const storedWatched = JSON.parse(localStorage.getItem(`${subject}_watched`)) || [];
-    const storedBookmarks = JSON.parse(localStorage.getItem(`${subject}_bookmarks`)) || [];
-    const storedNotes = JSON.parse(localStorage.getItem(`${subject}_notes`)) || {};
-    const storedRatings = JSON.parse(localStorage.getItem(`${subject}_ratings`)) || {};
-    const storedAchievements = JSON.parse(localStorage.getItem(`${subject}_achievements`)) || [];
-
-    setWatchedVideos(storedWatched);
-    setBookmarkedVideos(storedBookmarks);
-    setVideoNotes(storedNotes);
-    setVideoRatings(storedRatings);
-    setAchievements(storedAchievements);
+    setWatchedVideos(savedWatched);
+    setBookmarkedVideos(savedBookmarks);
+    setVideoNotes(savedNotes);
 
     if (section) {
-      const totalVideos = section.videos.length;
-      const watchedCount = storedWatched.length;
-      const percentage = totalVideos > 0 ? Math.round((watchedCount / totalVideos) * 100) : 0;
+      const total = section.videos.length;
+      const watched = savedWatched.length;
+      const percentage = total > 0 ? Math.round((watched / total) * 100) : 0;
       setCompletionPercentage(percentage);
-      
-      if (watchedCount === totalVideos && totalVideos > 0 && !storedAchievements.includes('completed_all')) {
+
+      // Kurs tugasa — confetti
+      if (watched === total && total > 0) {
         setShowCelebration(true);
-        const newAchievements = [...storedAchievements, 'completed_all'];
-        setAchievements(newAchievements);
-        localStorage.setItem(`${subject}_achievements`, JSON.stringify(newAchievements));
+        setTimeout(() => setShowCelebration(false), 9000);
       }
     }
+
+    setWindowSize({ width: window.innerWidth, height: window.innerHeight });
   }, [subject, section]);
 
-  // Dark mode effect
+  // localStorage ga saqlash
   useEffect(() => {
-    localStorage.setItem('darkMode', darkMode);
-    if (darkMode) {
-      document.documentElement.classList.add('dark-mode');
-    } else {
-      document.documentElement.classList.remove('dark-mode');
-    }
-  }, [darkMode]);
+    localStorage.setItem(`watched_${subject}`, JSON.stringify(watchedVideos));
+    localStorage.setItem(`bookmarks_${subject}`, JSON.stringify(bookmarkedVideos));
+    localStorage.setItem(`notes_${subject}`, JSON.stringify(videoNotes));
+  }, [watchedVideos, bookmarkedVideos, videoNotes, subject]);
 
-  // Fullscreen handler
-  useEffect(() => {
-    const handleFullScreenChange = () => {
-      setIsFullScreen(!!document.fullscreenElement);
-    };
-    
-    document.addEventListener('fullscreenchange', handleFullScreenChange);
-    return () => document.removeEventListener('fullscreenchange', handleFullScreenChange);
-  }, []);
-
-  const markVideoAsWatched = (videoId) => {
+  const markAsWatched = (videoId) => {
     if (!watchedVideos.includes(videoId)) {
-      const updatedWatched = [...watchedVideos, videoId];
-      setWatchedVideos(updatedWatched);
-      localStorage.setItem(`${subject}_watched`, JSON.stringify(updatedWatched));
-
-      const totalVideos = section.videos.length;
-      const percentage = totalVideos > 0 ? Math.round((updatedWatched.length / totalVideos) * 100) : 0;
+      const updated = [...watchedVideos, videoId];
+      setWatchedVideos(updated);
+      const percentage = Math.round((updated.length / section.videos.length) * 100);
       setCompletionPercentage(percentage);
-      
-      // Check for achievements
-      checkAchievements(updatedWatched);
-      
-      if (updatedWatched.length === totalVideos && totalVideos > 0) {
-        setTimeout(() => setShowCelebration(true), 1000);
+
+      if (updated.length === section.videos.length) {
+        setShowCelebration(true);
       }
     }
   };
 
-  const checkAchievements = (watchedVideosList) => {
-    const totalVideos = section.videos.length;
-    const watchedCount = watchedVideosList.length;
-    const newAchievements = [...achievements];
-
-    if (watchedCount >= 3 && !newAchievements.includes('watched_3')) {
-      newAchievements.push('watched_3');
-    }
-    if (watchedCount >= 10 && !newAchievements.includes('watched_10')) {
-      newAchievements.push('watched_10');
-    }
-    if (watchedCount === totalVideos && !newAchievements.includes('completed_all')) {
-      newAchievements.push('completed_all');
-    }
-
-    if (newAchievements.length > achievements.length) {
-      setAchievements(newAchievements);
-      localStorage.setItem(`${subject}_achievements`, JSON.stringify(newAchievements));
-      setShowAchievements(true);
-      setTimeout(() => setShowAchievements(false), 3000);
-    }
-  };
-
-  const togglePlay = (videoId) => {
-    if (playingVideo !== videoId) {
-      setPlayingVideo(videoId);
-      setSelectedVideo(section.videos.find(v => v.id === videoId));
-      markVideoAsWatched(videoId);
-      
-      // Auto-scroll to video player
-      setTimeout(() => {
-        const element = document.getElementById(`video-${videoId}`);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 100);
-    } else {
-      setPlayingVideo(null);
+  const togglePlay = (video) => {
+    if (selectedVideo?.id === video.id) {
       setSelectedVideo(null);
+    } else {
+      setSelectedVideo(video);
+      markAsWatched(video.id);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const toggleBookmark = (videoId) => {
-    const updatedBookmarks = bookmarkedVideos.includes(videoId)
-      ? bookmarkedVideos.filter((id) => id !== videoId)
-      : [...bookmarkedVideos, videoId];
-    setBookmarkedVideos(updatedBookmarks);
-    localStorage.setItem(`${subject}_bookmarks`, JSON.stringify(updatedBookmarks));
+    setBookmarkedVideos((prev) =>
+      prev.includes(videoId)
+        ? prev.filter((id) => id !== videoId)
+        : [...prev, videoId]
+    );
   };
-
-  const handleNoteChange = (videoId, note) => {
-    const updatedNotes = { ...videoNotes, [videoId]: note };
-    setVideoNotes(updatedNotes);
-    localStorage.setItem(`${subject}_notes`, JSON.stringify(updatedNotes));
-  };
-
-  const handleRating = (videoId, rating) => {
-    const updatedRatings = { ...videoRatings, [videoId]: rating };
-    setVideoRatings(updatedRatings);
-    localStorage.setItem(`${subject}_ratings`, JSON.stringify(updatedRatings));
-  };
-
-  const handleExerciseSubmit = (videoId, answer) => {
-    const video = section.videos.find(v => v.id === videoId);
-    const isCorrect = answer.toLowerCase() === video.correctAnswer?.toLowerCase();
-    
-    setExerciseAnswers((prev) => ({
-      ...prev,
-      [videoId]: { answer, isCorrect, submitted: true },
-    }));
-
-    if (isCorrect && !achievements.includes('solved_exercise')) {
-      const newAchievements = [...achievements, 'solved_exercise'];
-      setAchievements(newAchievements);
-      localStorage.setItem(`${subject}_achievements`, JSON.stringify(newAchievements));
-      setShowAchievements(true);
-    }
-  };
-
-  const toggleFullScreen = (videoId) => {
-    const videoElement = videoRefs.current[videoId];
-    if (videoElement) {
-      if (!document.fullscreenElement) {
-        videoElement.requestFullscreen().catch(err => {
-          console.error(`Error enabling full-screen: ${err.message}`);
-        });
-      } else {
-        document.exitFullscreen();
-      }
-    }
-  };
-
-  const handleVideoSpeed = (speed) => {
-    setVideoSpeed(speed);
-    const videoElements = document.querySelectorAll('video');
-    videoElements.forEach(video => {
-      video.playbackRate = speed;
-    });
-  };
-
-  const takeQuiz = () => {
-    const totalQuestions = section.videos.length;
-    const correctAnswers = Object.values(exerciseAnswers).filter(ans => ans.isCorrect).length;
-    const score = Math.round((correctAnswers / totalQuestions) * 100);
-    setQuizScore(score);
-    setShowQuizModal(true);
-
-    if (score >= 80 && !achievements.includes('quiz_master')) {
-      const newAchievements = [...achievements, 'quiz_master'];
-      setAchievements(newAchievements);
-      localStorage.setItem(`${subject}_achievements`, JSON.stringify(newAchievements));
-    }
-  };
-
-  const getAchievementIcon = (achievement) => {
-    switch(achievement) {
-      case 'watched_3': return <FaEye />;
-      case 'watched_10': return <FaMedal />;
-      case 'completed_all': return <FaCrown />;
-      case 'solved_exercise': return <FaCheckCircle />;
-      case 'quiz_master': return <GiAchievement />;
-      default: return <FaStar />;
-    }
-  };
-
-  const getAchievementText = (achievement) => {
-    switch(achievement) {
-      case 'watched_3': return "3 ta video ko'rdingiz";
-      case 'watched_10': return "10 ta video ko'rdingiz";
-      case 'completed_all': return "Barcha videolarni tamomladingiz";
-      case 'solved_exercise': return "Mashqni to'g'ri yechdingiz";
-      case 'quiz_master': return "Testda yaxshi natija ko'rsatdingiz";
-      default: return "Yutuq";
-    }
-  };
-
-  const filteredVideos = section?.videos.filter((video) => {
-    const matchesSearch = video.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter =
-      filterWatched === 'all' ||
-      (filterWatched === 'watched' && watchedVideos.includes(video.id)) ||
-      (filterWatched === 'unwatched' && !watchedVideos.includes(video.id));
-    return matchesSearch && matchesFilter;
-  });
 
   if (!section) {
     return (
-      <div className="video-page-not-found">
-        <div className="not-found-content">
-          <h1 className="not-found-title">Fan topilmadi</h1>
-          <p className="not-found-message">
-            Kechirasiz, "{formattedSubject}" bo'yicha ma'lumotlar topilmadi.
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-6">
+        <div className="text-center">
+          <h1 className="text-5xl font-bold text-red-600 mb-6">Kurs topilmadi</h1>
+          <p className="text-2xl text-gray-700 dark:text-gray-300 mb-8">
+            "{formattedSubject}" nomli kurs mavjud emas.
           </p>
           <button
-            onClick={() => navigate('/dashboard/home')}
-            className="back-home-btn"
+            onClick={() => navigate('/all-courses')}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-10 py-4 rounded-full text-xl font-bold transition"
           >
-            <FaArrowLeft /> Bosh sahifaga qaytish
+            Barcha kurslarga qaytish
           </button>
         </div>
       </div>
     );
   }
 
+  const filteredVideos = section.videos.filter((video) =>
+    video.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-    <div className="video-list-page">
-      {/* Celebration Confetti */}
+    <>
+      {/* Confetti + Tabrik */}
       {showCelebration && (
         <>
-          <Confetti
-            width={windowSize.width}
-            height={windowSize.height}
-            recycle={false}
-            numberOfPieces={200}
-            gravity={0.1}
-            colors={['#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2']}
-          />
-          <div className="celebration-modal">
-            <div className="celebration-content">
-              <FaCrown className="celebration-icon" />
-              <h2>Tabriklaymiz! 👑</h2>
-              <p>
-                Siz "{section.sectionName}" kursidagi barcha videolarni 
-                muvaffaqiyatli tamomladingiz!
+          <Confetti width={windowSize.width} height={windowSize.height} recycle={false} />
+          <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
+            <div className="bg-white dark:bg-gray-800 rounded-3xl p-12 text-center shadow-2xl animate-bounce">
+              <FaCrown className="text-9xl text-yellow-500 mx-auto mb-6" />
+              <h2 className="text-5xl font-black text-purple-600 mb-4">Tabriklaymiz!</h2>
+              <p className="text-3xl text-gray-800 dark:text-white">
+                Siz "{section.sectionName}" kursini muvaffaqiyatli tugatdingiz!
               </p>
               <button
                 onClick={() => setShowCelebration(false)}
-                className="celebration-btn"
+                className="mt-10 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-12 py-5 rounded-full text-2xl font-bold hover:scale-110 transition"
               >
-                Davom etish
+                Rahmat
               </button>
             </div>
           </div>
         </>
       )}
 
-      {/* Achievements Toast */}
-      {showAchievements && (
-        <div className="achievements-toast">
-          {achievements.slice(-1).map(achievement => (
-            <div key={achievement} className="achievement-toast">
-              <div className="achievement-icon">
-                {getAchievementIcon(achievement)}
-              </div>
-              <div>
-                <h4>Yangi yutuq!</h4>
-                <p>{getAchievementText(achievement)}</p>
-              </div>
+      <div className={`min-h-screen ${darkMode ? 'dark bg-gray-900 text-white' : 'bg-gradient-to-br from-purple-50 to-pink-50'}`}>
+        {/* Header */}
+        <header className="bg-white/80 dark:bg-gray-800/90 backdrop-blur-xl shadow-2xl sticky top-0 z-40">
+          <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
+            <button onClick={() => navigate(-1)} className="flex items-center gap-3 text-purple-600 font-bold text-lg hover:scale-110 transition">
+              <FaArrowLeft /> Orqaga
+            </button>
+            <div className="text-center">
+              <h1 className="text-4xl md:text-6xl font-black bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                {section.sectionName}
+              </h1>
+              <p className="text-gray-600 dark:text-gray-300 mt-2 text-lg">{section.description}</p>
             </div>
-          ))}
-        </div>
-      )}
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              className="text-3xl p-3 bg-gray-200 dark:bg-gray-700 rounded-full hover:scale-110 transition"
+            >
+              {darkMode ? <FaSun className="text-yellow-500" /> : <FaMoon className="text-purple-600" />}
+            </button>
+          </div>
+        </header>
 
-      {/* Quiz Modal */}
-      {showQuizModal && (
-        <div className="quiz-modal">
-          <div className="quiz-content">
-            <h2>Test Natijalari</h2>
-            <div className="quiz-score-circle">
-              <CircularProgressbar
-                value={quizScore}
-                text={`${quizScore}%`}
-                styles={{
-                  path: {
-                    stroke: quizScore >= 80 ? '#4ECDC4' : quizScore >= 60 ? '#FFD166' : '#FF6B6B',
-                    strokeLinecap: 'round',
-                  },
-                  text: {
-                    fill: quizScore >= 80 ? '#4ECDC4' : quizScore >= 60 ? '#FFD166' : '#FF6B6B',
-                    fontSize: '24px',
-                    fontWeight: 'bold',
-                  },
-                  trail: {
-                    stroke: '#E0E0E0',
-                  },
-                }}
-              />
-            </div>
-            <p className="quiz-message">
-              {quizScore >= 80 
-                ? "Ajoyib natija! Siz kursni mukammal o'zlashtirdingiz!" 
-                : quizScore >= 60 
-                ? "Yaxshi ish qildingiz! Biroz yana mashq qilishingiz kerak." 
-                : "Ko'proq mashq qilishingiz kerak. Qaytadan ko'rib chiqing!"}
-            </p>
-            <div className="quiz-actions">
-              <button onClick={() => setShowQuizModal(false)} className="quiz-close-btn">
-                Yopish
-              </button>
-              <button onClick={() => navigate('/dashboard/home')} className="quiz-home-btn">
-                Bosh sahifa
-              </button>
+        {/* Progress */}
+        <div className="max-w-7xl mx-auto px-6 py-12">
+          <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border border-white/20">
+            <div className="flex flex-col md:flex-row items-center gap-10">
+              <div className="w-48 h-48">
+                <CircularProgressbar
+                  value={completionPercentage}
+                  text={`${completionPercentage}%`}
+                  styles={{
+                    path: { stroke: '#8b5cf6' },
+                    text: { fill: '#8b5cf6', fontSize: '24px', fontWeight: 'bold' },
+                    trail: { stroke: '#e5e7eb' },
+                  }}
+                />
+              </div>
+              <div className="text-center md:text-left">
+                <h3 className="text-4xl font-bold text-gray-800 dark:text-white">Kurs Progressi</h3>
+                <p className="text-6xl font-black text-purple-600 mt-4">
+                  {watchedVideos.length} / {section.videos.length}
+                </p>
+                <p className="text-2xl text-gray-600 dark:text-gray-400">dars ko'rildi</p>
+              </div>
             </div>
           </div>
         </div>
-      )}
 
-      {/* Header */}
-      <header className="video-header">
-        <div className="header-content">
-          <button onClick={() => navigate('/dashboard/home')} className="back-btn">
-            <FaArrowLeft /> Bosh sahifa
-          </button>
-          <div className="header-center">
-            <h1 className="section-title">
-              <FaBook /> {section.sectionName}
-            </h1>
-            <p className="section-subtitle">{section.description || "Professional video kurs"}</p>
-          </div>
-          <button 
-            onClick={() => setDarkMode(!darkMode)} 
-            className="theme-toggle"
-            aria-label={darkMode ? "Kunduzgi rejim" : "Tungi rejim"}
-          >
-            {darkMode ? <FaSun /> : <FaMoon />}
-          </button>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="video-main">
-        {/* Progress Section */}
-        <div className="progress-section">
-          <div className="progress-card">
-            <div className="progress-circle">
-              <CircularProgressbar
-                value={completionPercentage}
-                text={`${completionPercentage}%`}
-                styles={{
-                  path: {
-                    stroke: `rgba(74, 222, 128, ${completionPercentage / 100})`,
-                    strokeLinecap: 'round',
-                  },
-                  text: {
-                    fill: '#fff',
-                    fontSize: '24px',
-                    fontWeight: 'bold',
-                  },
-                  trail: {
-                    stroke: 'rgba(255, 255, 255, 0.1)',
-                  },
-                }}
-              />
-            </div>
-            <div className="progress-info">
-              <h3>Kurs Progressi</h3>
-              <div className="progress-stats">
-                <span className="stat-item">
-                  <FaEye /> {watchedVideos.length} / {section.videos.length}
-                </span>
-                <span className="stat-item">
-                  <FaBookmark /> {bookmarkedVideos.length}
-                </span>
-                <span className="stat-item">
-                  <FaClock /> {section.totalDuration || "0"} min
-                </span>
-              </div>
-              <div className="progress-actions">
-                <button onClick={() => setFilterWatched('unwatched')} className="progress-btn">
-                  Davom etish
-                </button>
-                <button onClick={takeQuiz} className="progress-btn quiz">
-                  Test topshirish
+        {/* Video Player (agar tanlangan bo'lsa) */}
+        {selectedVideo && (
+          <div className="max-w-7xl mx-auto px-6 mb-12">
+            <div className="bg-black rounded-3xl overflow-hidden shadow-2xl">
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white flex justify-between items-center">
+                <h2 className="text-2xl font-bold">{selectedVideo.title}</h2>
+                <button onClick={() => setSelectedVideo(null)} className="text-4xl hover:scale-125 transition">
+                  ×
                 </button>
               </div>
+              <div className="aspect-video">
+                {selectedVideo.type === 'youtube' ? (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${selectedVideo.src}?autoplay=1&rel=0&modestbranding=1`}
+                    title={selectedVideo.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-full"
+                  />
+                ) : (
+                  <video src={selectedVideo.src} controls autoPlay className="w-full h-full" />
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Filters */}
-        <div className="filters-section">
-          <div className="search-box">
-            <FaSearch className="search-icon" />
+        {/* Qidiruv */}
+        <div className="max-w-7xl mx-auto px-6 mb-10">
+          <div className="relative">
+            <FaSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-2xl text-gray-400" />
             <input
               type="text"
               placeholder="Videolarni qidirish..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
+              className="w-full pl-16 pr-8 py-5 text-lg rounded-3xl bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl focus:outline-none focus:ring-4 focus:ring-purple-400/50 shadow-xl"
             />
           </div>
-          <div className="filter-buttons">
-            <button 
-              className={`filter-btn ${filterWatched === 'all' ? 'active' : ''}`}
-              onClick={() => setFilterWatched('all')}
-            >
-              Barchasi
-            </button>
-            <button 
-              className={`filter-btn ${filterWatched === 'watched' ? 'active' : ''}`}
-              onClick={() => setFilterWatched('watched')}
-            >
-              Ko'rilgan
-            </button>
-            <button 
-              className={`filter-btn ${filterWatched === 'unwatched' ? 'active' : ''}`}
-              onClick={() => setFilterWatched('unwatched')}
-            >
-              Ko'rilmagan
-            </button>
-            <select 
-              value={videoSpeed} 
-              onChange={(e) => handleVideoSpeed(parseFloat(e.target.value))}
-              className="speed-select"
-            >
-              <option value="0.5">0.5x</option>
-              <option value="0.75">0.75x</option>
-              <option value="1">1x</option>
-              <option value="1.25">1.25x</option>
-              <option value="1.5">1.5x</option>
-              <option value="2">2x</option>
-            </select>
-          </div>
         </div>
 
-        {/* Video Player */}
-        {selectedVideo && (
-          <div className="main-video-player" id={`video-${selectedVideo.id}`}>
-            <div className="video-player-container">
-              <div className="player-header">
-                <h3 className="player-title">{selectedVideo.title}</h3>
-                <div className="player-actions">
-                  <button className="player-btn" onClick={() => toggleBookmark(selectedVideo.id)}>
-                    <FaBookmark className={bookmarkedVideos.includes(selectedVideo.id) ? 'bookmarked' : ''} />
-                  </button>
-                  <button className="player-btn" onClick={() => toggleFullScreen(selectedVideo.id)}>
-                    {isFullScreen ? <FaCompress /> : <FaExpand />}
-                  </button>
-                </div>
-              </div>
-              <div className="video-wrapper" ref={playerRef}>
-                {selectedVideo.type === 'youtube' ? (
-                  <iframe
-                    ref={(el) => (videoRefs.current[selectedVideo.id] = el)}
-                    src={`https://www.youtube.com/embed/${selectedVideo.src}?autoplay=1&controls=1&modestbranding=1`}
-                    title={selectedVideo.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="youtube-player"
-                  />
-                ) : (
-                  <video
-                    ref={(el) => (videoRefs.current[selectedVideo.id] = el)}
-                    src={selectedVideo.src}
-                    controls
-                    autoPlay
-                    className="local-player"
-                  />
-                )}
-              </div>
-              <div className="player-footer">
-                <div className="video-meta">
-                  <span className="meta-item">
-                    <FaClock /> {selectedVideo.duration || "10:00"}
-                  </span>
-                  <span className="meta-item">
-                    <FaThumbsUp /> {selectedVideo.likes || "0"}
-                  </span>
-                  <span className="meta-item">
-                    <FaEye /> {selectedVideo.views || "0"}
-                  </span>
-                </div>
-                <div className="rating-stars">
-                  {[1, 2, 3, 4, 5].map(star => (
-                    <FaStar
-                      key={star}
-                      className={`star ${star <= (videoRatings[selectedVideo.id] || 0) ? 'active' : ''}`}
-                      onClick={() => handleRating(selectedVideo.id, star)}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Videolar ro'yxati */}
+        <div className="max-w-7xl mx-auto px-6 pb-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredVideos.map((video, i) => {
+              const isWatched = watchedVideos.includes(video.id);
+              const isBookmarked = bookmarkedVideos.includes(video.id);
 
-        {/* Video Grid */}
-        <div className="video-grid-section">
-          <h2 className="grid-title">
-            <FaPlay /> Videolar ({filteredVideos?.length || 0})
-          </h2>
-          
-          {filteredVideos?.length === 0 ? (
-            <div className="no-videos-found">
-              <FaSearch className="no-videos-icon" />
-              <h3>Videolar topilmadi</h3>
-              <p>"{searchQuery}" so'rovi bo'yicha hech narsa topilmadi.</p>
-              <button onClick={() => setSearchQuery('')} className="clear-search-btn">
-                Filtrlarni tozalash
-              </button>
-            </div>
-          ) : (
-            <div className="video-grid">
-              {filteredVideos.map((video, index) => (
-                <div 
-                  key={video.id} 
-                  className={`video-card ${watchedVideos.includes(video.id) ? 'watched' : ''} ${
-                    bookmarkedVideos.includes(video.id) ? 'bookmarked' : ''
-                  }`}
-                  style={{ animationDelay: `${index * 50}ms` }}
+              return (
+                <div
+                  key={video.id}
+                  className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-500 hover:-translate-y-4 group"
+                  style={{ animationDelay: `${i * 80}ms` }}
                 >
-                  <div className="card-header">
-                    <div className="video-thumbnail" onClick={() => togglePlay(video.id)}>
-                      {video.type === 'youtube' ? (
-                        <img
-                          src={`https://img.youtube.com/vi/${video.src}/hqdefault.jpg`}
-                          alt={video.title}
-                          className="thumbnail-img"
-                        />
-                      ) : (
-                        <div className="thumbnail-placeholder">
-                          <FaPlay />
-                        </div>
-                      )}
-                      <div className="thumbnail-overlay">
-                        <div className="play-button">
-                          <FaPlay />
-                        </div>
-                        <div className="video-duration">{video.duration || "10:00"}</div>
-                      </div>
-                    </div>
-                    
-                    <div className="video-badges">
-                      {watchedVideos.includes(video.id) && (
-                        <span className="badge watched-badge">
-                          <FaCheckCircle /> Ko'rilgan
-                        </span>
-                      )}
-                      {bookmarkedVideos.includes(video.id) && (
-                        <span className="badge bookmark-badge">
-                          <FaBookmark />
-                        </span>
-                      )}
-                      <span className="badge difficulty-badge">
-                        {video.difficulty || "O'rtacha"}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="card-body">
-                    <h3 className="video-title">{video.title}</h3>
-                    <p className="video-description">
-                      {video.description || "Video ta'rifi mavjud emas."}
-                    </p>
-                    
-                    <div className="video-meta">
-                      <span className="meta-item">
-                        <FaClock /> {video.duration || "10:00"}
-                      </span>
-                      <span className="meta-item">
-                        <FaEye /> {video.views || "0"} ko'rish
-                      </span>
-                    </div>
-
-                    <div className="video-actions">
-                      <button 
-                        onClick={() => togglePlay(video.id)}
-                        className={`action-btn ${playingVideo === video.id ? 'playing' : 'play'}`}
+                  <div className="relative overflow-hidden">
+                    <img
+                      src={`https://img.youtube.com/vi/${video.src}/maxresdefault.jpg`}
+                      alt={video.title}
+                      className="w-full h-52 object-cover group-hover:scale-110 transition-transform duration-700"
+                      onError={(e) => (e.target.src = `https://img.youtube.com/vi/${video.src}/hqdefault.jpg`)}
+                    />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                      <div
+                        onClick={() => togglePlay(video)}
+                        className="w-20 h-20 bg-white/90 rounded-full flex items-center justify-center cursor-pointer hover:scale-125 transition shadow-2xl"
                       >
-                        {playingVideo === video.id ? <FaPause /> : <FaPlay />}
-                        {playingVideo === video.id ? "To'xtatish" : "Ko'rish"}
-                      </button>
-                      
-                      <div className="secondary-actions">
-                        <button 
-                          onClick={() => toggleBookmark(video.id)}
-                          className={`icon-btn ${bookmarkedVideos.includes(video.id) ? 'active' : ''}`}
-                          title="Xatcho'p qilish"
-                        >
-                          <FaBookmark />
-                        </button>
-                        <button 
-                          onClick={() => setShowNotes(prev => ({...prev, [video.id]: !prev[video.id]}))}
-                          className="icon-btn"
-                          title="Eslatmalar"
-                        >
-                          <FaFileAlt />
-                        </button>
-                        {video.exercise && (
-                          <button 
-                            onClick={() => setShowExercises(prev => ({...prev, [video.id]: !prev[video.id]}))}
-                            className="icon-btn"
-                            title="Mashqlar"
-                          >
-                            <FaCheckCircle />
-                          </button>
-                        )}
+                        <FaPlay className="text-4xl text-purple-600 ml-2" />
                       </div>
                     </div>
+                    {isWatched && (
+                      <div className="absolute top-4 left-4 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
+                        <FaCheckCircle /> Ko'rilgan
+                      </div>
+                    )}
+                  </div>
 
-                    {/* Notes Section */}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-3 line-clamp-2">
+                      {video.title}
+                    </h3>
+                    <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 mb-5">
+                      <span><FaClock /> {video.duration || '10:00'}</span>
+                      <span><FaEye /> {video.views || '0'}</span>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => togglePlay(video)}
+                        className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-full font-bold hover:scale-105 transition flex items-center justify-center gap-2"
+                      >
+                        <FaPlay /> {isWatched ? 'Qayta ko‘rish' : 'Ko‘rish'}
+                      </button>
+                      <button
+                        onClick={() => toggleBookmark(video.id)}
+                        className={`p-3 rounded-full transition ${isBookmarked ? 'bg-yellow-500 text-white' : 'bg-gray-200 dark:bg-gray-700'}`}
+                      >
+                        <FaBookmark />
+                      </button>
+                      <button
+                        onClick={() => setShowNotes((prev) => ({ ...prev, [video.id]: !prev[video.id] }))}
+                        className="p-3 rounded-full bg-gray-200 dark:bg-gray-700 hover:scale-125 transition"
+                      >
+                        <FaFileAlt />
+                      </button>
+                    </div>
+
                     {showNotes[video.id] && (
-                      <div className="notes-section">
-                        <h4 className="notes-title">
-                          <FaFileAlt /> Eslatmalar
-                        </h4>
-                        <textarea
-                          placeholder="Video bo'yicha eslatmalaringizni yozing..."
-                          value={videoNotes[video.id] || ''}
-                          onChange={(e) => handleNoteChange(video.id, e.target.value)}
-                          className="notes-textarea"
-                          rows="3"
-                        />
-                      </div>
-                    )}
-
-                    {/* Exercise Section */}
-                    {showExercises[video.id] && video.exercise && (
-                      <div className="exercise-section">
-                        <h4 className="exercise-title">
-                          <FaCheckCircle /> Mashq
-                        </h4>
-                        <p className="exercise-question">{video.exercise}</p>
-                        
-                        {!exerciseAnswers[video.id]?.submitted ? (
-                          <div className="exercise-input">
-                            <input
-                              type="text"
-                              placeholder="Javobingizni kiriting..."
-                              onKeyPress={(e) => {
-                                if (e.key === 'Enter') {
-                                  handleExerciseSubmit(video.id, e.target.value);
-                                }
-                              }}
-                              className="answer-input"
-                            />
-                            <button 
-                              onClick={() => handleExerciseSubmit(video.id, document.querySelector(`#exercise-${video.id}`)?.value || '')}
-                              className="submit-answer-btn"
-                            >
-                              Yuborish
-                            </button>
-                          </div>
-                        ) : (
-                          <div className={`exercise-result ${exerciseAnswers[video.id].isCorrect ? 'correct' : 'incorrect'}`}>
-                            <FaCheckCircle className="result-icon" />
-                            <span>
-                              {exerciseAnswers[video.id].isCorrect 
-                                ? "To'g'ri javob! 🎉" 
-                                : "Noto'g'ri javob. Qayta urinib ko'ring."}
-                            </span>
-                          </div>
-                        )}
-                      </div>
+                      <textarea
+                        placeholder="Eslatmalaringiz..."
+                        value={videoNotes[video.id] || ''}
+                        onChange={(e) => setVideoNotes((prev) => ({ ...prev, [video.id]: e.target.value }))}
+                        className="w-full mt-4 p-4 rounded-2xl bg-gray-100 dark:bg-gray-700 resize-none focus:ring-4 focus:ring-purple-400"
+                        rows="3"
+                      />
                     )}
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Achievements Section */}
-        {achievements.length > 0 && (
-          <div className="achievements-section">
-            <h3 className="achievements-title">
-              <FaMedal /> Yutuqlar
-            </h3>
-            <div className="achievements-grid">
-              {achievements.map(achievement => (
-                <div key={achievement} className="achievement-card">
-                  <div className="achievement-icon">
-                    {getAchievementIcon(achievement)}
-                  </div>
-                  <p className="achievement-text">{getAchievementText(achievement)}</p>
-                </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
-        )}
-      </main>
-    </div>
+        </div>
+      </div>
+    </>
   );
 };
 

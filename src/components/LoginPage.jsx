@@ -8,31 +8,403 @@ import {
   HiOutlineLockClosed, 
   HiOutlineUser, 
   HiOutlinePhone,
-  HiOutlineArrowLeft 
+  HiOutlineArrowRight,
+  HiOutlineAcademicCap,
+  HiOutlineBookOpen,
+  HiOutlineLightBulb,
+  HiOutlineCheck,
+  HiOutlineX,
+  HiOutlineShieldCheck,
+  HiOutlineRefresh
 } from 'react-icons/hi';
 import { FcGoogle } from 'react-icons/fc';
+import { FaApple, FaFacebook, FaStar } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import LoginImg from '../assets/forLoginPage.avif';
 import './LoginPage.css';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
     email: '',
-    phoneNumber: '',
-    password: '',
-    confirmPassword: ''
+    password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoginMode, setIsLoginMode] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [rememberMe, setRememberMe] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState(0);
+  const [showPasswordCriteria, setShowPasswordCriteria] = useState(false);
+  const [demoAccounts, setDemoAccounts] = useState([]);
+  const [currentDemoIndex, setCurrentDemoIndex] = useState(0);
+  const [isAutoRotating, setIsAutoRotating] = useState(true);
+  const [socialLoading, setSocialLoading] = useState({
+    google: false,
+    apple: false,
+    facebook: false
+  });
   const navigate = useNavigate();
+
+  // Demo hisoblar ro'yxati
+  const initialDemoAccounts = [
+    {
+      id: 1,
+      email: 'student@eduhub.uz',
+      password: 'student123',
+      name: 'Talaba Demo',
+      role: 'student',
+      courses: 5,
+      progress: 65,
+      color: 'from-blue-500 to-purple-500'
+    },
+    {
+      id: 2,
+      email: 'teacher@eduhub.uz',
+      password: 'teacher123',
+      name: 'O\'qituvchi Demo',
+      role: 'teacher',
+      courses: 12,
+      progress: 92,
+      color: 'from-green-500 to-teal-500'
+    },
+    {
+      id: 3,
+      email: 'admin@eduhub.uz',
+      password: 'admin123',
+      name: 'Admin Demo',
+      role: 'admin',
+      courses: 25,
+      progress: 100,
+      color: 'from-red-500 to-orange-500'
+    },
+    {
+      id: 4,
+      email: 'pro@eduhub.uz',
+      password: 'pro123',
+      name: 'PRO Demo',
+      role: 'premium',
+      courses: 15,
+      progress: 78,
+      color: 'from-purple-500 to-pink-500'
+    }
+  ];
+
+  // Foydalanuvchilarni localStorage'dan o'qish
+  const getUsersFromStorage = () => {
+    const usersData = localStorage.getItem('eduhub_users');
+    return usersData ? JSON.parse(usersData).users : [];
+  };
+
+  // Foydalanuvchini localStorage'ga saqlash
+  const saveUserToStorage = (user) => {
+    let usersData = localStorage.getItem('eduhub_users');
+    let users = [];
+    
+    if (usersData) {
+      users = JSON.parse(usersData).users;
+    }
+    
+    // Foydalanuvchini qidirish
+    const existingUserIndex = users.findIndex(u => u.email === user.email);
+    
+    if (existingUserIndex === -1) {
+      // Yangi foydalanuvchi
+      users.push({
+        id: Date.now(),
+        email: user.email,
+        password: user.password ? btoa(user.password) : null,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phoneNumber: user.phoneNumber || '+998 90 123 45 67',
+        avatar: user.avatar,
+        provider: user.provider,
+        role: user.role || 'student',
+        subscription: user.subscription || 'basic',
+        isVerified: user.isVerified || false,
+        createdAt: user.createdAt || new Date().toISOString(),
+        lastLogin: new Date().toISOString()
+      });
+    } else {
+      // Mavjud foydalanuvchini yangilash
+      users[existingUserIndex] = {
+        ...users[existingUserIndex],
+        lastLogin: new Date().toISOString(),
+        ...user
+      };
+    }
+    
+    localStorage.setItem('eduhub_users', JSON.stringify({ users }));
+  };
+
+  // Social login foydalanuvchisini yaratish
+  const createSocialUser = (provider, userData) => {
+    const userId = Date.now();
+    const userEmail = userData.email || `${provider.toLowerCase()}_${userId}@eduhub.uz`;
+    
+    const socialUser = {
+      id: userId,
+      email: userEmail,
+      password: null, // Parol yo'q
+      firstName: userData.firstName || provider,
+      lastName: userData.lastName || 'User',
+      phoneNumber: userData.phoneNumber || '+998 90 123 45 67',
+      avatar: userData.avatar || `https://ui-avatars.com/api/?name=${provider}+User&background=3b82f6&color=fff&bold=true`,
+      provider: provider.toLowerCase(),
+      role: 'student',
+      subscription: 'basic',
+      isVerified: true,
+      createdAt: new Date().toISOString(),
+      lastLogin: new Date().toISOString()
+    };
+    
+    return socialUser;
+  };
+
+  // Session yaratish
+  const createUserSession = (user) => {
+    const userSession = {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      fullName: `${user.firstName} ${user.lastName}`,
+      phoneNumber: user.phoneNumber,
+      avatar: user.avatar,
+      provider: user.provider || 'email',
+      createdAt: user.createdAt,
+      isVerified: user.isVerified || true,
+      role: user.role || 'student',
+      subscription: user.subscription || 'basic',
+      courses: generateDemoCourses(user.role === 'teacher' ? 12 : user.role === 'admin' ? 25 : 5),
+      progress: Math.floor(Math.random() * 40) + 60,
+      notifications: Math.floor(Math.random() * 10),
+      lastLogin: new Date().toISOString(),
+      rememberMe,
+      token: `${user.provider || 'demo'}_token_${user.id}_${Date.now()}`
+    };
+    
+    localStorage.setItem('eduhub_current_user', JSON.stringify(userSession));
+    localStorage.setItem('eduhub_auth_token', userSession.token);
+    
+    if (rememberMe) {
+      localStorage.setItem('eduhub_remembered_email', user.email);
+    } else {
+      localStorage.removeItem('eduhub_remembered_email');
+    }
+    
+    return userSession;
+  };
+
+  // Google login
+  const handleGoogleLogin = async () => {
+    setSocialLoading(prev => ({ ...prev, google: true }));
+    
+    try {
+      // Google OAuth simulyatsiyasi
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Google'dan qaytgan ma'lumotlar (simulyatsiya)
+      const googleUserData = {
+        email: `google_user_${Date.now()}@gmail.com`,
+        firstName: 'Google',
+        lastName: 'User',
+        avatar: `https://ui-avatars.com/api/?name=Google+User&background=DB4437&color=fff&bold=true`
+      };
+      
+      // Foydalanuvchini yaratish
+      const socialUser = createSocialUser('google', googleUserData);
+      
+      // LocalStorage'ga saqlash
+      saveUserToStorage(socialUser);
+      
+      // Session yaratish
+      const userSession = createUserSession(socialUser);
+      
+      toast.success(`${userSession.fullName} hisobiga Google orqali kirildi!`, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      
+      // Dashboard'ga yo'naltirish
+      setTimeout(() => {
+        navigate('/dashboard/home');
+      }, 1000);
+      
+    } catch (error) {
+      toast.error('Google bilan kirishda xatolik', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } finally {
+      setSocialLoading(prev => ({ ...prev, google: false }));
+    }
+  };
+
+  // Apple login
+  const handleAppleLogin = async () => {
+    setSocialLoading(prev => ({ ...prev, apple: true }));
+    
+    try {
+      // Apple Sign In simulyatsiyasi
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Apple'dan qaytgan ma'lumotlar (simulyatsiya)
+      const appleUserData = {
+        email: `apple_user_${Date.now()}@icloud.com`,
+        firstName: 'Apple',
+        lastName: 'User',
+        avatar: `https://ui-avatars.com/api/?name=Apple+User&background=000000&color=fff&bold=true`
+      };
+      
+      // Foydalanuvchini yaratish
+      const socialUser = createSocialUser('apple', appleUserData);
+      
+      // LocalStorage'ga saqlash
+      saveUserToStorage(socialUser);
+      
+      // Session yaratish
+      const userSession = createUserSession(socialUser);
+      
+      toast.success(`${userSession.fullName} hisobiga Apple ID orqali kirildi!`, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      
+      // Dashboard'ga yo'naltirish
+      setTimeout(() => {
+        navigate('/dashboard/home');
+      }, 1000);
+      
+    } catch (error) {
+      toast.error('Apple ID bilan kirishda xatolik', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } finally {
+      setSocialLoading(prev => ({ ...prev, apple: false }));
+    }
+  };
+
+  // Facebook login
+  const handleFacebookLogin = async () => {
+    setSocialLoading(prev => ({ ...prev, facebook: true }));
+    
+    try {
+      // Facebook OAuth simulyatsiyasi
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Facebook'dan qaytgan ma'lumotlar (simulyatsiya)
+      const facebookUserData = {
+        email: `facebook_user_${Date.now()}@facebook.com`,
+        firstName: 'Facebook',
+        lastName: 'User',
+        avatar: `https://ui-avatars.com/api/?name=Facebook+User&background=1877F2&color=fff&bold=true`
+      };
+      
+      // Foydalanuvchini yaratish
+      const socialUser = createSocialUser('facebook', facebookUserData);
+      
+      // LocalStorage'ga saqlash
+      saveUserToStorage(socialUser);
+      
+      // Session yaratish
+      const userSession = createUserSession(socialUser);
+      
+      toast.success(`${userSession.fullName} hisobiga Facebook orqali kirildi!`, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      
+      // Dashboard'ga yo'naltirish
+      setTimeout(() => {
+        navigate('/dashboard/home');
+      }, 1000);
+      
+    } catch (error) {
+      toast.error('Facebook bilan kirishda xatolik', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } finally {
+      setSocialLoading(prev => ({ ...prev, facebook: false }));
+    }
+  };
+
+  // Social login funksiyasi
+  const handleSocialLogin = async (provider) => {
+    switch(provider.toLowerCase()) {
+      case 'google':
+        await handleGoogleLogin();
+        break;
+      case 'apple':
+        await handleAppleLogin();
+        break;
+      case 'facebook':
+        await handleFacebookLogin();
+        break;
+      default:
+        toast.info('Bu platforma hozircha mavjud emas', {
+          position: "top-center",
+          autoClose: 3000,
+        });
+    }
+  };
+
+  // Avvalgi useEffect'lar...
+  useEffect(() => {
+    setDemoAccounts(initialDemoAccounts);
+    setFormData({
+      email: initialDemoAccounts[0].email,
+      password: initialDemoAccounts[0].password
+    });
+
+    // Har 5 sekundda demo hisobni avtomatik almashish
+    let rotationInterval;
+    if (isAutoRotating) {
+      rotationInterval = setInterval(() => {
+        setCurrentDemoIndex(prev => (prev + 1) % initialDemoAccounts.length);
+      }, 5000);
+    }
+
+    return () => {
+      if (rotationInterval) clearInterval(rotationInterval);
+    };
+  }, [isAutoRotating]);
+
+  // Demo hisob o'zgarganda formani yangilash
+  useEffect(() => {
+    if (demoAccounts.length > 0) {
+      const currentAccount = demoAccounts[currentDemoIndex];
+      setFormData({
+        email: currentAccount.email,
+        password: currentAccount.password
+      });
+    }
+  }, [currentDemoIndex, demoAccounts]);
 
   // Check if user is already logged in
   useEffect(() => {
@@ -41,6 +413,20 @@ const LoginPage = () => {
       navigate('/dashboard/home');
     }
   }, [navigate]);
+
+  // Check password strength
+  useEffect(() => {
+    if (formData.password) {
+      let strength = 0;
+      if (formData.password.length >= 6) strength += 1;
+      if (/[A-Z]/.test(formData.password)) strength += 1;
+      if (/[0-9]/.test(formData.password)) strength += 1;
+      if (/[^A-Za-z0-9]/.test(formData.password)) strength += 1;
+      setPasswordStrength(strength);
+    } else {
+      setPasswordStrength(0);
+    }
+  }, [formData.password]);
 
   // Form field validation
   const validateForm = () => {
@@ -56,23 +442,6 @@ const LoginPage = () => {
       newErrors.password = 'Parolni kiriting';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Parol kamida 6 ta belgidan iborat bo\'lishi kerak';
-    }
-
-    if (!isLoginMode) {
-      if (!formData.firstName) newErrors.firstName = 'Ismni kiriting';
-      if (!formData.lastName) newErrors.lastName = 'Familyani kiriting';
-      
-      if (!formData.phoneNumber) {
-        newErrors.phoneNumber = 'Telefon raqamni kiriting';
-      } else if (!/^\+998\d{9}$/.test(formData.phoneNumber.replace(/\s/g, ''))) {
-        newErrors.phoneNumber = 'Telefon raqam noto\'g\'ri formatda';
-      }
-
-      if (!formData.confirmPassword) {
-        newErrors.confirmPassword = 'Parolni tasdiqlang';
-      } else if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = 'Parollar mos kelmayapti';
-      }
     }
 
     return newErrors;
@@ -94,27 +463,6 @@ const LoginPage = () => {
     }
   };
 
-  const handlePhoneChange = (e) => {
-    let value = e.target.value.replace(/\D/g, '');
-    
-    if (value.length > 0) {
-      if (!value.startsWith('998')) {
-        value = '998' + value;
-      }
-      value = '+998 ' + value.slice(3);
-      
-      // Add spaces for readability
-      if (value.length > 7) value = value.slice(0, 7) + ' ' + value.slice(7);
-      if (value.length > 11) value = value.slice(0, 11) + ' ' + value.slice(11);
-      if (value.length > 14) value = value.slice(0, 14);
-    }
-    
-    setFormData(prev => ({
-      ...prev,
-      phoneNumber: value
-    }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -126,505 +474,691 @@ const LoginPage = () => {
       
       // Show first error as toast
       const firstError = Object.values(validationErrors)[0];
-      toast.error(firstError);
+      toast.error(firstError, {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       return;
     }
 
     try {
-      if (isLoginMode) {
-        await handleLogin();
-      } else {
-        await handleRegister();
-      }
+      await handleLogin();
     } catch (error) {
-      toast.error(error.message || 'Xatolik yuz berdi');
+      toast.error(error.message || 'Xatolik yuz berdi', {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       setLoading(false);
     }
   };
 
   const handleLogin = async () => {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
-    const users = JSON.parse(localStorage.getItem('eduhub_users') || '{"users": []}');
-    const user = users.users.find(u => u.email === formData.email);
+    const currentAccount = demoAccounts[currentDemoIndex];
     
-    if (!user) {
-      throw new Error('Foydalanuvchi topilmadi');
+    // Foydalanuvchini localStorage'dan qidirish yoki yangisini yaratish
+    let usersData = localStorage.getItem('eduhub_users');
+    let existingUser = null;
+    
+    if (usersData) {
+      const users = JSON.parse(usersData).users;
+      existingUser = users.find(u => u.email === currentAccount.email);
     }
-
-    // Simple password check
-    if (user.password !== btoa(formData.password)) {
-      throw new Error('Noto\'g\'ri parol');
-    }
-
-    // Save user session
-    const userSession = {
-      ...user,
-      lastLogin: new Date().toISOString(),
-      rememberMe
-    };
     
-    localStorage.setItem('eduhub_current_user', JSON.stringify(userSession));
+    let userData;
     
-    if (rememberMe) {
-      localStorage.setItem('eduhub_remembered_email', formData.email);
+    if (existingUser) {
+      // Mavjud foydalanuvchi
+      userData = existingUser;
+      userData.lastLogin = new Date().toISOString();
     } else {
-      localStorage.removeItem('eduhub_remembered_email');
+      // Yangi demo foydalanuvchi
+      userData = {
+        id: currentAccount.id,
+        email: currentAccount.email,
+        password: btoa(currentAccount.password),
+        firstName: currentAccount.name.split(' ')[0],
+        lastName: currentAccount.name.split(' ')[1] || '',
+        phoneNumber: '+998 90 123 45 67',
+        avatar: `https://ui-avatars.com/api/?name=${currentAccount.name}&background=3b82f6&color=fff&bold=true`,
+        provider: 'demo',
+        role: currentAccount.role,
+        subscription: currentAccount.role === 'premium' ? 'pro' : 'basic',
+        isVerified: true,
+        createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString()
+      };
+      
+      // LocalStorage'ga saqlash
+      if (!usersData) {
+        localStorage.setItem('eduhub_users', JSON.stringify({ users: [userData] }));
+      } else {
+        const users = JSON.parse(usersData).users;
+        users.push(userData);
+        localStorage.setItem('eduhub_users', JSON.stringify({ users }));
+      }
     }
-
-    toast.success('Muvaffaqiyatli kirdingiz!');
+    
+    // Session yaratish
+    const userSession = createUserSession(userData);
+    
+    toast.success(`${currentAccount.name} hisobiga kirildi!`, {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
     
     setTimeout(() => {
       navigate('/dashboard/home');
     }, 1000);
   };
 
-  const handleRegister = async () => {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+  const generateDemoCourses = (count) => {
+    const courseTitles = [
+      'Web Dasturlash',
+      'React JS',
+      'Python Dasturlash',
+      'Mobile Development',
+      'Data Science',
+      'UI/UX Design',
+      'Cyber Security',
+      'Machine Learning',
+      'DevOps',
+      'Blockchain'
+    ];
     
-    // Check if user exists
-    const existingUsers = JSON.parse(localStorage.getItem('eduhub_users') || '{"users": []}');
-    const userExists = existingUsers.users.find(u => u.email === formData.email);
+    return Array.from({ length: count }, (_, i) => ({
+      id: i + 1,
+      title: courseTitles[i % courseTitles.length],
+      progress: Math.min(100, Math.floor(Math.random() * 50) + 50),
+      instructor: `O'qituvchi ${i + 1}`,
+      category: ['Dasturlash', 'Design', 'Data', 'Security'][i % 4]
+    }));
+  };
+
+  const handleDemoChange = (direction = 'next') => {
+    setIsAutoRotating(false); // Qo'lda o'zgartirganda avtomatik to'xtatish
     
-    if (userExists) {
-      throw new Error('Bu email manzil bilan allaqachon ro\'yxatdan o\'tilgan');
+    if (direction === 'next') {
+      setCurrentDemoIndex(prev => (prev + 1) % demoAccounts.length);
+    } else {
+      setCurrentDemoIndex(prev => (prev - 1 + demoAccounts.length) % demoAccounts.length);
     }
-
-    // Create new user
-    const newUser = {
-      id: Date.now(),
-      email: formData.email,
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      fullName: `${formData.firstName} ${formData.lastName}`,
-      phoneNumber: formData.phoneNumber,
-      password: btoa(formData.password),
-      avatar: `https://ui-avatars.com/api/?name=${formData.firstName}+${formData.lastName}&background=random&color=fff&bold=true`,
-      provider: 'email',
-      createdAt: new Date().toISOString(),
-      isVerified: true,
-      role: 'student',
-      courses: [],
-      progress: 0
-    };
-
-    // Save user
-    existingUsers.users.push(newUser);
-    localStorage.setItem('eduhub_users', JSON.stringify(existingUsers));
     
-    // Save as current user
-    localStorage.setItem('eduhub_current_user', JSON.stringify(newUser));
-    
-    toast.success('Muvaffaqiyatli ro\'yxatdan o\'tdingiz!');
-
-    setTimeout(() => {
-      navigate('/dashboard/home');
-    }, 1500);
-  };
-
-  const handleGoogleLogin = () => {
-    toast.info('Google orqali kirish tez orada qo\'shiladi');
-  };
-
-  const clearForm = () => {
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phoneNumber: '',
-      password: '',
-      confirmPassword: ''
+    toast.info(`Demo hisob o'zgartirildi: ${demoAccounts[currentDemoIndex].name}`, {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
     });
-    setErrors({});
   };
 
-  const toggleMode = () => {
-    setIsLoginMode(!isLoginMode);
-    clearForm();
+  const toggleAutoRotate = () => {
+    setIsAutoRotating(!isAutoRotating);
+    toast.info(!isAutoRotating ? 'Avtomatik almashish yoqildi' : 'Avtomatik almashish o\'chirildi', {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
+
+  const getPasswordStrengthColor = () => {
+    switch(passwordStrength) {
+      case 1: return 'bg-red-500';
+      case 2: return 'bg-orange-500';
+      case 3: return 'bg-yellow-500';
+      case 4: return 'bg-green-500';
+      default: return 'bg-gray-300';
+    }
+  };
+
+  const getPasswordStrengthText = () => {
+    switch(passwordStrength) {
+      case 1: return 'Juda zaif';
+      case 2: return 'Zaif';
+      case 3: return 'Yaxshi';
+      case 4: return 'Kuchli';
+      default: return '';
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col md:flex-row">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-blue-900 flex items-center justify-center p-3 sm:p-4 md:p-6">
       <ToastContainer
-        position="top-right"
-        autoClose={5000}
+        position="top-center"
+        autoClose={3000}
         hideProgressBar={false}
-        newestOnTop
+        newestOnTop={false}
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme="dark"
+        style={{ width: '90%', maxWidth: '400px', margin: '0 auto' }}
       />
 
-      {/* Left Image Section */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8 }}
-        className="relative hidden lg:block lg:w-1/2"
-      >
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${LoginImg})` }}
+      <div className="w-full max-w-6xl flex flex-col lg:flex-row gap-4 sm:gap-6 md:gap-8">
+        {/* Left Info Panel */}
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="hidden lg:block lg:w-2/5"
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-transparent" />
-        </div>
-        
-        <button
-          onClick={() => navigate('/')}
-          className="absolute top-6 left-6 z-10 bg-white/10 backdrop-blur-sm text-white p-3 rounded-full hover:bg-white/20 transition-all duration-300"
-        >
-          <HiOutlineArrowLeft size={24} />
-        </button>
-        
-        <div className="absolute inset-0 flex items-end p-8 md:p-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-white"
-          >
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              Kelajagingizni <span className="text-blue-300">EduHub</span> bilan quring
-            </h1>
-            <p className="text-lg md:text-xl text-gray-200 opacity-90">
-              9 yillik tajriba, 50,000+ muvaffaqiyatli talaba bilan birga o'rganing
-            </p>
-            <div className="mt-8 flex items-center space-x-4">
-              <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-r from-blue-400 to-purple-400"
-                  />
-                ))}
-              </div>
-              <span className="text-gray-200">Bugun 100+ yangi talaba</span>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Decorative elements */}
-        <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/4 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl" />
-      </motion.div>
-
-      {/* Right Form Section */}
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8 }}
-        className="w-full lg:w-1/2 flex items-center justify-center p-4 md:p-8"
-      >
-        <div className="w-full max-w-md">
-          {/* Mobile back button */}
-          <button
-            onClick={() => navigate('/')}
-            className="lg:hidden mb-6 flex items-center text-gray-600 hover:text-blue-600 transition-colors"
-          >
-            <HiOutlineArrowLeft className="mr-2" />
-            Bosh sahifaga qaytish
-          </button>
-
-          <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-8">
-            {/* Logo and header */}
-            <div className="text-center mb-8">
-              <Link to="/" className="inline-block">
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Edu<span className="text-blue-600">Hub</span>
-                </h1>
+          <div className="bg-gradient-to-br from-blue-800/30 to-purple-800/20 backdrop-blur-lg rounded-2xl p-4 sm:p-6 border border-white/10 shadow-2xl h-full">
+            <div className="mb-6 sm:mb-8">
+              <Link to="/" className="inline-flex items-center space-x-2">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                  <HiOutlineAcademicCap className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+                  Edu<span className="text-blue-400">Hub</span>
+                </span>
               </Link>
-              <p className="text-gray-600 mt-2">
-                {isLoginMode 
-                  ? 'Xush kelibsiz! Darslaringizni davom ettiring' 
-                  : 'Yangi hisob yarating va o\'rganishni boshlang'
-                }
+            </div>
+
+            {/* Demo Account Rotator */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-lg font-semibold text-white">Demo Hisoblar</h3>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={toggleAutoRotate}
+                    className={`p-1.5 rounded-lg ${isAutoRotating ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'}`}
+                    title={isAutoRotating ? 'Avtomatik almashish yoqilgan' : 'Avtomatik almashish o\'chirilgan'}
+                  >
+                    <HiOutlineRefresh className={`w-4 h-4 ${isAutoRotating ? 'animate-spin' : ''}`} />
+                  </button>
+                  <span className="text-xs text-gray-400">
+                    {isAutoRotating ? 'Avtomatik' : 'Qolda'}
+                  </span>
+                </div>
+              </div>
+              
+              <motion.div
+                key={currentDemoIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className={`bg-gradient-to-br ${demoAccounts[currentDemoIndex]?.color} rounded-xl p-4 text-white`}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
+                      <HiOutlineUser className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold">{demoAccounts[currentDemoIndex]?.name}</h4>
+                      <p className="text-xs opacity-90 capitalize">{demoAccounts[currentDemoIndex]?.role}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs opacity-90">Progress</div>
+                    <div className="text-lg font-bold">{demoAccounts[currentDemoIndex]?.progress}%</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs mb-2">
+                  <span>{demoAccounts[currentDemoIndex]?.courses} kurs</span>
+                  <span>Email: {demoAccounts[currentDemoIndex]?.email}</span>
+                </div>
+                
+                <div className="flex items-center justify-between mt-3">
+                  <div className="flex space-x-1">
+                    {demoAccounts.map((_, index) => (
+                      <div
+                        key={index}
+                        className={`w-2 h-2 rounded-full ${index === currentDemoIndex ? 'bg-white' : 'bg-white/30'}`}
+                      />
+                    ))}
+                  </div>
+                  
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleDemoChange('prev')}
+                      className="p-1.5 rounded-lg bg-white/20 hover:bg-white/30 transition-all"
+                    >
+                      ←
+                    </button>
+                    <button
+                      onClick={() => handleDemoChange('next')}
+                      className="p-1.5 rounded-lg bg-white/20 hover:bg-white/30 transition-all"
+                    >
+                      →
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+              Kelajagingizni <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">EduHub</span> bilan quring
+            </h1>
+            
+            <div className="space-y-4 mb-6 sm:mb-8">
+              <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-xl">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-500/20 to-blue-600/20 rounded-lg flex items-center justify-center">
+                  <HiOutlineBookOpen className="w-5 h-5 text-blue-400" />
+                </div>
+                <div>
+                  <h3 className="text-base sm:text-lg font-semibold text-white">200+ Kurslar</h3>
+                  <p className="text-gray-300 text-xs sm:text-sm">Dunyoning eng yaxshi o'qituvchilaridan</p>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-xl">
+                <div className="w-10 h-10 bg-gradient-to-r from-purple-500/20 to-purple-600/20 rounded-lg flex items-center justify-center">
+                  <HiOutlineLightBulb className="w-5 h-5 text-purple-400" />
+                </div>
+                <div>
+                  <h3 className="text-base sm:text-lg font-semibold text-white">98% Muvaffaqiyat</h3>
+                  <p className="text-gray-300 text-xs sm:text-sm">50,000+ muvaffaqiyatli talaba</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-white/10">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex -space-x-2">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="w-8 h-8 rounded-full border-2 border-gray-800 bg-gradient-to-r from-blue-500 to-purple-500"
+                    />
+                  ))}
+                </div>
+                <span className="text-gray-300 text-xs sm:text-sm font-medium">150+ yangi talaba</span>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="bg-white/5 rounded-lg p-2">
+                  <p className="text-lg sm:text-xl font-bold text-blue-400">50K+</p>
+                  <p className="text-xs text-gray-300">Talaba</p>
+                </div>
+                <div className="bg-white/5 rounded-lg p-2">
+                  <p className="text-lg sm:text-xl font-bold text-purple-400">200+</p>
+                  <p className="text-xs text-gray-300">O'qituvchi</p>
+                </div>
+                <div className="bg-white/5 rounded-lg p-2">
+                  <p className="text-lg sm:text-xl font-bold text-green-400">98%</p>
+                  <p className="text-xs text-gray-300">Muvaffaqiyat</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Right Form Panel */}
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="w-full lg:w-3/5"
+        >
+          <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 sm:p-6 md:p-8 border border-white/20 shadow-2xl">
+            {/* Mobile Demo Account Rotator */}
+            <div className="lg:hidden mb-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold text-white">Demo Hisob</h3>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={toggleAutoRotate}
+                    className={`p-1 rounded ${isAutoRotating ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'}`}
+                  >
+                    <HiOutlineRefresh className={`w-3 h-3 ${isAutoRotating ? 'animate-spin' : ''}`} />
+                  </button>
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-lg p-3 border border-white/10">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 rounded-md bg-white/10 flex items-center justify-center">
+                      <HiOutlineUser className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold text-white">{demoAccounts[currentDemoIndex]?.name}</h4>
+                      <p className="text-xs text-gray-300">{demoAccounts[currentDemoIndex]?.email}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-xs text-gray-300">Progress</div>
+                    <div className="text-sm font-bold text-white">{demoAccounts[currentDemoIndex]?.progress}%</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex space-x-1">
+                    {demoAccounts.map((_, index) => (
+                      <div
+                        key={index}
+                        className={`w-1.5 h-1.5 rounded-full ${index === currentDemoIndex ? 'bg-white' : 'bg-white/30'}`}
+                      />
+                    ))}
+                  </div>
+                  
+                  <div className="flex space-x-1">
+                    <button
+                      onClick={() => handleDemoChange('prev')}
+                      className="px-2 py-1 text-xs rounded bg-white/10 hover:bg-white/20"
+                    >
+                      Oldingi
+                    </button>
+                    <button
+                      onClick={() => handleDemoChange('next')}
+                      className="px-2 py-1 text-xs rounded bg-white/10 hover:bg-white/20"
+                    >
+                      Keyingi
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:hidden mb-4 flex items-center justify-between">
+              <Link to="/" className="inline-flex items-center space-x-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                  <HiOutlineAcademicCap className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+                  Edu<span className="text-blue-400">Hub</span>
+                </span>
+              </Link>
+            </div>
+
+            <div className="text-center mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-1">Tizimga kirish</h2>
+              <p className="text-gray-300 text-xs sm:text-sm">
+                {demoAccounts[currentDemoIndex]?.name} hisobiga kirish uchun "Tizimga kirish" tugmasini bosing
               </p>
             </div>
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <AnimatePresence mode="wait">
-                {!isLoginMode && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                  >
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <HiOutlineUser className="inline mr-2 text-blue-500" />
-                        Ism
-                      </label>
-                      <input
-                        type="text"
-                        name="firstName"
-                        value={formData.firstName}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 rounded-xl border ${
-                          errors.firstName ? 'border-red-500' : 'border-gray-300'
-                        } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
-                        placeholder="Ismingiz"
-                      />
-                      {errors.firstName && (
-                        <p className="mt-1 text-sm text-red-500">{errors.firstName}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Familya
-                      </label>
-                      <input
-                        type="text"
-                        name="lastName"
-                        value={formData.lastName}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 rounded-xl border ${
-                          errors.lastName ? 'border-red-500' : 'border-gray-300'
-                        } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
-                        placeholder="Familyangiz"
-                      />
-                      {errors.lastName && (
-                        <p className="mt-1 text-sm text-red-500">{errors.lastName}</p>
-                      )}
-                    </div>
-                  </motion.div>
+            <div className="mb-4 sm:mb-6 grid grid-cols-3 gap-2 sm:gap-3">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleSocialLogin('google')}
+                disabled={socialLoading.google}
+                className={`bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-2 sm:p-3 flex items-center justify-center transition-all text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                {socialLoading.google ? (
+                  <div className="w-4 h-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <FcGoogle className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
+                    <span className="text-white">Google</span>
+                  </>
                 )}
-              </AnimatePresence>
+              </motion.button>
 
-              {/* Email */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleSocialLogin('apple')}
+                disabled={socialLoading.apple}
+                className={`bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-2 sm:p-3 flex items-center justify-center transition-all text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                {socialLoading.apple ? (
+                  <div className="w-4 h-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <FaApple className="w-4 h-4 sm:w-5 sm:h-5 text-gray-300 mr-1.5 sm:mr-2" />
+                    <span className="text-white">Apple</span>
+                  </>
+                )}
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleSocialLogin('facebook')}
+                disabled={socialLoading.facebook}
+                className={`bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-2 sm:p-3 flex items-center justify-center transition-all text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                {socialLoading.facebook ? (
+                  <div className="w-4 h-4 border-2 border-white/50 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <FaFacebook className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400 mr-1.5 sm:mr-2" />
+                    <span className="text-white">Facebook</span>
+                  </>
+                )}
+              </motion.button>
+            </div>
+
+            <div className="relative my-3 sm:my-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-white/10" />
+              </div>
+              <div className="relative flex justify-center text-xs sm:text-sm">
+                <span className="px-2 bg-transparent text-gray-400">yoki demo hisob bilan davom eting</span>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <HiOutlineMail className="inline mr-2 text-blue-500" />
+                <label className="block text-xs sm:text-sm font-medium text-gray-300 mb-1.5">
                   Email manzil
                 </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`w-full px-4 py-3 rounded-xl border ${
-                    errors.email ? 'border-red-500' : 'border-gray-300'
-                  } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
-                  placeholder="example@gmail.com"
-                />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-                )}
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <HiOutlineMail className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    readOnly
+                    className="w-full bg-white/10 border border-white/20 text-white rounded-xl py-3 pl-10 pr-3 transition-all placeholder:text-gray-400 text-sm cursor-not-allowed"
+                    placeholder="Demo email"
+                  />
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <span className="text-xs bg-blue-500/30 text-blue-300 px-2 py-0.5 rounded">
+                      Demo
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              {/* Phone number (only for register) */}
-              <AnimatePresence>
-                {!isLoginMode && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                  >
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      <HiOutlinePhone className="inline mr-2 text-blue-500" />
-                      Telefon raqam
-                    </label>
-                    <input
-                      type="tel"
-                      value={formData.phoneNumber}
-                      onChange={handlePhoneChange}
-                      className={`w-full px-4 py-3 rounded-xl border ${
-                        errors.phoneNumber ? 'border-red-500' : 'border-gray-300'
-                      } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
-                      placeholder="+998 90 123 45 67"
-                    />
-                    {errors.phoneNumber && (
-                      <p className="mt-1 text-sm text-red-500">{errors.phoneNumber}</p>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Password */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <HiOutlineLockClosed className="inline mr-2 text-blue-500" />
-                  Parol
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs sm:text-sm font-medium text-gray-300">
+                    Parol
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordCriteria(!showPasswordCriteria)}
+                    className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                  >
+                    Parol talablari
+                  </button>
+                </div>
                 <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <HiOutlineLockClosed className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
+                  </div>
                   <input
                     type={showPassword ? 'text' : 'password'}
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 rounded-xl border ${
-                      errors.password ? 'border-red-500' : 'border-gray-300'
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all pr-12`}
-                    placeholder="Kamida 6 ta belgi"
+                    readOnly
+                    className="w-full bg-white/10 border border-white/20 text-white rounded-xl py-3 pl-10 pr-10 transition-all placeholder:text-gray-400 text-sm cursor-not-allowed"
+                    placeholder="Demo parol"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  >
-                    {showPassword ? <HiEyeOff size={20} /> : <HiEye size={20} />}
-                  </button>
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <span className="text-xs bg-purple-500/30 text-purple-300 px-2 py-0.5 rounded mr-2">
+                      Demo
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="text-gray-400 hover:text-white"
+                    >
+                      {showPassword ? <HiEyeOff className="h-4 w-4" /> : <HiEye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
-                {errors.password && (
-                  <p className="mt-1 text-sm text-red-500">{errors.password}</p>
-                )}
+
+                <AnimatePresence>
+                  {showPasswordCriteria && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mt-2 p-2 bg-white/5 rounded-lg border border-white/10"
+                    >
+                      <p className="text-xs font-medium text-gray-300 mb-1">Demo parollar:</p>
+                      <ul className="space-y-1">
+                        {demoAccounts.map((account, index) => (
+                          <li 
+                            key={account.id}
+                            className={`text-xs flex justify-between ${index === currentDemoIndex ? 'text-green-400 font-medium' : 'text-gray-400'}`}
+                          >
+                            <span>{account.name}:</span>
+                            <span>{account.email} / {account.password}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
-              {/* Confirm Password (only for register) */}
-              <AnimatePresence>
-                {!isLoginMode && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                  >
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Parolni tasdiqlash
-                    </label>
-                    <div className="relative">
-                      <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 rounded-xl border ${
-                          errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-                        } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all pr-12`}
-                        placeholder="Parolni qayta kiriting"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                      >
-                        {showConfirmPassword ? <HiEyeOff size={20} /> : <HiEye size={20} />}
-                      </button>
-                    </div>
-                    {errors.confirmPassword && (
-                      <p className="mt-1 text-sm text-red-500">{errors.confirmPassword}</p>
+              <div className="flex items-center justify-between">
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="sr-only"
+                  />
+                  <div className={`w-4 h-4 rounded border ${rememberMe ? 'bg-blue-500 border-blue-500' : 'border-white/20 bg-white/5'} transition-all flex items-center justify-center`}>
+                    {rememberMe && (
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
                     )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Remember me and Forgot password (only for login) */}
-              {isLoginMode && (
-                <div className="flex items-center justify-between">
-                  <label className="flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">Eslab qolish</span>
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => toast.info('Parolni tiklash tez orada qo\'shiladi')}
-                    className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
-                  >
-                    Parolni unutdingizmi?
-                  </button>
-                </div>
-              )}
-
-              {/* Submit button */}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3.5 rounded-xl font-semibold hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
-              >
-                {loading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                    {isLoginMode ? 'Kirilmoqda...' : 'Ro\'yxatdan o\'tilmoqda...'}
-                  </>
-                ) : (
-                  isLoginMode ? 'Tizimga kirish' : "Ro'yxatdan o'tish"
-                )}
-              </motion.button>
-
-              {/* Divider */}
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300" />
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white text-gray-500">Yoki</span>
-                </div>
+                  </div>
+                  <span className="ml-2 text-xs sm:text-sm text-gray-300">Meni eslab qol</span>
+                </label>
               </div>
 
-              {/* Google login */}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="button"
-                onClick={handleGoogleLogin}
-                className="w-full bg-white border border-gray-300 text-gray-700 py-3.5 rounded-xl font-medium hover:bg-gray-50 hover:shadow-md transition-all duration-300 flex items-center justify-center"
-              >
-                <FcGoogle className="w-5 h-5 mr-3" />
-                Google orqali davom etish
-              </motion.button>
-
-              {/* Toggle mode */}
-              <div className="text-center pt-4">
-                <button
+              <div className="flex space-x-2">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   type="button"
-                  onClick={toggleMode}
-                  className="text-blue-600 hover:text-blue-800 font-medium hover:underline transition-colors"
+                  onClick={() => handleDemoChange('prev')}
+                  className="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white py-3 rounded-xl font-medium transition-all text-sm"
                 >
-                  {isLoginMode 
-                    ? "Hisobingiz yo'qmi? Ro'yxatdan o'ting" 
-                    : "Allaqachon hisobingiz bormi? Tizimga kirish"
-                  }
-                </button>
+                  ← Oldingi demo
+                </motion.button>
+                
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  disabled={loading}
+                  className="flex-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-blue-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-sm"
+                >
+                  {loading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                      Kirilmoqda...
+                    </>
+                  ) : (
+                    <>
+                      {demoAccounts[currentDemoIndex]?.name} hisobiga kirish
+                      <HiOutlineArrowRight className="ml-2 w-4 h-4" />
+                    </>
+                  )}
+                </motion.button>
+                
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="button"
+                  onClick={() => handleDemoChange('next')}
+                  className="flex-1 bg-white/5 hover:bg-white/10 border border-white/10 text-white py-3 rounded-xl font-medium transition-all text-sm"
+                >
+                  Keyingi demo →
+                </motion.button>
               </div>
 
-              {/* Terms and conditions */}
-            <div className="text-center text-xs text-gray-500 mt-6 pt-4 border-t">
-  <p>
-    Tugmani bosish orqali siz{' '}
-    <Link to="/terms" className="text-blue-600 hover:underline">Foydalanish shartlari</Link>{' '}
-    va{' '}
-    <Link to="/privacy" className="text-blue-600 hover:underline">Maxfiylik siyosati</Link>{' '}
-    bilan rozilik bildirasiz
-  </p>
-</div>
-
+              <div className="text-center pt-3 border-t border-white/10">
+                <p className="text-gray-400 text-xs sm:text-sm">
+                  Hisobingiz yo'qmi?{' '}
+                  <Link to="/register" className="text-blue-400 hover:text-blue-300 font-semibold transition-colors">
+                    Ro'yxatdan o'tish
+                  </Link>
+                </p>
+              </div>
             </form>
+
+            <div className="mt-4 pt-3 border-t border-white/10">
+              <div className="text-center mb-2">
+                <p className="text-xs text-gray-400">
+                  Avtomatik almashish: {isAutoRotating ? 'YOQILGAN' : 'OʻCHIRILGAN'} • 
+                  <button
+                    onClick={toggleAutoRotate}
+                    className="ml-1 text-blue-400 hover:text-blue-300 transition-colors"
+                  >
+                    {isAutoRotating ? 'Oʻchirish' : 'Yoqish'}
+                  </button>
+                </p>
+              </div>
+              
+              <p className="text-center text-xs text-gray-400">
+                Tugmani bosish orqali siz{' '}
+                <Link to="/terms" className="text-blue-400 hover:text-blue-300 transition-colors">Foydalanish shartlari</Link>{' '}
+                va{' '}
+                <Link to="/privacy" className="text-blue-400 hover:text-blue-300 transition-colors">Maxfiylik siyosati</Link>{' '}
+                bilan rozilik bildirasiz
+              </p>
+            </div>
           </div>
 
-          {/* Stats */}
-          <div className="mt-8 grid grid-cols-3 gap-4 text-center">
-            <div>
-              <p className="text-2xl font-bold text-blue-600">50K+</p>
-              <p className="text-sm text-gray-600">Talaba</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-purple-600">98%</p>
-              <p className="text-sm text-gray-600">Muvaffaqiyat</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-green-600">200+</p>
-              <p className="text-sm text-gray-600">O'qituvchi</p>
-            </div>
+          <div className="text-center mt-3">
+            <button
+              onClick={() => navigate('/')}
+              className="text-gray-400 hover:text-white inline-flex items-center transition-colors text-xs"
+            >
+              <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Bosh sahifaga qaytish
+            </button>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
 
-      {/* Decorative elements for mobile */}
-      <div className="lg:hidden absolute top-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-      <div className="lg:hidden absolute bottom-0 right-0 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl translate-x-1/3 translate-y-1/3" />
+      {/* Animated background elements */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute -top-20 -right-20 w-40 h-40 bg-blue-500/10 rounded-full blur-2xl" />
+        <div className="absolute top-1/2 left-1/4 w-30 h-30 bg-purple-500/10 rounded-full blur-2xl" />
+        <div className="absolute bottom-20 right-1/3 w-48 h-48 bg-blue-600/5 rounded-full blur-2xl" />
+      </div>
     </div>
   );
 };
