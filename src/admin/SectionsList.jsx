@@ -1,155 +1,117 @@
-// src/admin/SectionVideos.jsx
+// src/admin/SectionsList.jsx - Agar mavjud bo'lsa
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Trash2, Film, Hash } from 'lucide-react';
-import videoData, { updateAndSave } from '../data/videos';
-import AddVideoForm from './AddVideoForm';
+import { useNavigate } from 'react-router-dom';
+import { Play, Edit, Trash2, Plus, Eye } from 'lucide-react';
+import { getVideoData, deleteSection } from '../data/videos';
 
-const SectionVideos = () => {
-  const { sectionId } = useParams();
+const SectionsList = () => {
+  const [sections, setSections] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  
-  const section = videoData.find(s => s.sectionId === parseInt(sectionId));
-  const [videos, setVideos] = useState(section?.videos || []);
-  const [showAddForm, setShowAddForm] = useState(false);
 
   useEffect(() => {
-    if (!section) {
-      alert("Bunday fan topilmadi!");
-      navigate('/admin');
-    } else {
-      setVideos(section.videos);
+    loadSections();
+  }, []);
+
+  const loadSections = () => {
+    try {
+      const data = getVideoData();
+      setSections(data);
+    } catch (error) {
+      console.error('Kurslarni yuklashda xato:', error);
     }
-  }, [section, navigate]);
-
-  const handleDelete = (videoId) => {
-    if (!window.confirm('Bu videoni o‘chirmoqchimisiz? Bu amalni ortga qaytarib bo‘lmaydi.')) return;
-
-    section.videos = section.videos.filter(v => v.id !== videoId);
-    updateAndSave();
-    setVideos([...section.videos]);
+    setLoading(false);
   };
 
-  const handleVideoAdded = () => {
-    setVideos([...section.videos]);
-    setShowAddForm(false);
+  const handleDeleteSection = (sectionId) => {
+    if (window.confirm('Bu kursni o\'chirishni tasdiqlaysizmi?')) {
+      const success = deleteSection(sectionId);
+      if (success) {
+        alert('Kurs o\'chirildi!');
+        loadSections();
+      }
+    }
   };
 
-  if (!section) return null;
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Kurslar yuklanmoqda...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 py-12 px-4">
-      <div className="max-w-7xl mx-auto">
+    <div className="p-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-800">Barcha kurslar ({sections.length})</h1>
+        <button
+          onClick={() => navigate('/admin/add-course')}
+          className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold rounded-xl flex items-center gap-2"
+        >
+          <Plus size={20} />
+          Yangi kurs qo'shish
+        </button>
+      </div>
 
-        {/* Header */}
-        <div className="mb-10">
-          <Link
-            to="/admin"
-            className="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-800 font-medium transition mb-6"
-          >
-            <ArrowLeft size={20} />
-            Bosh sahifaga qaytish
-          </Link>
-
-          <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-xl p-8 border border-white/20">
-            <h1 className="text-4xl font-extrabold text-gray-900 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              {section.sectionName}
-            </h1>
-            <p className="text-xl text-gray-600 mt-3">
-              Jami videolar: <span className="font-bold text-indigo-600 text-2xl">{videos.length}</span> ta
-            </p>
-          </div>
-        </div>
-
-        {/* Add Video Toggle Button */}
-        <div className="mb-8">
-          <button
-            onClick={() => setShowAddForm(!showAddForm)}
-            className="inline-flex items-center gap-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-4 px-8 rounded-2xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
-          >
-            <Plus size={24} />
-            {showAddForm ? 'Formani yopish' : 'Yangi video qo‘shish'}
-          </button>
-        </div>
-
-        {/* Add Video Form */}
-        {showAddForm && (
-          <div className="mb-12 animate-in slide-in-from-top-4 duration-500">
-            <AddVideoForm
-              sectionId={sectionId}
-              onSuccess={handleVideoAdded}
-            />
-          </div>
-        )}
-
-        {/* Videos List */}
-        <div className="grid gap-6">
-          {videos.length === 0 ? (
-            <div className="text-center py-20 bg-white/60 backdrop-blur rounded-3xl border-2 border-dashed border-indigo-200">
-              <Film size={64} className="mx-auto text-indigo-400 mb-4" />
-              <p className="text-2xl font-semibold text-gray-600">Hozircha video yo‘q</p>
-              <p className="text-gray-500 mt-2">Yuqoridagi tugma orqali birinchi videoni qo‘shing!</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {sections.map(section => (
+          <div key={section.sectionId} className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+            <div className="h-48 overflow-hidden">
+              <img
+                src={section.thumbnail}
+                alt={section.sectionName}
+                className="w-full h-full object-cover"
+              />
             </div>
-          ) : (
-            videos.map((video, index) => (
-              <div
-                key={video.id}
-                className="group bg-white/80 backdrop-blur-lg rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-white/30 overflow-hidden"
-              >
-                <div className="p-8">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md">
-                          {index + 1}
-                        </div>
-                        <h3 className="text-2xl font-bold text-gray-800 group-hover:text-indigo-700 transition">
-                          {video.title}
-                        </h3>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <Film size={18} className="text-indigo-500" />
-                          <span>{video.type === 'youtube' ? 'YouTube' : 'Mahalliy video'}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <Hash size={18} className="text-purple-500" />
-                          <code className="bg-gray-100 px-3 py-1 rounded-lg font-mono text-xs">
-                            {video.src}
-                          </code>
-                        </div>
-                        {video.exercise && (
-                          <span className="text-green-600 font-medium bg-green-50 px-3 py-1 rounded-full text-xs">
-                            Amaliy vazifa bor
-                          </span>
-                        )}
-                      </div>
-
-                      {video.exercise && (
-                        <div className="mt-5 p-5 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl border border-green-200">
-                          <p className="font-semibold text-green-800 mb-1">Amaliy vazifa:</p>
-                          <p className="text-green-700 leading-relaxed">{video.exercise}</p>
-                        </div>
-                      )}
-                    </div>
-
-                    <button
-                      onClick={() => handleDelete(video.id)}
-                      className="ml-6 p-4 bg-red-500/10 hover:bg-red-500 text-red-600 hover:text-white rounded-2xl transition-all duration-300 group-hover:scale-110"
-                      title="O‘chirish"
-                    >
-                      <Trash2 size={22} />
-                    </button>
-                  </div>
+            
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="text-xl font-bold text-gray-800 mb-2">{section.sectionName}</h3>
+                  <p className="text-gray-600 text-sm mb-4">{section.description}</p>
                 </div>
+                <span className="px-3 py-1 bg-indigo-100 text-indigo-700 text-sm font-medium rounded-full">
+                  {section.videoCount} video
+                </span>
               </div>
-            ))
-          )}
-        </div>
+              
+              <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                <span>Narx: {section.price.toLocaleString()} so'm</span>
+                <span>Reyting: {section.rating} ⭐</span>
+              </div>
+              
+              <div className="flex gap-2">
+                <button
+                  onClick={() => navigate(`/admin/section/${section.sectionId}`)}
+                  className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center justify-center gap-2"
+                >
+                  <Eye size={16} />
+                  Videolar
+                </button>
+                <button
+                  onClick={() => navigate(`/videos/${section.sectionName}`)}
+                  className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center justify-center gap-2"
+                >
+                  <Play size={16} />
+                  Ko'rish
+                </button>
+                <button
+                  onClick={() => handleDeleteSection(section.sectionId)}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default SectionVideos;
+export default SectionsList;

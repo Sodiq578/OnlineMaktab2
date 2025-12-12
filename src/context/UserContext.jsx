@@ -1,42 +1,45 @@
-// src/context/UserContext.js
-import React, { createContext, useContext, useState } from 'react';
+// src/context/UserContext.jsx
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [purchasedCourses, setPurchasedCourses] = useState([]);
-  
-  // localStorage dan sotib olingan kurslarni yuklash
-  useState(() => {
-    try {
-      const saved = localStorage.getItem('eduhub_purchasedCourses');
-      if (saved) {
-        setPurchasedCourses(JSON.parse(saved));
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // localStorage'dan foydalanuvchi ma'lumotlarini o'qish
+    const savedUser = localStorage.getItem('user_data');
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (error) {
+        console.error('User data parsing error:', error);
       }
-    } catch (e) {
-      console.error('Kurslarni yuklashda xato:', e);
     }
+    setLoading(false);
   }, []);
 
-  // Kurs sotib olish funksiyasi
-  const purchaseCourse = (course) => {
-    setPurchasedCourses(prev => {
-      const newCourses = [...prev, { 
-        ...course, 
-        purchaseDate: new Date().toISOString(),
-        lastAccess: new Date().toISOString()
-      }];
-      localStorage.setItem('eduhub_purchasedCourses', JSON.stringify(newCourses));
-      return newCourses;
-    });
+  const login = (userData) => {
+    setUser(userData);
+    localStorage.setItem('user_data', JSON.stringify(userData));
+    localStorage.setItem('user_token', 'dummy_token_' + Date.now());
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('user_data');
+    localStorage.removeItem('user_token');
+  };
+
+  const updateUser = (updatedData) => {
+    const newUserData = { ...user, ...updatedData };
+    setUser(newUserData);
+    localStorage.setItem('user_data', JSON.stringify(newUserData));
   };
 
   return (
-    <UserContext.Provider value={{ 
-      purchasedCourses, 
-      purchaseCourse,
-      setPurchasedCourses 
-    }}>
+    <UserContext.Provider value={{ user, loading, login, logout, updateUser }}>
       {children}
     </UserContext.Provider>
   );
@@ -45,7 +48,7 @@ export const UserProvider = ({ children }) => {
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error('useUser must be used within UserProvider');
+    throw new Error('useUser must be used within a UserProvider');
   }
   return context;
 };

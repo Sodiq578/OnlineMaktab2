@@ -2,151 +2,163 @@
 import React from 'react';
 import { useUser } from '../context/UserContext';
 import { 
-  FaCertificate, FaDownload, FaTrophy, FaCheckCircle, 
-  FaClock, FaCalendarAlt, FaUserGraduate 
+  FaCertificate, 
+  FaDownload, 
+  FaTrophy, 
+  FaCheckCircle, 
+  FaClock, 
+  FaCalendarAlt, 
+  FaUserGraduate,
+  FaMedal,
+  FaFire,
+  FaArrowRight
 } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import './Certificates.css';
 
 const Certificates = () => {
-  // Bu yerda default qiymatlar qo‘shildi — XATO CHIQQAN JOY SHU!
-  const { 
-    user = {}, 
-    purchasedCourses = [], 
-    completedCourses = [] 
-  } = useUser();
+  const { user, purchasedCourses = [], completedCourses = [] } = useUser();
 
-  // Agar hali yuklanmagan bo‘lsa, loading ko‘rsatamiz
-  if (!user || !purchasedCourses || !completedCourses) {
+  // Loading holati
+  if (!user || purchasedCourses.length === 0) {
     return (
-      <div className="certificates-page loading">
-        <div className="loading-spinner">
-          <FaCertificate className="spin" />
-          <p>Sertifikatlar yuklanmoqda...</p>
+      <div className="certificates-page flex items-center justify-center">
+        <div className="text-center">
+          <div className="loading-icon">
+            <FaCertificate className="loading-svg" />
+          </div>
+          <p className="text-2xl font-bold text-gray-700 dark:text-gray-300">
+            Hozircha sizda sertifikat mavjud emas. Kursni tugatganingizdan so‘ng sertifikat avtomatik tarzda beriladi.
+          </p>
         </div>
       </div>
     );
   }
 
-  // Foydalanuvchining tugatgan kurslarini aniqlaymiz
-  const userCompletedCourseIds = completedCourses.map(c => c.sectionId);
+  // Tugallangan kurslarni aniqlash
+  const completedIds = new Set(completedCourses.map(c => c.sectionId));
 
-  // Faqat tugatgan va sertifikati bor kurslarni filtr qilamiz
   const certificates = purchasedCourses
-    .filter(course => 
-      course && 
-      userCompletedCourseIds.includes(course.sectionId) &&
-      course.hasCertificate !== false // agar false bo‘lmasa
-    )
+    .filter(course => completedIds.has(course.sectionId) && course.hasCertificate !== false)
     .map(course => ({
       id: course.sectionId,
-      title: course.sectionName || course.title || 'Nomsiz kurs',
-      instructor: course.instructor || 'EduHub',
+      title: course.sectionName || course.title || 'Premium Kurs',
+      instructor: course.instructor || 'EduHub Academy',
       completedDate: course.completedDate || new Date().toISOString().split('T')[0],
-      duration: course.totalDuration || 0,
-      thumbnail: course.thumbnail || `https://picsum.photos/seed/${course.sectionId}/600/400`
+      durationHours: Math.round((course.totalDuration || 120) / 60),
+      thumbnail: course.thumbnail || `https://picsum.photos/seed/${course.sectionId}/800/500`,
+      rating: course.rating || 4.9,
+      students: course.enrolled || 3200
     }));
 
+  const totalHours = certificates.reduce((sum, c) => sum + c.durationHours, 0);
+
   return (
-    <div className="certificates-page">
-      <div className="certificates-header">
-        <h1>
-          <FaCertificate /> Mening Sertifikatlarim
-        </h1>
-        <p>
-          {certificates.length > 0 
-            ? `Siz ${certificates.length} ta kursni muvaffaqiyatli tugatdingiz!` 
-            : "Hozircha sertifikatingiz yo‘q. Kurslarni tugatib, birinchisini oling!"}
-        </p>
-      </div>
+    <div className="certificates-page py-12 px-4">
+      <div className="max-w-7xl mx-auto">
 
-      {certificates.length === 0 ? (
-        <div className="empty-certificates">
-          <div className="empty-icon">
-            <FaTrophy />
-          </div>
-          <h3>Hozircha sertifikat yo‘q</h3>
-          <p>Kurslarni to‘liq tugatib, birinchi sertifikatingizni oling!</p>
-          <button 
-            onClick={() => window.location.href = '/dashboard/all-courses'}
-            className="btn-primary"
-          >
-            Kurslarga o‘tish
-          </button>
+        {/* Header */}
+        <div className="cert-header">
+          <h1 className="cert-title">Sertifikatlarim</h1>
+          <p className="cert-subtitle">
+            {certificates.length > 0 
+              ? `Siz ${certificates.length} ta kursni muvaffaqiyatli tugatdingiz va sertifikatga ega bo‘ldingiz!`
+              : "Hozircha sertifikatingiz yo‘q. Kurslarni tugatib, birinchisini oling!"}
+          </p>
         </div>
-      ) : (
-        <div className="certificates-grid">
-          {certificates.map((cert, index) => (
-            <div key={cert.id || index} className="certificate-card">
-              <div className="certificate-preview">
-                <img 
-                  src={cert.thumbnail} 
-                  alt={cert.title}
-                  onError={(e) => {
-                    e.target.src = 'https://via.placeholder.com/600x400/4f46e5/ffffff?text=Sertifikat';
-                  }}
-                />
-                <div className="certificate-overlay">
-                  <FaCertificate className="overlay-icon" />
-                  <span>Muvaffaqiyatli tugatildi</span>
-                </div>
-              </div>
 
-              <div className="certificate-info">
-                <h3>{cert.title}</h3>
-                <div className="instructor">
-                  <FaUserGraduate /> {cert.instructor}
-                </div>
-
-                <div className="cert-meta">
-                  <span><FaCalendarAlt /> {cert.completedDate}</span>
-                  <span><FaClock /> {Math.round(cert.duration / 60)} soat</span>
-                </div>
-
-                <div className="cert-actions">
-                  <button className="btn-download">
-                    <FaDownload /> Yuklab olish
-                  </button>
-                  <button className="btn-share">
-                    <FaCheckCircle /> Ulashish
-                  </button>
-                </div>
-              </div>
-
-              <div className="certificate-badge">
+        {/* Bo‘sh holat */}
+        {certificates.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-card">
+              <div className="empty-icon">
                 <FaTrophy />
-                <span>Sertifikat</span>
+              </div>
+              <h3 className="empty-title">Hozircha sertifikat yo‘q</h3>
+              <p className="empty-text">
+                Kurslarni to‘liq tugatib, birinchi sertifikatingizni oling!
+              </p>
+              <Link to="/dashboard/all-courses" className="btn-primary">
+                Kurslarga o‘tish <FaArrowRight />
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <>
+            {/* Statistikalar */}
+            <div className="stats-grid">
+              <div className="stat-card">
+                <div className="stat-icon"><FaTrophy /></div>
+                <div className="stat-value">{certificates.length}</div>
+                <div className="stat-label">Jami Sertifikat</div>
+              </div>
+
+              <div className="stat-card">
+                <div className="stat-icon"><FaClock /></div>
+                <div className="stat-value">{totalHours}+</div>
+                <div className="stat-label">O‘qilgan soat</div>
+              </div>
+
+              <div className="stat-card">
+                <div className="stat-icon"><FaCheckCircle /></div>
+                <div className="stat-value">100%</div>
+                <div className="stat-label">Bitirish darajasi</div>
               </div>
             </div>
-          ))}
-        </div>
-      )}
 
-      {/* Qo‘shimcha statistika */}
-      {certificates.length > 0 && (
-        <div className="certificates-stats">
-          <div className="stat-item">
-            <FaTrophy className="stat-icon gold" />
-            <div>
-              <h4>{certificates.length}</h4>
-              <p>Jami sertifikat</p>
+            {/* Sertifikatlar Grid */}
+            <div className="certificates-grid">
+              {certificates.map((cert) => (
+                <div key={cert.id} className="certificate-card group">
+                  
+                  <div className="cert-image">
+                    <img src={cert.thumbnail} alt={cert.title} />
+                    <div className="cert-overlay" />
+                    <div className="cert-badge"><FaMedal /> Sertifikat</div>
+                    {cert.rating >= 4.8 && (
+                      <div className="trend-badge"><FaFire /> TREND</div>
+                    )}
+                  </div>
+
+                  <div className="cert-content">
+                    <h3 className="cert-title-card">{cert.title}</h3>
+                    <div className="cert-instructor">
+                      <FaUserGraduate className="text-purple-600" />
+                      <span>{cert.instructor}</span>
+                    </div>
+                    <div className="cert-meta">
+                      <span><FaCalendarAlt /> {new Date(cert.completedDate).toLocaleDateString('uz-UZ')}</span>
+                      <span><FaClock /> {cert.durationHours} soat</span>
+                    </div>
+                    <div className="cert-actions">
+                      <button className="btn-download">
+                        Yuklab olish <FaDownload />
+                      </button>
+                      <button className="btn-share">
+                        <FaCheckCircle className="text-green-600 text-2xl" />
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              ))}
             </div>
-          </div>
-          <div className="stat-item">
-            <FaClock className="stat-icon" />
-            <div>
-              <h4>{certificates.reduce((acc, c) => acc + Math.round(c.duration / 60), 0)}</h4>
-              <p>Umumiy o‘qish soati</p>
+
+            {/* Motivatsion banner */}
+            <div className="motivation-banner">
+              <div className="banner-card">
+                <h2 className="banner-title">Yana ko‘proq bilim oling!</h2>
+                <p className="banner-text">
+                  Har bir tugallangan kurs — sizning karyerangizdagi yangi qadam!
+                </p>
+                <Link to="/dashboard/all-courses" className="btn-banner">
+                  Yangi kurslarni ko‘rish <FaArrowRight />
+                </Link>
+              </div>
             </div>
-          </div>
-          <div className="stat-item">
-            <FaCheckCircle className="stat-icon success" />
-            <div>
-              <h4>100%</h4>
-              <p>Bitirish darajasi</p>
-            </div>
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

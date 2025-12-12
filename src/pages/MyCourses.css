@@ -45,6 +45,7 @@
   align-items: center;
   gap: 15px;
   transition: transform 0.3s ease;
+  color: black;
 }
 
 .stat-card:hover {

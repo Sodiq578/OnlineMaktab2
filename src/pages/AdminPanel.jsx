@@ -4,13 +4,14 @@ import { Routes, Route, Link, Navigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Lock, LogOut, Home, PlusCircle, LayoutDashboard, BookOpen,
-  User, Settings, Moon, Sun, Shield, GraduationCap
+  User, Settings, Moon, Sun, Shield, GraduationCap, Video
 } from 'lucide-react';
 
-// Mavjud komponentlar (hozircha faqat ular bor)
+// Barcha kerakli komponentlar
 import AdminDashboard from '../admin/AdminDashboard';
-import AddSection from '../admin/AddSection';           // Hozircha "Kurs qo'shish" sifatida ishlatamiz
-import SectionsList from '../admin/SectionsList';       // Hozircha "Kurslar ro'yxati" sifatida
+import AddSection from '../admin/AddSection';
+import SectionsList from '../admin/SectionsList';
+import AddVideoForm from '../admin/AddVideoForm';
 
 const AdminPanel = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -129,6 +130,9 @@ const AdminPanel = () => {
               <Link to="/admin/add-course" className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium transition flex items-center gap-2 shadow-lg">
                 <PlusCircle className="w-5 h-5" /> Yangi Kurs
               </Link>
+              <Link to="/admin/add-video" className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-medium transition flex items-center gap-2 shadow-lg">
+                <Video className="w-5 h-5" /> Video Qo'shish
+              </Link>
               <Link to="/" className="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-xl font-medium transition flex items-center gap-2">
                 <Home className="w-5 h-5" /> Saytga qaytish
               </Link>
@@ -142,7 +146,7 @@ const AdminPanel = () => {
           </div>
         </motion.div>
 
-        {/* ROUTES – Faqat mavjud komponentlar */}
+        {/* ROUTES */}
         <motion.div
           key={location.pathname}
           initial={{ opacity: 0, x: 30 }}
@@ -152,8 +156,9 @@ const AdminPanel = () => {
         >
           <Routes>
             <Route index element={<AdminDashboard />} />
-            <Route path="add-course" element={<AddSection />} />        {/* Hozircha AddSection */}
-            <Route path="courses" element={<SectionsList />} />         {/* Hozircha SectionsList */}
+            <Route path="add-course" element={<AddSection />} />
+            <Route path="add-video" element={<AddVideoForm />} />
+            <Route path="courses" element={<SectionsList />} />
             <Route path="section/:sectionId/videos" element={<SectionsList />} />
             <Route path="*" element={<Navigate to="/admin" replace />} />
           </Routes>
