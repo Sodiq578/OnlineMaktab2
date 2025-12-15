@@ -170,7 +170,7 @@ const HomePage = () => {
   // Kategoriya rangi
   const getCategoryColor = (category) => {
     const colors = {
-      'web': '#4f46e5',
+       
       'office': '#06b6d4',
       'mathematics': '#8b5cf6',
       'science': '#10b981',

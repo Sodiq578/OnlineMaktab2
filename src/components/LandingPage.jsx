@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import "aos/dist/aos.css";
 import AOS from "aos";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Autoplay, EffectCoverflow } from "swiper/modules";
+import { Pagination, Autoplay, EffectCoverflow, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-coverflow";
+import "swiper/css/navigation";
 
 // React Icons importlari
 import {
@@ -15,6 +16,8 @@ import {
   FaArrowRight,
   FaChevronUp,
   FaChevronDown,
+  FaChevronLeft,
+  FaChevronRight,
   
   // Basic
   FaPlus,
@@ -24,6 +27,8 @@ import {
   FaCheckCircle,
   FaCertificate,
   FaPlay,
+  FaSearch,
+  FaFilter,
   
   // Social
   FaFacebook,
@@ -39,10 +44,12 @@ import {
   FaGraduationCap,
   FaChalkboardTeacher,
   FaBookOpen,
+  FaUserGraduate,
   
   // UI Elements
   FaStar,
   FaAward,
+  FaTrophy,
   
   // Communication
   FaPhone,
@@ -51,10 +58,12 @@ import {
   FaCalendarAlt,
   FaClock,
   FaHeadphonesAlt,
+  FaCommentDots,
   
   // Users
   FaUser,
   FaUserFriends,
+  FaUserCheck,
   
   // Settings
   FaCog,
@@ -71,17 +80,33 @@ import {
   // Business
   FaChartLine,
   FaRocket,
+  FaBriefcase,
   
   // Files
   FaFileAlt,
+  FaFileDownload,
   
   // Tech
   FaMobileAlt,
   FaLaptop,
+  FaTabletAlt,
+  FaDesktop,
   
   // News
-  FaNewspaper
+  FaNewspaper,
+  
+  // Science
+  FaFlask,
+  FaMicroscope,
+  
+  // Math
+  FaCalculator,
+  
+  // Language
+  FaLanguage
 } from "react-icons/fa";
+
+import { MdScience, MdComputer, MdBusinessCenter, MdSchool } from "react-icons/md";
 
 import backImg from "../assets/HeroBack.jpg";
 
@@ -89,18 +114,18 @@ import backImg from "../assets/HeroBack.jpg";
 const styles = `
   /* Global Styles */
   .eduhub-theme {
-    --color-primary: #10B981;
-    --color-primary-dark: #059669;
-    --color-primary-light: #34D399;
-    --color-secondary: #3B82F6;
-    --color-secondary-dark: #2563EB;
-    --color-secondary-light: #60A5FA;
+    --color-primary: #2563EB;
+    --color-primary-dark: #1D4ED8;
+    --color-primary-light: #3B82F6;
+    --color-secondary: #10B981;
+    --color-secondary-dark: #059669;
+    --color-secondary-light: #34D399;
     --color-accent: #8B5CF6;
     --color-accent-dark: #7C3AED;
     --color-accent-light: #A78BFA;
-    --color-warning: #F97316;
-    --color-warning-dark: #EA580C;
-    --color-warning-light: #FB923C;
+    --color-warning: #F59E0B;
+    --color-warning-dark: #D97706;
+    --color-warning-light: #FBBF24;
     --color-success: #10B981;
     --color-success-dark: #059669;
     --color-danger: #EF4444;
@@ -115,17 +140,17 @@ const styles = `
     --color-gray-200: #F3F4F6;
     --color-gray-100: #F9FAFB;
     --color-white: #FFFFFF;
-    --gradient-primary: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
-    --gradient-secondary: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
-    --gradient-accent: linear-gradient(135deg, #8B5CF6 0%, #F97316 100%);
-    --gradient-warning: linear-gradient(135deg, #F97316 0%, #F59E0B 100%);
+    --gradient-primary: linear-gradient(135deg, #2563EB 0%, #10B981 100%);
+    --gradient-secondary: linear-gradient(135deg, #10B981 0%, #8B5CF6 100%);
+    --gradient-accent: linear-gradient(135deg, #8B5CF6 0%, #F59E0B 100%);
+    --gradient-warning: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    --shadow-primary: 0 10px 15px -3px rgba(16, 185, 129, 0.3), 0 4px 6px -2px rgba(16, 185, 129, 0.15);
-    --shadow-secondary: 0 10px 15px -3px rgba(59, 130, 246, 0.3), 0 4px 6px -2px rgba(59, 130, 246, 0.15);
+    --shadow-primary: 0 10px 15px -3px rgba(37, 99, 235, 0.3), 0 4px 6px -2px rgba(37, 99, 235, 0.15);
+    --shadow-secondary: 0 10px 15px -3px rgba(16, 185, 129, 0.3), 0 4px 6px -2px rgba(16, 185, 129, 0.15);
   }
 
   /* Custom Scrollbar */
@@ -269,6 +294,46 @@ const styles = `
   .animate-pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite;
   }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  /* Swiper Custom Styles */
+  .swiper-button-next,
+  .swiper-button-prev {
+    color: var(--color-primary) !important;
+    background: white;
+    width: 50px !important;
+    height: 50px !important;
+    border-radius: 50%;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .swiper-button-next:after,
+  .swiper-button-prev:after {
+    font-size: 20px !important;
+    font-weight: bold;
+  }
+
+  .swiper-pagination-bullet {
+    background: var(--color-gray-400) !important;
+  }
+
+  .swiper-pagination-bullet-active {
+    background: var(--color-primary) !important;
+  }
 `;
 
 // Global stylesni qo'shamiz
@@ -305,7 +370,7 @@ const UserProfile = ({ user, onLogout }) => {
         <img
           src={user.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop"}
           alt={user.fullName || user.name}
-          className="w-10 h-10 rounded-full border-2 border-emerald-500 object-cover"
+          className="w-10 h-10 rounded-full border-2 border-blue-500 object-cover"
           onError={(e) => {
             e.target.src = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop";
           }}
@@ -327,11 +392,11 @@ const UserProfile = ({ user, onLogout }) => {
             transition={{ duration: 0.2 }}
             className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-50"
           >
-            <div className="px-4 py-3 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-blue-50">
+            <div className="px-4 py-3 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-emerald-50">
               <p className="font-semibold text-gray-900 truncate">{user.fullName || user.name}</p>
               <p className="text-sm text-gray-600 truncate">{user.email || user.phone}</p>
               <div className="flex items-center gap-2 mt-1">
-                <span className="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded-full font-medium">
+                <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-medium">
                   Premium talaba
                 </span>
               </div>
@@ -342,10 +407,10 @@ const UserProfile = ({ user, onLogout }) => {
                   setShowDropdown(false);
                   window.location.href = '/dashboard/profile';
                 }}
-                className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-emerald-50 transition-colors flex items-center gap-3"
+                className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-blue-50 transition-colors flex items-center gap-3"
               >
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center">
-                  <FaUser className="text-emerald-600" />
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                  <FaUser className="text-blue-600" />
                 </div>
                 <div>
                   <p className="font-medium">Profil</p>
@@ -357,10 +422,10 @@ const UserProfile = ({ user, onLogout }) => {
                   setShowDropdown(false);
                   window.location.href = '/dashboard/my-courses';
                 }}
-                className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-blue-50 transition-colors flex items-center gap-3"
+                className="w-full text-left px-4 py-2.5 text-gray-700 hover:bg-emerald-50 transition-colors flex items-center gap-3"
               >
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
-                  <FaGraduationCap className="text-blue-600" />
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center">
+                  <FaGraduationCap className="text-emerald-600" />
                 </div>
                 <div>
                   <p className="font-medium">Mening kurslarim</p>
@@ -475,7 +540,7 @@ const Navbar = ({ currentUser, onLogout }) => {
   };
 
   const navItems = [
-    { name: "Bosh Sahifa", section: "#home", id: "home", icon: <FaRocket className="mr-2" /> },
+    { name: "Asosiy", section: "#home", id: "home", icon: <FaRocket className="mr-2" /> },
     { name: "Xizmatlar", section: "#xizmatlar", id: "xizmatlar", icon: <FaBookOpen className="mr-2" /> },
     { name: "Darslar", section: "#darslar", id: "darslar", icon: <FaChalkboardTeacher className="mr-2" /> },
     { name: "Narxlar", section: "#narxlar", id: "narxlar", icon: <FaChartLine className="mr-2" /> },
@@ -492,8 +557,8 @@ const Navbar = ({ currentUser, onLogout }) => {
         transition={{ duration: 0.5 }}
         className={`eduhub-theme fixed top-0 left-0 w-full z-50 py-4 px-4 md:px-6 transition-all duration-300 ${
           scrolled
-            ? "bg-white/95 backdrop-blur-xl shadow-2xl shadow-emerald-200/30 border-b border-gray-100"
-            : "bg-gradient-to-r from-emerald-500/5 via-white/90 to-blue-500/5 backdrop-blur-sm"
+            ? "bg-white/95 backdrop-blur-xl shadow-2xl shadow-blue-200/30 border-b border-gray-100"
+            : "bg-gradient-to-r from-blue-500/5 via-white/90 to-emerald-500/5 backdrop-blur-sm"
         }`}
       >
         <div className="container mx-auto max-w-screen-xl flex justify-between items-center">
@@ -510,8 +575,8 @@ const Navbar = ({ currentUser, onLogout }) => {
               <FaGraduationCap className="text-white text-xl" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Edu<span className="text-emerald-600">Hub</span>
+              <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 via-emerald-600 to-purple-600 bg-clip-text text-transparent">
+                H<span className="text-blue-600">e</span>d<span className="text-emerald-600">u</span>
               </h1>
               <p className="text-xs text-gray-500 hidden md:block">Professional ta'lim platformasi</p>
             </div>
@@ -529,10 +594,9 @@ const Navbar = ({ currentUser, onLogout }) => {
             className={`${
               isMobile
                 ? menuOpen
-                  ? "flex flex-col absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl p-8 rounded-2xl shadow-2xl shadow-emerald-300/30 border border-emerald-100 mt-4"
+                  ? "flex flex-col absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl p-8 rounded-2xl shadow-2xl shadow-blue-300/30 border border-blue-100 mt-4"
                   : "hidden"
-               : "flex gap-1 md:gap-3 items-center"
-
+                : "flex gap-0.5 md:gap-2 items-center"
             }`}
           >
             {navItems.map((item, index) => (
@@ -544,15 +608,15 @@ const Navbar = ({ currentUser, onLogout }) => {
               >
                 <button
                   onClick={() => scrollToSection(item.section)}
-                  className={`relative py-2 px-3 md:px-4 text-sm md:text-base font-medium group transition-all duration-300 flex items-center rounded-xl ${
+                  className={`relative py-2.5 px-4 md:px-5 font-medium group transition-all duration-300 flex items-center rounded-xl ${
                     activeSection === item.id
-                      ? "bg-gradient-to-r from-emerald-50 to-blue-50 text-emerald-700 border border-emerald-200"
-                      : "text-gray-700 hover:text-emerald-600 hover:bg-emerald-50/50"
+                      ? "bg-gradient-to-r from-blue-50 to-emerald-50 text-blue-700 border border-blue-200"
+                      : "text-gray-700 hover:text-blue-600 hover:bg-blue-50/50"
                   }`}
                 >
                   <span className="mr-2">{item.icon}</span>
                   {item.name}
-                  <span className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 h-0.5 bg-gradient-to-r from-emerald-500 to-blue-500 transition-all duration-300 rounded-full ${
+                  <span className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 h-0.5 bg-gradient-to-r from-blue-500 to-emerald-500 transition-all duration-300 rounded-full ${
                     activeSection === item.id ? "w-3/4" : "w-0 group-hover:w-3/4"
                   }`} />
                 </button>
@@ -569,7 +633,7 @@ const Navbar = ({ currentUser, onLogout }) => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate('/login')}
-                  className="hidden lg:flex items-center gap-2 px-6 py-2.5 gradient-bg-primary text-white rounded-xl hover:shadow-lg hover:shadow-emerald-500/30 transition-all duration-300 font-medium"
+                  className="hidden lg:flex items-center gap-2 px-6 py-2.5 gradient-bg-primary text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 font-medium"
                 >
                   <FaUser className="text-sm" />
                   Kirish
@@ -579,7 +643,7 @@ const Navbar = ({ currentUser, onLogout }) => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate('/register')}
-                  className="hidden lg:flex items-center gap-2 px-6 py-2.5 bg-white text-emerald-600 border border-emerald-600 rounded-xl hover:bg-emerald-50 transition-all duration-300 font-medium"
+                  className="hidden lg:flex items-center gap-2 px-6 py-2.5 bg-white text-blue-600 border border-blue-600 rounded-xl hover:bg-blue-50 transition-all duration-300 font-medium whitespace-nowrap"
                 >
                   <FaUserFriends className="text-sm" />
                   Ro'yxatdan o'tish
@@ -590,8 +654,8 @@ const Navbar = ({ currentUser, onLogout }) => {
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setMenuOpen(!menuOpen)}
                   className={`text-2xl focus:outline-none lg:hidden ${
-                    scrolled ? "text-emerald-600" : "text-gray-700"
-                  } hover:text-emerald-500`}
+                    scrolled ? "text-blue-600" : "text-gray-700"
+                  } hover:text-blue-500`}
                   aria-label={menuOpen ? "Close menu" : "Open menu"}
                 >
                   {menuOpen ? <FaTimes /> : <FaBars />}
@@ -618,12 +682,12 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div id="home" className="eduhub-theme relative w-full min-h-screen overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-blue-50">
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-white/30 to-blue-500/10" />
+    <div id="home" className="eduhub-theme relative w-full min-h-screen overflow-hidden bg-gradient-to-br from-blue-50 via-white to-emerald-50">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-white/30 to-emerald-500/10" />
       <div
         className="absolute inset-0 opacity-10"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2310B981' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232563EB' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
         }}
       />
       
@@ -639,10 +703,10 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-100 to-blue-100 text-emerald-700 mb-4"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-100 to-emerald-100 text-blue-700 mb-4"
           >
             <FaRocket className="text-sm" />
-            <span className="text-sm font-medium">#1 Ta'lim Platformasi</span>
+            <span className="text-sm font-medium">O'zbekistonning #1 Onlayn Maktabi</span>
           </motion.div>
           
           <motion.h1
@@ -654,7 +718,7 @@ const HeroSection = () => {
             <span className="gradient-text-primary">
               Kelajakni <br />
             </span>
-            <span className="text-gray-900">Endi O'rganing</span>
+            <span className="text-gray-900">Hedu bilan Qur</span>
           </motion.h1>
          
           <motion.p
@@ -663,7 +727,7 @@ const HeroSection = () => {
             transition={{ delay: 0.4 }}
             className="text-lg lg:text-xl text-gray-600 mb-8 leading-relaxed max-w-3xl"
           >
-            10 yillik tajriba bilan biz 75,000+ talabaning hayotini o'zgartirdik.
+            7 yillik tajriba bilan biz 85,000+ talabaning hayotini o'zgartirdik.
             Endi sizning navbatingiz! Zamonaviy kurslar va tajribali o'qituvchilar bilan.
           </motion.p>
          
@@ -676,11 +740,11 @@ const HeroSection = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/login')}
-              className="group px-6 sm:px-8 py-3.5 sm:py-4 gradient-bg-primary text-white text-base sm:text-lg font-semibold rounded-xl shadow-xl hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-300 flex items-center justify-center gap-2"
+              onClick={() => navigate('/register')}
+              className="group px-6 sm:px-8 py-3.5 sm:py-4 gradient-bg-primary text-white text-base sm:text-lg font-semibold rounded-xl shadow-xl hover:shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 flex items-center justify-center gap-2"
             >
               <FaRocket className="text-lg" />
-              Birinchi darsni boshlash
+              Bepul darsni boshlash
               <FaArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
             </motion.button>
             
@@ -688,10 +752,10 @@ const HeroSection = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => document.getElementById('xizmatlar')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-6 sm:px-8 py-3.5 sm:py-4 bg-white text-emerald-600 border border-emerald-600 text-base sm:text-lg font-semibold rounded-xl shadow-xl hover:shadow-2xl hover:shadow-emerald-500/30 transition-all duration-300 flex items-center justify-center gap-2"
+              className="px-6 sm:px-8 py-3.5 sm:py-4 bg-white text-blue-600 border border-blue-600 text-base sm:text-lg font-semibold rounded-xl shadow-xl hover:shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 flex items-center justify-center gap-2"
             >
               <FaBookOpen className="text-lg" />
-              Xizmatlarni ko'rish
+              Barcha kurslarni ko'rish
             </motion.button>
           </motion.div>
          
@@ -701,22 +765,22 @@ const HeroSection = () => {
             transition={{ delay: 0.8 }}
             className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 justify-center lg:justify-start"
           >
-            <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-lg border border-gray-100 hover:border-emerald-200 transition-all">
+            <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-lg border border-gray-100 hover:border-blue-200 transition-all">
               <div className="w-12 h-12 rounded-lg gradient-bg-primary flex items-center justify-center text-white">
                 <FaGraduationCap className="text-xl" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">75K+</p>
+                <p className="text-2xl font-bold text-gray-900">85K+</p>
                 <p className="text-gray-600 text-sm">Talaba</p>
               </div>
             </div>
            
-            <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-lg border border-gray-100 hover:border-blue-200 transition-all">
+            <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-lg border border-gray-100 hover:border-emerald-200 transition-all">
               <div className="w-12 h-12 rounded-lg gradient-bg-secondary flex items-center justify-center text-white">
                 <FaChalkboardTeacher className="text-xl" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">300+</p>
+                <p className="text-2xl font-bold text-gray-900">420+</p>
                 <p className="text-gray-600 text-sm">O'qituvchi</p>
               </div>
             </div>
@@ -726,7 +790,7 @@ const HeroSection = () => {
                 <FaAward className="text-xl" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">99%</p>
+                <p className="text-2xl font-bold text-gray-900">98%</p>
                 <p className="text-gray-600 text-sm">Muvaffaqiyat</p>
               </div>
             </div>
@@ -741,7 +805,7 @@ const HeroSection = () => {
           data-aos="fade-left"
         >
           <div className="relative w-full">
-            <div className="absolute -inset-4 bg-gradient-to-r from-emerald-400 to-blue-500 rounded-2xl blur-2xl opacity-20" />
+            <div className="absolute -inset-4 bg-gradient-to-r from-blue-400 to-emerald-400 rounded-2xl blur-2xl opacity-20" />
             <img
               src={backImg}
               alt="Online Education"
@@ -754,7 +818,7 @@ const HeroSection = () => {
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ repeat: Infinity, duration: 3 }}
-              className="absolute -top-4 -right-4 bg-white p-4 rounded-xl shadow-2xl border border-emerald-100"
+              className="absolute -top-4 -right-4 bg-white p-4 rounded-xl shadow-2xl border border-blue-100"
             >
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-amber-400 to-orange-500 flex items-center justify-center">
@@ -803,7 +867,7 @@ const HeroSection = () => {
       >
         <button
           onClick={() => document.getElementById('xizmatlar')?.scrollIntoView({ behavior: 'smooth' })}
-          className="text-gray-600 hover:text-emerald-600 transition-colors p-2"
+          className="text-gray-600 hover:text-blue-600 transition-colors p-2"
           aria-label="Scroll to features"
         >
           <div className="w-10 h-16 rounded-full border-2 border-gray-300 flex items-center justify-center">
@@ -815,6 +879,372 @@ const HeroSection = () => {
   );
 };
 
+// Ta'lim yo'nalishlari komponenti
+const StudyPaths = () => {
+  const navigate = useNavigate();
+  
+  const studyPaths = [
+    {
+      title: "Maktab o'quvchilari",
+      icon: <MdSchool className="text-2xl" />,
+      color: "from-blue-500 to-cyan-500",
+      courses: ["6-11 sinf matematika", "Fizika", "Kimyo", "Biologiya", "Ingliz tili"],
+      description: "Umumiy o'rta ta'lim fanlari",
+      students: "25,000+",
+      gradient: "bg-gradient-to-r from-blue-500 to-cyan-500"
+    },
+    {
+      title: "Abituriyentlar",
+      icon: <FaUserGraduate className="text-2xl" />,
+      color: "from-purple-500 to-pink-500",
+      courses: ["DTM test tayyorlov", "Matematika", "Ona tili", "Tarix", "Biologiya"],
+      description: "Oliy ta'lim muassasalariga kirish",
+      students: "15,000+",
+      gradient: "bg-gradient-to-r from-purple-500 to-pink-500"
+    },
+    {
+      title: "Kasb-hunar ta'limi",
+      icon: <MdComputer className="text-2xl" />,
+      color: "from-emerald-500 to-green-500",
+      courses: ["Dasturlash", "Dizayn", "Marketing", "Muhandislik", "Til kurslari"],
+      description: "Zamonaviy kasblarni o'rganish",
+      students: "32,000+",
+      gradient: "bg-gradient-to-r from-emerald-500 to-green-500"
+    },
+    {
+      title: "Xalqaro imtihonlar",
+      icon: <FaCertificate className="text-2xl" />,
+      color: "from-orange-500 to-red-500",
+      courses: ["IELTS", "TOEFL", "SAT", "GMAT", "Professionals"],
+      description: "Chet tillari va xalqaro sertifikatlar",
+      students: "13,000+",
+      gradient: "bg-gradient-to-r from-orange-500 to-red-500"
+    }
+  ];
+
+  return (
+    <section className="eduhub-theme section-padding px-4 md:px-6 bg-gradient-to-b from-white to-blue-50">
+      <div className="container mx-auto max-w-screen-xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+          data-aos="fade-up"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 mb-4">
+            <FaBookOpen className="text-sm" />
+            <span className="text-sm font-medium">Ta'lim yo'nalishlari</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+            <span className="gradient-text-primary">
+              Har Bir Talaba Uchun
+            </span>
+          </h2>
+          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+            Yoshidan qat'iy nazar, har kim uchun mos ta'lim yo'li
+          </p>
+        </motion.div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          {studyPaths.map((path, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ y: -10 }}
+              className="group cursor-pointer"
+              data-aos="fade-up"
+              data-aos-delay={index * 100}
+            >
+              <div className="bg-white rounded-2xl p-6 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-500 h-full card-hover">
+                <div className="flex flex-col h-full">
+                  <div className={`w-16 h-16 rounded-2xl ${path.gradient} flex items-center justify-center mb-6`}>
+                    <div className="text-white text-2xl">
+                      {path.icon}
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3">
+                    {path.title}
+                  </h3>
+                  
+                  <p className="text-gray-600 mb-4 flex-grow">
+                    {path.description}
+                  </p>
+                  
+                  <div className="mb-6">
+                    <p className="text-sm font-semibold text-gray-700 mb-2">
+                      Kurslar:
+                    </p>
+                    <div className="flex flex-wrap gap-1">
+                      {path.courses.slice(0, 3).map((course, i) => (
+                        <span 
+                          key={i}
+                          className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-lg"
+                        >
+                          {course}
+                        </span>
+                      ))}
+                      {path.courses.length > 3 && (
+                        <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-lg">
+                          +{path.courses.length - 3}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="pt-4 border-t border-gray-100 mt-auto">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="text-sm text-gray-500">Talabalar:</p>
+                        <p className="font-semibold text-gray-900">{path.students}</p>
+                      </div>
+                      <button
+                        onClick={() => navigate(`/courses/category/${path.title.toLowerCase()}`)}
+                        className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg font-medium hover:bg-blue-100 transition-colors text-sm"
+                      >
+                        Ko'rish
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        
+        <div className="text-center mt-12">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/dashboard/all-courses')}
+            className="px-8 py-3.5 gradient-bg-primary text-white font-semibold rounded-xl hover:shadow-xl hover:shadow-blue-500/30 transition-all flex items-center gap-2 mx-auto"
+          >
+            <FaBookOpen />
+            Barcha kurslarni ko'rish
+          </motion.button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// O'qituvchilar komponenti
+const Instructors = () => {
+  const navigate = useNavigate();
+  
+  const instructors = [
+    {
+      name: "Dilshod Alimov",
+      subject: "Matematika",
+      experience: "15 yil",
+      students: "5,200+",
+      rating: 4.9,
+      image: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&h=400&fit=crop",
+      specialization: ["Oliy matematika", "Geometriya", "DTM tayyorlov"],
+      degree: "Falsafa doktori (PhD)",
+      color: "blue"
+    },
+    {
+      name: "Malika Karimova",
+      subject: "Ingliz tili",
+      experience: "12 yil",
+      students: "3,800+",
+      rating: 4.8,
+      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop",
+      specialization: ["IELTS", "Speaking", "Business English"],
+      degree: "Magistr darajasi",
+      color: "emerald"
+    },
+    {
+      name: "Bekzod To'rayev",
+      subject: "Dasturlash",
+      experience: "8 yil",
+      students: "2,900+",
+      rating: 4.9,
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+      specialization: ["Python", "JavaScript", "Web Development"],
+      degree: "Senior Full Stack Developer",
+      color: "purple"
+    },
+    {
+      name: "Zarina Qodirova",
+      subject: "Biologiya",
+      experience: "10 yil",
+      students: "2,100+",
+      rating: 4.7,
+      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop",
+      specialization: ["Genetika", "Anatomiya", "Tibbiyotga tayyorlov"],
+      degree: "Tibbiyot fanlari nomzodi",
+      color: "pink"
+    },
+    {
+      name: "Sherzod Xudoyberdiyev",
+      subject: "Fizika",
+      experience: "14 yil",
+      students: "3,500+",
+      rating: 4.8,
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop",
+      specialization: ["Mexanika", "Elektrodinamika", "Kvant fizikasi"],
+      degree: "Fizika-matematika fanlari doktori",
+      color: "orange"
+    },
+    {
+      name: "Gulnora Usmonova",
+      subject: "Kimyo",
+      experience: "9 yil",
+      students: "1,800+",
+      rating: 4.6,
+      image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop",
+      specialization: ["Organik kimyo", "Analitik kimyo", "Kimyo testlari"],
+      degree: "Kimyo fanlari magistri",
+      color: "red"
+    }
+  ];
+
+  return (
+    <section className="eduhub-theme section-padding px-4 md:px-6 bg-gradient-to-b from-blue-50 to-white">
+      <div className="container mx-auto max-w-screen-xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+          data-aos="fade-up"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-100 to-emerald-100 text-blue-700 mb-4">
+            <FaChalkboardTeacher className="text-sm" />
+            <span className="text-sm font-medium">O'qituvchilar</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+            <span className="gradient-text-secondary">
+              Bizning Mutaxassislar
+            </span>
+          </h2>
+          <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+            Yuqori malakali o'qituvchilar va sanoat mutaxassislari
+          </p>
+        </motion.div>
+        
+        <Swiper
+          modules={[Navigation, Autoplay]}
+          navigation={true}
+          autoplay={{ 
+            delay: 4000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true
+          }}
+          loop={true}
+          spaceBetween={30}
+          breakpoints={{
+            320: {
+              slidesPerView: 1,
+              spaceBetween: 20
+            },
+            640: {
+              slidesPerView: 2,
+              spaceBetween: 30
+            },
+            1024: {
+              slidesPerView: 3,
+              spaceBetween: 40
+            }
+          }}
+          className="!pb-16"
+        >
+          {instructors.map((teacher, index) => (
+            <SwiperSlide key={index} className="!h-auto">
+              <motion.div
+                whileHover={{ y: -10 }}
+                className="bg-white rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 h-full card-hover"
+                data-aos="fade-up"
+                data-aos-delay={index * 100}
+              >
+                <div className="flex flex-col items-center mb-6">
+                  <div className="relative mb-4">
+                    <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-400 to-emerald-400 opacity-20" />
+                    <img
+                      src={teacher.image}
+                      alt={teacher.name}
+                      className="relative w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
+                      onError={(e) => {
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(teacher.name)}&background=random`;
+                      }}
+                    />
+                    <div className={`absolute -bottom-2 -right-2 w-10 h-10 rounded-full bg-gradient-to-r from-${teacher.color}-500 to-${teacher.color}-600 flex items-center justify-center text-white border-2 border-white`}>
+                      <FaGraduationCap />
+                    </div>
+                  </div>
+                  
+                  <div className="text-center">
+                    <h3 className="text-xl font-bold text-gray-900">{teacher.name}</h3>
+                    <p className="text-blue-600 font-semibold">{teacher.subject}</p>
+                    <p className="text-gray-500 text-sm mt-1">{teacher.degree}</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600 text-sm">Tajriba:</span>
+                    <span className="font-semibold text-gray-900">{teacher.experience}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600 text-sm">Talabalar:</span>
+                    <span className="font-semibold text-gray-900">{teacher.students}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600 text-sm">Reyting:</span>
+                    <div className="flex items-center gap-1">
+                      <FaStar className="text-amber-400" />
+                      <span className="font-semibold text-gray-900">{teacher.rating}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="pt-4 border-t border-gray-100">
+                  <p className="text-sm font-semibold text-gray-700 mb-2">
+                    Mutaxassislik:
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {teacher.specialization.map((spec, i) => (
+                      <span 
+                        key={i}
+                        className="px-2 py-1 bg-gray-50 text-gray-700 text-xs rounded-lg"
+                      >
+                        {spec}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                
+                <button
+                  onClick={() => navigate(`/instructor/${teacher.name.toLowerCase().replace(' ', '-')}`)}
+                  className="w-full mt-6 py-2.5 bg-blue-50 text-blue-600 rounded-lg font-medium hover:bg-blue-100 transition-colors"
+                >
+                  Profilni ko'rish
+                </button>
+              </motion.div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        
+        <div className="text-center mt-12">
+          <button
+            onClick={() => navigate('/instructors')}
+            className="px-6 py-3 bg-white text-blue-600 border border-blue-600 rounded-xl hover:bg-blue-50 transition-all font-medium flex items-center gap-2 mx-auto"
+          >
+            <FaChalkboardTeacher />
+            Barcha o'qituvchilarni ko'rish
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 // Features komponenti
 const Features = () => {
   const features = [
@@ -822,14 +1252,14 @@ const Features = () => {
       title: "Shaxsiy O'qituvchi",
       text: "Har bir talaba uchun individual yondashuv va yordamchi o'qituvchi",
       icon: <FaChalkboardTeacher />,
-      gradient: "from-emerald-500 to-emerald-600",
+      gradient: "from-blue-500 to-blue-600",
       delay: 0
     },
     {
       title: "Zamonaviy Test Markazi",
       text: "Haqiqiy IELTS, SAT va boshqa imtihonlarni simulyatsiya qilish",
       icon: <FaCheckCircle />,
-      gradient: "from-blue-500 to-blue-600",
+      gradient: "from-emerald-500 to-emerald-600",
       delay: 100
     },
     {
@@ -863,7 +1293,7 @@ const Features = () => {
   ];
 
   return (
-    <section id="xizmatlar" className="eduhub-theme section-padding px-4 md:px-6 bg-gradient-to-b from-white to-emerald-50/30">
+    <section id="xizmatlar" className="eduhub-theme section-padding px-4 md:px-6 bg-gradient-to-b from-white to-blue-50/30">
       <div className="container mx-auto max-w-screen-xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -872,7 +1302,7 @@ const Features = () => {
           className="text-center mb-16"
           data-aos="fade-up"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-100 to-blue-100 text-emerald-700 mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-100 to-emerald-100 text-blue-700 mb-4">
             <FaBookOpen className="text-sm" />
             <span className="text-sm font-medium">Nega bizni tanlashadi?</span>
           </div>
@@ -885,6 +1315,7 @@ const Features = () => {
             Innovatsion yondashuv va ishonchli natijalar bilan ta'lim sari birga qadam tashlaymiz
           </p>
         </motion.div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {features.map((feature, index) => (
             <motion.div
@@ -899,7 +1330,7 @@ const Features = () => {
               data-aos-delay={feature.delay}
             >
               <div className="relative h-full bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden card-hover">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-500/5 to-blue-500/5 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-700" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/5 to-emerald-500/5 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-700" />
                
                 <div className="relative z-10">
                   <div className={`w-14 h-14 md:w-16 md:h-16 rounded-xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-6 transform group-hover:rotate-12 transition-transform duration-500 shadow-lg`}>
@@ -916,7 +1347,7 @@ const Features = () => {
                     {feature.text}
                   </p>
                  
-                  <button className="flex items-center text-emerald-600 font-semibold group-hover:text-blue-600 transition-colors">
+                  <button className="flex items-center text-blue-600 font-semibold group-hover:text-emerald-600 transition-colors">
                     Batafsil
                     <FaArrowRight className="ml-2 group-hover:translate-x-2 transition-transform" />
                   </button>
@@ -930,6 +1361,184 @@ const Features = () => {
   );
 };
 
+// O'quv jarayoni komponenti
+const LearningProcess = () => {
+  const steps = [
+    {
+      step: "01",
+      title: "Ro'yxatdan o'tish",
+      description: "Bepul hisob oching va sinov darsiga qatnashing",
+      icon: <FaUser />,
+      color: "from-blue-500 to-cyan-500"
+    },
+    {
+      step: "02",
+      title: "Test sinovlari",
+      description: "Bilim darajangizni aniqlang va shaxsiy dastur tuzing",
+      icon: <FaFileAlt />,
+      color: "from-purple-500 to-pink-500"
+    },
+    {
+      step: "03",
+      title: "O'qish",
+      description: "Video darslar, jonli sessiyalar va mashqlar orqali o'rganing",
+      icon: <FaBookOpen />,
+      color: "from-emerald-500 to-green-500"
+    },
+    {
+      step: "04",
+      title: "Amaliyot",
+      description: "Real loyihalar va testlar bilan bilimingizni mustahkamlang",
+      icon: <FaCheckCircle />,
+      color: "from-orange-500 to-red-500"
+    },
+    {
+      step: "05",
+      title: "Nazorat",
+      description: "Muntazam progress monitoring va o'qituvchi bilan konsultatsiyalar",
+      icon: <FaChartLine />,
+      color: "from-indigo-500 to-blue-500"
+    },
+    {
+      step: "06",
+      title: "Sertifikat",
+      description: "Muvaffaqiyatli tamomlaganingizda xalqaro sertifikat oling",
+      icon: <FaCertificate />,
+      color: "from-amber-500 to-orange-500"
+    }
+  ];
+
+  return (
+   <section className="eduhub-theme section-padding px-4 md:px-6 bg-gradient-to-b from-white to-blue-50/30">
+  <div className="container mx-auto max-w-screen-xl">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="text-center mb-16"
+      data-aos="fade-up"
+    >
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-100 to-emerald-100 text-blue-700 mb-4">
+        <FaRocket className="text-sm" />
+        <span className="text-sm font-medium">Ta'lim Jarayoni</span>
+      </div>
+      <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+        <span className="gradient-text-primary">
+          Biz Bilan O'rganish Qanday?
+        </span>
+      </h2>
+      <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+        6 qadamda samarali va qulay ta'lim oling
+      </p>
+    </motion.div>
+    
+    <div className="relative">
+      {/* Orqa fondagi gradient chiziq (faqat desktop'da) */}
+      <div className="hidden lg:block absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-blue-200 via-emerald-200 to-purple-200 transform -translate-y-1/2 z-0 rounded-full" />
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 relative z-10">
+        {steps.map((step, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: index * 0.1 }}
+            whileHover={{ scale: 1.02 }}
+            className="relative"
+            data-aos="fade-up"
+            data-aos-delay={index * 100}
+          >
+            {/* Yo'nalish o'qchasi (faqat desktop'da) */}
+            {index < steps.length - 1 && (
+              <div className="hidden lg:block absolute top-1/2 right-0 w-10 h-10 transform translate-x-1/2 -translate-y-1/2 z-20">
+                <div className="relative w-full h-full">
+                  <div className="    " />
+                
+                    
+                </div>
+              </div>
+            )}
+            
+            <div className="relative bg-white rounded-2xl p-6 md:p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 card-hover group">
+              {/* Yuqoridagi raqam belgisi */}
+              <div className="absolute -top-4 left-6 md:left-8">
+                <div className={`w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gradient-to-r ${step.color} flex items-center justify-center text-white font-bold text-xl md:text-2xl shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                  {step.step}
+                </div>
+              </div>
+              
+              <div className="pt-10 md:pt-12">
+                {/* Icon qismi */}
+                <div className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-r ${step.color} flex items-center justify-center mb-6 group-hover:rotate-6 transition-transform duration-500 shadow-lg`}>
+                  <div className="text-white text-2xl md:text-3xl">
+                    {step.icon}
+                  </div>
+                </div>
+                
+                {/* Sarlavha */}
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors">
+                  {step.title}
+                </h3>
+                
+                {/* Tavsif */}
+                <p className="text-gray-600 leading-relaxed mb-6">
+                  {step.description}
+                </p>
+                
+                {/* Pastki ko'rsatkich */}
+                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${step.color}`} />
+                    <span className="text-sm text-gray-500">Qadam {index + 1}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <FaClock className="text-gray-400 text-sm" />
+                    <span className="text-sm text-gray-500">
+                      {index === 0 && "5 daqiqa"}
+                      {index === 1 && "30 daqiqa"}
+                      {index === 2 && "Istalgan vaqt"}
+                      {index === 3 && "Amaliyot"}
+                      {index === 4 && "Muntazam"}
+                      {index === 5 && "Final"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Pastki gradient effekti */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-blue-100 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-b-2xl" />
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+    
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="mt-12 md:mt-16 text-center"
+      data-aos="fade-up"
+    >
+      <div className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-50 to-emerald-50 rounded-2xl px-6 py-4 border border-blue-100">
+        <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center">
+          <FaPlay className="text-white text-lg" />
+        </div>
+        <div className="text-left">
+          <p className="font-semibold text-gray-900">Video ko'rib ko'ring</p>
+          <p className="text-sm text-gray-600">Ta'lim jarayonini 2 daqiqada ko'ring</p>
+        </div>
+        <button className="ml-4 px-4 py-2 bg-white text-blue-600 border border-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-colors">
+          Ko'rish
+        </button>
+      </div>
+    </motion.div>
+  </div>
+</section>
+  );
+};
+
 // Testimonials komponenti
 const Testimonials = () => {
   const testimonials = [
@@ -939,7 +1548,8 @@ const Testimonials = () => {
       feedback: "6 oy ichida 5.5 dan 8.5 ga ko'tardim. O'qituvchilar juda sifatli!",
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
       rating: 5,
-      gradient: "from-emerald-500 to-emerald-600"
+      gradient: "from-blue-500 to-blue-600",
+      result: "Harvard universitetiga qabul"
     },
     {
       name: "Malika Nurmatova",
@@ -947,7 +1557,8 @@ const Testimonials = () => {
       feedback: "Amerika universitetiga kirishimga yordam berdi. Rahmat!",
       image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=400&fit=crop&crop=face",
       rating: 5,
-      gradient: "from-blue-500 to-blue-600"
+      gradient: "from-emerald-500 to-emerald-600",
+      result: "Stanford universiteti talabasi"
     },
     {
       name: "Dilmurod Karimov",
@@ -955,7 +1566,8 @@ const Testimonials = () => {
       feedback: "Dasturlash kursi mening karyeramni butunlay o'zgartirdi.",
       image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
       rating: 5,
-      gradient: "from-purple-500 to-purple-600"
+      gradient: "from-purple-500 to-purple-600",
+      result: "Google kompaniyasida ish"
     },
     {
       name: "Shahnoza Qodirova",
@@ -963,7 +1575,8 @@ const Testimonials = () => {
       feedback: "Ingliz tilini 0 dan o'rgana boshlagandim. Endi chet elliklar bilan bemalol gaplasha olaman.",
       image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=400&fit=crop&crop=face",
       rating: 5,
-      gradient: "from-pink-500 to-pink-600"
+      gradient: "from-pink-500 to-pink-600",
+      result: "Xalqaro kompaniyada ish"
     },
     {
       name: "Behruz Akramov",
@@ -971,7 +1584,8 @@ const Testimonials = () => {
       feedback: "React darslari juda sodda va tushunarli. 3 oyda ish topdim!",
       image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop&crop=face",
       rating: 5,
-      gradient: "from-orange-500 to-orange-600"
+      gradient: "from-orange-500 to-orange-600",
+      result: "Startap kompaniyasi asoschisi"
     },
     {
       name: "Ozoda Muhammadova",
@@ -979,7 +1593,8 @@ const Testimonials = () => {
       feedback: "Writing bo'yicha kuchli ko'rsatmalar bo'ldi. O'qituvchilar e'tiborli.",
       image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&crop=face",
       rating: 5,
-      gradient: "from-cyan-500 to-cyan-600"
+      gradient: "from-cyan-500 to-cyan-600",
+      result: "Buyuk Britaniyada magistratura"
     }
   ];
 
@@ -1003,16 +1618,17 @@ const Testimonials = () => {
             </span>
           </h2>
           <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
-            75,000+ talaba bilan birga ishlash tajribamiz
+            85,000+ talaba bilan birga ishlash tajribamiz
           </p>
         </motion.div>
         
         <Swiper
-          modules={[EffectCoverflow, Autoplay]}
+          modules={[EffectCoverflow, Autoplay, Navigation]}
           effect="coverflow"
           grabCursor={true}
           centeredSlides={true}
           slidesPerView="auto"
+          navigation={true}
           coverflowEffect={{
             rotate: 0,
             stretch: 0,
@@ -1064,7 +1680,7 @@ const Testimonials = () => {
                   </div>
                   <div className="ml-4">
                     <h4 className="font-bold text-lg text-gray-900">{testimonial.name}</h4>
-                    <p className="text-emerald-600 font-medium">{testimonial.role}</p>
+                    <p className="text-blue-600 font-medium">{testimonial.role}</p>
                   </div>
                 </div>
                
@@ -1074,12 +1690,19 @@ const Testimonials = () => {
                   ))}
                 </div>
                
-                <div className="relative">
-                  <FaQuoteLeft className="absolute -top-2 -left-2 text-emerald-200 text-3xl" />
+                <div className="relative mb-4">
+                  <FaQuoteLeft className="absolute -top-2 -left-2 text-blue-200 text-3xl" />
                   <p className="text-gray-600 leading-relaxed pl-6">
                     "{testimonial.feedback}"
                   </p>
-                  <FaQuoteRight className="absolute -bottom-2 -right-2 text-emerald-200 text-3xl" />
+                  <FaQuoteRight className="absolute -bottom-2 -right-2 text-blue-200 text-3xl" />
+                </div>
+                
+                <div className="pt-4 border-t border-gray-100">
+                  <div className="flex items-center gap-2">
+                    <FaAward className="text-emerald-500" />
+                    <span className="text-sm text-gray-700 font-medium">{testimonial.result}</span>
+                  </div>
                 </div>
               </motion.div>
             </SwiperSlide>
@@ -1093,36 +1716,134 @@ const Testimonials = () => {
 // Gallery komponenti
 const Gallery = () => {
   const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("Barchasi");
   
-  const subjects = [
-    "Matematika", "Fizika", "Kimyo", "Biologiya", "Dasturlash",
-    "Ingliz tili", "Rus tili", "Tarix", "Geografiya", "San'at"
+  const categories = [
+    "Barchasi", "Matematika", "Fizika", "Kimyo", "Biologiya", 
+    "Dasturlash", "Ingliz tili", "IELTS", "DTM tayyorlov"
   ];
   
-  const lessons = subjects.map((title, index) => ({
-    id: index + 1,
-    title,
-    imageUrl: `https://images.unsplash.com/photo-${155 + index}?w=800&h=600&fit=crop`,
-    category: title,
-    students: Math.floor(Math.random() * 1000) + 100,
-    rating: (Math.random() * 0.5 + 4.5).toFixed(1),
-    price: ["290 000", "490 000", "790 000"][index % 3],
-    duration: `${Math.floor(Math.random() * 12) + 1} hafta`,
-    instructor: ["Prof. Alimov", "Dr. Karimova", "Mentor Toshmatov"][index % 3],
-    level: ["Boshlang'ich", "O'rta", "Ilg'or"][index % 3]
-  }));
+  const lessons = [
+    {
+      id: 1,
+      title: "IELTS Complete Course",
+      category: "IELTS",
+      students: 2450,
+      rating: 4.9,
+      price: "490 000",
+      duration: "12 hafta",
+      instructor: "Malika Karimova",
+      level: "Barcha darajalar",
+      image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&h=600&fit=crop"
+    },
+    {
+      id: 2,
+      title: "Matematika 6-11 sinf",
+      category: "Matematika",
+      students: 3850,
+      rating: 4.8,
+      price: "290 000",
+      duration: "9 oy",
+      instructor: "Dilshod Alimov",
+      level: "Maktab",
+      image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&h=600&fit=crop"
+    },
+    {
+      id: 3,
+      title: "Python dasturlash",
+      category: "Dasturlash",
+      students: 3200,
+      rating: 4.9,
+      price: "590 000",
+      duration: "16 hafta",
+      instructor: "Bekzod To'rayev",
+      level: "Boshlang'ich",
+      image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop"
+    },
+    {
+      id: 4,
+      title: "DTM test tayyorlov",
+      category: "DTM tayyorlov",
+      students: 4100,
+      rating: 4.7,
+      price: "390 000",
+      duration: "6 oy",
+      instructor: "Sherzod Xudoyberdiyev",
+      level: "Abituriyent",
+      image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&h=600&fit=crop"
+    },
+    {
+      id: 5,
+      title: "Biznes Ingliz tili",
+      category: "Ingliz tili",
+      students: 1850,
+      rating: 4.8,
+      price: "450 000",
+      duration: "10 hafta",
+      instructor: "Malika Karimova",
+      level: "Intermediate+",
+      image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&h=600&fit=crop"
+    },
+    {
+      id: 6,
+      title: "Full Stack Development",
+      category: "Dasturlash",
+      students: 2750,
+      rating: 4.9,
+      price: "690 000",
+      duration: "24 hafta",
+      instructor: "Bekzod To'rayev",
+      level: "Advanced",
+      image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&h=600&fit=crop"
+    },
+    {
+      id: 7,
+      title: "Kimyo 7-11 sinf",
+      category: "Kimyo",
+      students: 2150,
+      rating: 4.7,
+      price: "310 000",
+      duration: "8 oy",
+      instructor: "Gulnora Usmonova",
+      level: "Maktab",
+      image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&h=600&fit=crop"
+    },
+    {
+      id: 8,
+      title: "Biologiya va Anatomiya",
+      category: "Biologiya",
+      students: 1950,
+      rating: 4.6,
+      price: "330 000",
+      duration: "9 oy",
+      instructor: "Zarina Qodirova",
+      level: "DTM tayyorlov",
+      image: "https://images.unsplash.com/photo-1530026405186-1d7d6a343b0c?w=800&h=600&fit=crop"
+    },
+    {
+      id: 9,
+      title: "Fizika 7-11 sinf",
+      category: "Fizika",
+      students: 2650,
+      rating: 4.8,
+      price: "320 000",
+      duration: "8 oy",
+      instructor: "Sherzod Xudoyberdiyev",
+      level: "Maktab",
+      image: "https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?w=800&h=600&fit=crop"
+    }
+  ];
   
-  const filteredLessons = selectedCategory === "All"
-    ? lessons
-    : lessons.filter((lesson) => lesson.category === selectedCategory);
+  const filteredLessons = selectedCategory === "Barchasi"
+    ? lessons.slice(0, 6)
+    : lessons.filter((lesson) => lesson.category === selectedCategory).slice(0, 6);
 
   const handleViewCourse = (courseId) => {
     navigate(`/course/${courseId}`);
   };
 
   return (
-    <section id="darslar" className="eduhub-theme section-padding px-4 md:px-6 bg-gradient-to-b from-white to-emerald-50/30">
+    <section id="darslar" className="eduhub-theme section-padding px-4 md:px-6 bg-gradient-to-b from-white to-blue-50/30">
       <div className="container mx-auto max-w-screen-xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -1131,7 +1852,7 @@ const Gallery = () => {
           className="text-center mb-12"
           data-aos="fade-up"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-100 to-blue-100 text-emerald-700 mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-100 to-emerald-100 text-blue-700 mb-4">
             <FaChalkboardTeacher className="text-sm" />
             <span className="text-sm font-medium">O'quv kurslari</span>
           </div>
@@ -1146,35 +1867,24 @@ const Gallery = () => {
         </motion.div>
         
         <div className="mb-8 flex flex-wrap gap-2 md:gap-3 justify-center">
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setSelectedCategory("All")}
-            className={`px-4 py-2.5 md:px-6 md:py-3 rounded-xl font-medium transition-all ${
-              selectedCategory === "All"
-                ? "gradient-bg-primary text-white shadow-lg"
-                : "bg-white text-gray-700 hover:bg-gray-100 shadow border border-gray-200"
-            }`}
-          >
-            Barchasi
-          </motion.button>
-          {subjects.slice(0, 6).map((subject) => (
+          {categories.map((category) => (
             <motion.button
-              key={subject}
+              key={category}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setSelectedCategory(subject)}
+              onClick={() => setSelectedCategory(category)}
               className={`px-4 py-2.5 md:px-6 md:py-3 rounded-xl font-medium transition-all ${
-                selectedCategory === subject
+                selectedCategory === category
                   ? "gradient-bg-primary text-white shadow-lg"
                   : "bg-white text-gray-700 hover:bg-gray-100 shadow border border-gray-200"
               }`}
             >
-              {subject}
+              {category}
             </motion.button>
           ))}
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {filteredLessons.slice(0, 6).map((lesson, index) => (
+          {filteredLessons.map((lesson, index) => (
             <motion.div
               key={lesson.id}
               initial={{ opacity: 0, y: 30 }}
@@ -1189,7 +1899,7 @@ const Gallery = () => {
               <div className="relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 h-full card-hover">
                 <div className="relative h-56 md:h-64 overflow-hidden rounded-t-2xl">
                   <img
-                    src={lesson.imageUrl}
+                    src={lesson.image}
                     alt={lesson.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     onError={(e) => {
@@ -1205,16 +1915,14 @@ const Gallery = () => {
                     </div>
                   </div>
                   
-                  {selectedCategory !== "All" && (
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        {lesson.category}
-                      </span>
-                    </div>
-                  )}
+                  <div className="absolute top-4 left-4">
+                    <span className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                      {lesson.category}
+                    </span>
+                  </div>
 
                   <div className="absolute bottom-4 left-4">
-                    <span className="bg-blue-500/90 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    <span className="bg-emerald-500/90 text-white px-3 py-1 rounded-full text-sm font-medium">
                       {lesson.level}
                     </span>
                   </div>
@@ -1225,12 +1933,12 @@ const Gallery = () => {
                     <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">{lesson.title}</h3>
                     <div className="flex items-center gap-3 text-gray-600 text-sm mb-3">
                       <div className="flex items-center gap-1">
-                        <FaChalkboardTeacher className="text-emerald-500" />
+                        <FaChalkboardTeacher className="text-blue-500" />
                         <span>{lesson.instructor}</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <FaGraduationCap className="text-blue-500" />
-                        <span>{lesson.students} talaba</span>
+                        <FaGraduationCap className="text-emerald-500" />
+                        <span>{lesson.students.toLocaleString()} talaba</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-1 text-gray-600 text-sm">
@@ -1248,14 +1956,14 @@ const Gallery = () => {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleViewCourse(lesson.id)}
-                        className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-lg font-medium hover:bg-emerald-100 transition-colors flex items-center gap-2"
+                        className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg font-medium hover:bg-blue-100 transition-colors flex items-center gap-2"
                       >
                         <FaBookOpen className="text-sm" />
                         Ko'rish
                       </button>
                       <button
                         onClick={() => navigate(`/dashboard/checkout/${lesson.id}`)}
-                        className="px-4 py-2 gradient-bg-primary text-white rounded-lg font-medium hover:shadow-lg transition-all"
+                        className="px-4 py-2 gradient-bg-primary text-white rounded-lg font-medium hover:shadow-lg transition-all text-sm leading-normal whitespace-nowrap"
                       >
                         Sotib olish
                       </button>
@@ -1272,7 +1980,7 @@ const Gallery = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/dashboard/all-courses')}
-            className="px-8 py-3.5 gradient-bg-primary text-white font-semibold rounded-xl hover:shadow-xl hover:shadow-emerald-500/30 transition-all flex items-center gap-2 mx-auto"
+            className="px-8 py-3.5 gradient-bg-primary text-white font-semibold rounded-xl hover:shadow-xl hover:shadow-blue-500/30 transition-all flex items-center gap-2 mx-auto"
           >
             <FaBookOpen />
             Barcha kurslarni ko'rish
@@ -1305,7 +2013,8 @@ const Pricing = () => {
       buttonColor: "bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800",
       popular: false,
       icon: <FaBookOpen />,
-      color: "gray"
+      color: "gray",
+      discount: ""
     },
     {
       plan: "Premium",
@@ -1321,10 +2030,11 @@ const Pricing = () => {
         "Mentorlik darslari",
         "Karyera maslahatlari"
       ],
-      buttonColor: "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700",
+      buttonColor: "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700",
       popular: true,
       icon: <FaStar />,
-      color: "emerald"
+      color: "blue",
+      discount: "Eng ko'p tanlangan"
     },
     {
       plan: "Pro",
@@ -1344,7 +2054,8 @@ const Pricing = () => {
       buttonColor: "bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700",
       popular: false,
       icon: <FaRocket />,
-      color: "purple"
+      color: "purple",
+      discount: "2 oy bepul"
     },
   ];
 
@@ -1353,7 +2064,7 @@ const Pricing = () => {
   };
 
   return (
-    <section id="narxlar" className="eduhub-theme section-padding px-4 md:px-6 bg-gradient-to-b from-emerald-50/30 to-white">
+    <section id="narxlar" className="eduhub-theme section-padding px-4 md:px-6 bg-gradient-to-b from-blue-50/30 to-white">
       <div className="container mx-auto max-w-screen-xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -1362,7 +2073,7 @@ const Pricing = () => {
           className="text-center mb-16"
           data-aos="fade-up"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-100 to-blue-100 text-emerald-700 mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-100 to-emerald-100 text-blue-700 mb-4">
             <FaChartLine className="text-sm" />
             <span className="text-sm font-medium">Narxlar</span>
           </div>
@@ -1376,14 +2087,14 @@ const Pricing = () => {
           </p>
         </motion.div>
         
-        <div className="flex justify-center mb-12">
+        <div className="flex flex-col items-center gap-4 mb-12">
           <div className="bg-white p-1.5 rounded-xl inline-flex items-center shadow-lg border border-gray-200">
             <button
               onClick={() => setIsYearly(false)}
               className={`px-6 py-3 rounded-lg font-medium transition-all ${
                 !isYearly
                   ? "gradient-bg-primary text-white shadow"
-                  : "text-gray-700 hover:text-emerald-600"
+                  : "text-gray-700 hover:text-blue-600"
               }`}
             >
               Oylik
@@ -1393,12 +2104,17 @@ const Pricing = () => {
               className={`px-6 py-3 rounded-lg font-medium transition-all ${
                 isYearly
                   ? "gradient-bg-primary text-white shadow"
-                  : "text-gray-700 hover:text-emerald-600"
+                  : "text-gray-700 hover:text-blue-600"
               }`}
             >
-              Yillik (2 oy bepul)
+              Yillik
             </button>
           </div>
+          {isYearly && (
+            <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-4 py-2 rounded-full text-sm font-medium">
+              💰 Yillik to'lovda 2 oy bepul!
+            </div>
+          )}
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
@@ -1421,14 +2137,14 @@ const Pricing = () => {
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
                   <span className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-4 py-1.5 rounded-full text-sm font-semibold shadow-lg">
-                    Eng tanlangan
+                    {plan.discount}
                   </span>
                 </div>
               )}
               
               <div className={`bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 h-full overflow-hidden border-2 ${
                 plan.popular
-                  ? "border-emerald-500"
+                  ? "border-blue-500"
                   : "border-gray-200"
               } card-hover`}>
                 <div className={`p-6 md:p-8 ${
@@ -1453,6 +2169,11 @@ const Pricing = () => {
                     <p className="text-gray-600">
                       {plan.period} {isYearly && "(yillik to'lov)"}
                     </p>
+                    {plan.discount && !plan.popular && (
+                      <p className="text-emerald-600 text-sm font-medium mt-2">
+                        {plan.discount}
+                      </p>
+                    )}
                   </div>
                   
                   <ul className="space-y-3 mb-8">
@@ -1492,7 +2213,7 @@ const Pricing = () => {
           </p>
           <button
             onClick={() => navigate('/pricing')}
-            className="text-emerald-600 hover:text-emerald-700 font-semibold flex items-center justify-center gap-2 mx-auto"
+            className="text-blue-600 hover:text-blue-700 font-semibold flex items-center justify-center gap-2 mx-auto"
           >
             Batafsil ma'lumot
             <FaArrowRight />
@@ -1551,7 +2272,7 @@ const FAQ = () => {
   ];
 
   return (
-    <section id="savollar" className="eduhub-theme section-padding px-4 md:px-6 bg-gradient-to-b from-white to-emerald-50/30">
+    <section id="savollar" className="eduhub-theme section-padding px-4 md:px-6 bg-gradient-to-b from-white to-blue-50/30">
       <div className="container mx-auto max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -1560,7 +2281,7 @@ const FAQ = () => {
           className="text-center mb-16"
           data-aos="fade-up"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-100 to-blue-100 text-emerald-700 mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-100 to-emerald-100 text-blue-700 mb-4">
             <FaCoffee className="text-sm" />
             <span className="text-sm font-medium">Ko'p beriladigan savollar</span>
           </div>
@@ -1592,7 +2313,7 @@ const FAQ = () => {
                 aria-expanded={openIndex === index}
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center flex-shrink-0">
                     {item.icon}
                   </div>
                   <span className="text-base md:text-lg font-semibold text-gray-900 pr-4">
@@ -1602,7 +2323,7 @@ const FAQ = () => {
                 <motion.div
                   animate={{ rotate: openIndex === index ? 180 : 0 }}
                   transition={{ duration: 0.3 }}
-                  className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 flex items-center justify-center text-white flex-shrink-0 group-hover:scale-110 transition-transform"
+                  className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white flex-shrink-0 group-hover:scale-110 transition-transform"
                 >
                   {openIndex === index ? <FaMinus /> : <FaPlus />}
                 </motion.div>
@@ -1642,6 +2363,113 @@ const FAQ = () => {
             <FaPhone />
             Biz bilan bog'laning
           </motion.button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Statistikalar komponenti
+const Statistics = () => {
+  const stats = [
+    {
+      value: "85,000+",
+      label: "Muvaffaqiyatli Talabalar",
+      icon: <FaUserGraduate />,
+      color: "from-blue-500 to-cyan-500"
+    },
+    {
+      value: "420+",
+      label: "Professional O'qituvchilar",
+      icon: <FaChalkboardTeacher />,
+      color: "from-emerald-500 to-green-500"
+    },
+    {
+      value: "150+",
+      label: "Kurslar va Darslar",
+      icon: <FaBookOpen />,
+      color: "from-purple-500 to-pink-500"
+    },
+    {
+      value: "98%",
+      label: "Muvaffaqiyat Darajasi",
+      icon: <FaTrophy />,
+      color: "from-amber-500 to-orange-500"
+    },
+    {
+      value: "24/7",
+      label: "Qo'llab-quvvatlash",
+      icon: <FaHeadphonesAlt />,
+      color: "from-red-500 to-pink-500"
+    },
+    {
+      value: "10,000+",
+      label: "Berilgan Sertifikatlar",
+      icon: <FaCertificate />,
+      color: "from-indigo-500 to-purple-500"
+    }
+  ];
+
+  return (
+    <section className="eduhub-theme section-padding px-4 md:px-6 bg-gradient-to-br from-blue-600 via-blue-700 to-emerald-700">
+      <div className="container mx-auto max-w-screen-xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+          data-aos="fade-up"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm text-white mb-4">
+            <FaChartLine className="text-sm" />
+            <span className="text-sm font-medium">Bizning Natijalarimiz</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-white">
+            Raqamlar Gapirsin
+          </h2>
+          <p className="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto">
+            7 yil ichida erishgan yutuqlarimiz
+          </p>
+        </motion.div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+          {stats.map((stat, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ y: -5 }}
+              className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 md:p-6 text-center hover:bg-white/15 transition-all"
+              data-aos="fade-up"
+              data-aos-delay={index * 100}
+            >
+              <div className={`w-12 h-12 md:w-16 md:h-16 rounded-xl bg-gradient-to-r ${stat.color} flex items-center justify-center mx-auto mb-3 md:mb-4`}>
+                <div className="text-white text-xl md:text-2xl">
+                  {stat.icon}
+                </div>
+              </div>
+              <div className="text-2xl md:text-3xl font-bold text-white mb-1">
+                {stat.value}
+              </div>
+              <div className="text-blue-100 text-sm md:text-base">
+                {stat.label}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        
+        <div className="text-center mt-12">
+          <motion.div
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="inline-block"
+          >
+            <div className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-6 py-3 rounded-full font-medium shadow-lg">
+              🚀 2024-yil uchun 5000+ yangi talaba
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
@@ -1715,14 +2543,14 @@ const Contact = () => {
     {
       icon: FaEnvelope,
       title: "Email",
-      details: "info@eduhub.uz",
+      details: "info@hedu.uz",
       description: "24 soat ichida javob beramiz",
       color: "from-emerald-500 to-emerald-600"
     },
     {
       icon: FaTelegram,
       title: "Telegram",
-      details: "@eduhub_support",
+      details: "@hedu_support",
       description: "Tezkor yordam",
       color: "from-cyan-500 to-cyan-600"
     },
@@ -1736,7 +2564,7 @@ const Contact = () => {
   ];
 
   return (
-    <section id="aloqa" className="eduhub-theme section-padding px-4 md:px-6 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
+    <section id="aloqa" className="eduhub-theme section-padding px-4 md:px-6 bg-gradient-to-br from-blue-50 via-white to-emerald-50">
       <div className="container mx-auto max-w-screen-xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -1745,7 +2573,7 @@ const Contact = () => {
           className="text-center mb-16"
           data-aos="fade-up"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-emerald-100 to-blue-100 text-emerald-700 mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-100 to-emerald-100 text-blue-700 mb-4">
             <FaPhone className="text-sm" />
             <span className="text-sm font-medium">Bog'lanish</span>
           </div>
@@ -1784,7 +2612,7 @@ const Contact = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full p-4 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all outline-none bg-gray-50/50"
+                  className="w-full p-4 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none bg-gray-50/50"
                   placeholder="Ismingizni kiriting"
                   required
                 />
@@ -1799,7 +2627,7 @@ const Contact = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full p-4 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all outline-none bg-gray-50/50"
+                    className="w-full p-4 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none bg-gray-50/50"
                     placeholder="email@example.com"
                     required
                   />
@@ -1813,7 +2641,7 @@ const Contact = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full p-4 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all outline-none bg-gray-50/50"
+                    className="w-full p-4 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none bg-gray-50/50"
                     placeholder="+998 90 123 45 67"
                   />
                 </div>
@@ -1826,7 +2654,7 @@ const Contact = () => {
                   name="subject"
                   value={formData.subject}
                   onChange={handleChange}
-                  className="w-full p-4 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all outline-none bg-gray-50/50"
+                  className="w-full p-4 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none bg-gray-50/50"
                 >
                   <option value="">Mavzuni tanlang</option>
                   <option value="course">Kurs haqida</option>
@@ -1845,7 +2673,7 @@ const Contact = () => {
                   value={formData.message}
                   onChange={handleChange}
                   rows="5"
-                  className="w-full p-4 rounded-lg border border-gray-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all outline-none bg-gray-50/50 resize-none"
+                  className="w-full p-4 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none bg-gray-50/50 resize-none"
                   placeholder="Xabaringizni yozing..."
                   required
                 />
@@ -1856,7 +2684,7 @@ const Contact = () => {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full py-4 gradient-bg-primary text-white font-semibold rounded-xl hover:shadow-xl hover:shadow-emerald-500/30 transition-all ${
+                className={`w-full py-4 gradient-bg-primary text-white font-semibold rounded-xl hover:shadow-xl hover:shadow-blue-500/30 transition-all ${
                   isSubmitting ? 'opacity-75 cursor-not-allowed' : ''
                 }`}
               >
@@ -1906,15 +2734,15 @@ const Contact = () => {
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { icon: FaInstagram, color: "from-pink-500 to-rose-600", label: "Instagram", url: "https://instagram.com/eduhub" },
-                  { icon: FaFacebook, color: "from-blue-600 to-blue-700", label: "Facebook", url: "https://facebook.com/eduhub" },
-                  { icon: FaTwitter, color: "from-sky-500 to-blue-500", label: "Twitter", url: "https://twitter.com/eduhub" },
-                  { icon: FaLinkedin, color: "from-blue-700 to-blue-800", label: "LinkedIn", url: "https://linkedin.com/company/eduhub" },
-                  { icon: FaTelegram, color: "from-cyan-500 to-blue-500", label: "Telegram", url: "https://t.me/eduhub" },
-                  { icon: FaYoutube, color: "from-red-500 to-red-600", label: "YouTube", url: "https://youtube.com/eduhub" },
-                  { icon: FaTiktok, color: "from-gray-900 to-gray-700", label: "TikTok", url: "https://tiktok.com/@eduhub" },
+                  { icon: FaInstagram, color: "from-pink-500 to-rose-600", label: "Instagram", url: "https://instagram.com/hedu" },
+                  { icon: FaFacebook, color: "from-blue-600 to-blue-700", label: "Facebook", url: "https://facebook.com/hedu" },
+                  { icon: FaTwitter, color: "from-sky-500 to-blue-500", label: "Twitter", url: "https://twitter.com/hedu" },
+                  { icon: FaLinkedin, color: "from-blue-700 to-blue-800", label: "LinkedIn", url: "https://linkedin.com/company/hedu" },
+                  { icon: FaTelegram, color: "from-cyan-500 to-blue-500", label: "Telegram", url: "https://t.me/hedu" },
+                  { icon: FaYoutube, color: "from-red-500 to-red-600", label: "YouTube", url: "https://youtube.com/hedu" },
+                  { icon: FaTiktok, color: "from-gray-900 to-gray-700", label: "TikTok", url: "https://tiktok.com/@hedu" },
                   { icon: FaWhatsapp, color: "from-green-500 to-green-600", label: "WhatsApp", url: "https://wa.me/998901234567" }
-                ].slice(0, 8).map((social, index) => (
+                ].map((social, index) => (
                   <motion.a
                     key={index}
                     whileHover={{ y: -5, scale: 1.1 }}
@@ -1942,7 +2770,7 @@ const Contact = () => {
                 ].map((schedule, idx) => (
                   <div key={idx} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center gap-2">
-                      <FaCalendarAlt className="text-emerald-500" />
+                      <FaCalendarAlt className="text-blue-500" />
                       <span className="text-gray-700">{schedule.day}</span>
                     </div>
                     <span className="font-semibold text-gray-900">{schedule.time}</span>
@@ -1986,12 +2814,12 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: FaInstagram, url: "https://instagram.com/eduhub" },
-    { icon: FaFacebook, url: "https://facebook.com/eduhub" },
-    { icon: FaTwitter, url: "https://twitter.com/eduhub" },
-    { icon: FaLinkedin, url: "https://linkedin.com/company/eduhub" },
-    { icon: FaTelegram, url: "https://t.me/eduhub" },
-    { icon: FaYoutube, url: "https://youtube.com/eduhub" }
+    { icon: FaInstagram, url: "https://instagram.com/hedu" },
+    { icon: FaFacebook, url: "https://facebook.com/hedu" },
+    { icon: FaTwitter, url: "https://twitter.com/hedu" },
+    { icon: FaLinkedin, url: "https://linkedin.com/company/hedu" },
+    { icon: FaTelegram, url: "https://t.me/hedu" },
+    { icon: FaYoutube, url: "https://youtube.com/hedu" }
   ];
 
   return (
@@ -2005,8 +2833,8 @@ const Footer = () => {
               </div>
               <div>
                 <h3 className="text-2xl font-bold">
-                  <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                    EduHub
+                  <span className="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
+                    H<span className="text-blue-400">e</span>d<span className="text-emerald-400">u</span>
                   </span>
                 </h3>
                 <p className="text-gray-400 text-sm">Professional ta'lim platformasi</p>
@@ -2014,7 +2842,7 @@ const Footer = () => {
             </div>
             <p className="text-gray-400 mb-6 leading-relaxed">
               Innovatsion ta'lim platformasi - kelajakni bugundan quring. 
-              10 yillik tajriba, 75,000+ muvaffaqiyatli talaba.
+              7 yillik tajriba, 85,000+ muvaffaqiyatli talaba.
             </p>
             <div className="flex gap-3">
               {socialLinks.map((social, index) => (
@@ -2047,7 +2875,7 @@ const Footer = () => {
                     }}
                     className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 hover:translate-x-1"
                   >
-                    {link.icon && <span className="text-emerald-400">{link.icon}</span>}
+                    {link.icon && <span className="text-blue-400">{link.icon}</span>}
                     {link.name}
                   </button>
                 </li>
@@ -2092,7 +2920,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-center md:text-left">
               <p className="text-gray-400">
-                © {currentYear} EduHub. Barcha huquqlar himoyalangan.
+                © {currentYear} Hedu. Barcha huquqlar himoyalangan.
               </p>
               <p className="text-gray-500 text-sm mt-1">
                 Toshkent sh., Yunusobod tumani
@@ -2148,7 +2976,7 @@ const HomePage = () => {
     
     // Load user from localStorage
     try {
-      const savedUser = localStorage.getItem('eduhub_current_user');
+      const savedUser = localStorage.getItem('hedu_current_user');
       if (savedUser) {
         const parsedUser = JSON.parse(savedUser);
         setCurrentUser(parsedUser);
@@ -2156,7 +2984,7 @@ const HomePage = () => {
       }
     } catch (error) {
       console.error('Error loading user from localStorage:', error);
-      localStorage.removeItem('eduhub_current_user');
+      localStorage.removeItem('hedu_current_user');
     }
     
     // Scroll to top on page load
@@ -2174,8 +3002,8 @@ const HomePage = () => {
   
   const handleLogout = () => {
     console.log('Logout clicked');
-    localStorage.removeItem('eduhub_current_user');
-    localStorage.removeItem('eduhub_token');
+    localStorage.removeItem('hedu_current_user');
+    localStorage.removeItem('hedu_token');
     setCurrentUser(null);
     
     // Show notification
@@ -2194,11 +3022,15 @@ const HomePage = () => {
         onLogout={handleLogout}
       />
       <HeroSection />
+      <StudyPaths />
       <Features />
+      <Instructors />
+      <LearningProcess />
       <Testimonials />
       <Gallery />
       <Pricing />
       <FAQ />
+      <Statistics />
       <Contact />
       <Footer />
       
@@ -2210,7 +3042,7 @@ const HomePage = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.5 }}
             onClick={scrollToTop}
-            className="fixed bottom-8 right-8 w-14 h-14 gradient-bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:shadow-3xl transition-all z-40 hover:scale-110"
+            className="fixed bottom-24 right-8 w-14 h-14 gradient-bg-primary text-white rounded-full shadow-2xl flex items-center justify-center hover:shadow-3xl transition-all z-40 hover:scale-110"
             aria-label="Scroll to top"
           >
             <FaChevronUp />
@@ -2225,7 +3057,7 @@ const HomePage = () => {
         rel="noopener noreferrer"
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="fixed bottom-8 left-8 w-14 h-14 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:shadow-3xl transition-all z-40 hover:scale-110"
+        className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:shadow-3xl transition-all z-40 hover:scale-110"
         aria-label="WhatsApp"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
